@@ -27,4 +27,10 @@ public class UserController {
         return Result.success("success");
     }
 
+    @Api
+    @GetMapping("/test2")
+    public Result test2() {
+        return Result.success("success -- 2");
+    }
+
 }
