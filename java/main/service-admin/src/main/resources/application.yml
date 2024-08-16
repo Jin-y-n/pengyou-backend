@@ -1,0 +1,90 @@
+spring:
+  profiles:
+    include: dev
+  datasource:
+    driver-class-name: ${pengyou.datasource.driver-class-name}
+    url: ${pengyou.datasource.url}
+    username: ${pengyou.datasource.username}
+    password: ${pengyou.datasource.password}
+    type: ${pengyou.datasource.type}
+  data:
+    redis:
+      port: ${pengyou.data.redis.port}
+      host: ${pengyou.data.redis.host}
+      password: ${pengyou.data.redis.password}
+      database: ${pengyou.data.redis.database}
+      connect-timeout: ${pengyou.data.redis.connect-timeout}
+      timeout: ${pengyou.data.redis.timeout}
+      lettuce:
+        pool:
+          min-idle: ${pengyou.data.redis.lettuce.pool.min-idle}
+          max-idle: ${pengyou.data.redis.lettuce.pool.max-idle}
+          max-active: ${pengyou.data.redis.lettuce.pool.max-active}
+          max-wait: ${pengyou.data.redis.lettuce.pool.max-wait}
+
+  # mail service configure
+  mail:
+    protocol: ${pengyou.mail.protocol}
+    host: ${pengyou.mail.host}
+    port: ${pengyou.mail.port}
+    username: ${pengyou.mail.username}
+    password: ${pengyou.mail.password}
+    test-connection: ${pengyou.mail.test-connection}
+    properties:
+      mail:
+        smtp:
+          auth: ${pengyou.mail.properties.mail.smtp.auth}
+        debug: ${pengyou.mail.properties.mail.debug}
+        mime:
+          parameterization: ${pengyou.mail.properties.mail.mime.parameterization}
+  application:
+    name: service-user
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${pengyou.nacos.discovery.server-addr}
+        username: ${pengyou.nacos.discovery.username}
+        password: ${pengyou.nacos.discovery.password}
+        group: ${pengyou.nacos.discovery.group}
+        namespace: ${pengyou.nacos.discovery.namespace}
+        heart-beat-timeout: 5000
+  threads:
+    virtual:
+      enabled: true
+
+
+# 服务器配置
+server:
+  port: ${server.port}
+
+
+# Jimmer ORM配置
+jimmer:
+  dialect: org.babyfish.jimmer.sql.dialect.MySqlDialect
+  client:
+    ts:
+      path: /ts.zip
+    openapi:
+      path: /openapi.yml
+      ui-path: /openapi.html
+      properties:
+        info:
+          title:
+          description:
+  pretty-sql: true
+  show-sql: true
+
+
+redis:
+  lock:
+    url: ${redis.lock.url}
+    password: ${redis.lock.password}
+    database: ${redis.lock.database}
+    connect-time-out: ${redis.lock.connect-time-out}
+    time-out: ${redis.lock.time-out}
+
+
+
+
+
+
