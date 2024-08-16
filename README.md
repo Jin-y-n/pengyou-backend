@@ -4,6 +4,8 @@
 - 项目目标：通过不同的社区吸引有不同爱好的人来一起交流，聊天，成为朋友，帮助找到与自己性情匹配的伙伴
 - 团队成员：Napbad
 
+frontend: [https://github.com/Napbad/pengyou-frontend]
+
 ## 项目需求分析
 
 1. 核心功能需求
