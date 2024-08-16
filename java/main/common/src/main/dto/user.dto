@@ -1,0 +1,8 @@
+export com.pengyou.model.entity.User
+    -> package com.pengyou.model.dto.user
+
+input UserForAdd {
+    #allScalars
+    -id
+    captcha: String
+}

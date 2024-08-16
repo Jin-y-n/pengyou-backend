@@ -11,26 +11,29 @@ package com.pengyou.controller;
 */
 
 import com.pengyou.model.Result;
+import com.pengyou.model.dto.user.UserForAdd;
+import com.pengyou.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.client.meta.Api;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
 
-    @Api
-    @GetMapping("/test")
-    public Result test() {
-        return Result.success("success");
-    }
+    private final UserService service;
 
     @Api
-    @GetMapping("/test2")
-    public Result test2() {
-        return Result.success("success -- 2");
+    @PostMapping("/register")
+    public Result register(
+            @RequestBody UserForAdd user
+            ) {
+
+        service.register(user);
+
+        return Result.success("success -- register");
     }
 
 }
