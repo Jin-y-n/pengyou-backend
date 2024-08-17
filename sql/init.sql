@@ -52,6 +52,7 @@ CREATE TABLE user_profile
     delete_at       TIMESTAMP    NULL DEFAULT NULL,
     created_person  INT UNSIGNED,
     modified_person INT UNSIGNED,
+    modified_by_admin TINYINT     NOT NULL DEFAULT 0,
     PRIMARY KEY (user_id),
     FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE
 );
@@ -139,8 +140,9 @@ CREATE TABLE post
     status          TINYINT           DEFAULT 1,
     created_person  INT UNSIGNED,
     modified_person INT UNSIGNED,
-    label           INT UNSIGNED,
     delete_at       TIMESTAMP    NULL DEFAULT NULL,
+    modified_by_admin TINYINT     NOT NULL DEFAULT 0,
+
     PRIMARY KEY (id),
     FOREIGN KEY (author) REFERENCES user (id) ON DELETE CASCADE,
     FOREIGN KEY (created_person) REFERENCES user (id) ON DELETE SET NULL,
@@ -158,7 +160,8 @@ CREATE TABLE post_history
     content         TEXT,
     modified_at     TIMESTAMP         DEFAULT CURRENT_TIMESTAMP,
     modified_person INT UNSIGNED,
-    label           INT UNSIGNED,
+    modified_by_admin TINYINT     NOT NULL DEFAULT 0,
+
     delete_at       TIMESTAMP    NULL DEFAULT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (author) REFERENCES user (id) ON DELETE CASCADE,
@@ -245,6 +248,7 @@ CREATE TABLE comment
     modified_time   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     created_person  INT UNSIGNED,
     modified_person INT UNSIGNED,
+    modified_by_admin TINYINT     NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
@@ -273,6 +277,8 @@ CREATE TABLE comment_history
     content         VARCHAR(255),
     modified_time   TIMESTAMP         DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
     modified_person INT UNSIGNED,
+    modified_by_admin TINYINT     NOT NULL DEFAULT 0,
+
     delete_at       TIMESTAMP    NULL DEFAULT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE,
@@ -310,7 +316,7 @@ CREATE TABLE admin
     modified_person   INT UNSIGNED      DEFAULT 0,
     delete_at         TIMESTAMP    NULL DEFAULT NULL,
     role              TINYINT           DEFAULT 0,
-    modified_by_admin TINYINT           DEFAULT 0,
+    modified_by_root TINYINT           DEFAULT 0,
     PRIMARY KEY (id),
     UNIQUE INDEX idx_username (username)
 );

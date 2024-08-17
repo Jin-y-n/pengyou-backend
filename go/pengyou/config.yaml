@@ -27,7 +27,7 @@ redis:
   #是否使用redis集群模式
   useCluster: false
   #使用集群模式addr和db默认无效
-  addr: 8.137.87.209:19401
+  addr: 127.0.0.1:6379
   password: ThisIsNapbad
   poolsize: 30
   db: 0
@@ -38,18 +38,23 @@ redis:
 
 
 mysql:
-  host: 8.137.87.209
-  port: 19501
+  host: localhost
+  port: 3306
   user: root
-  password: 191019sJs_MySQL
-  db: pengyou
+  password: ThisIsNapbad
+  db: pengyou_test
   max-idle-conns: 10
   max-open-conns: 100
   conf: charset=utf8mb4&parseTime=True&loc=Local
 
 files: 
-  dir: /home/napbad/tmp/files/
+  file-path: /public/pengyou/data
   buf-size: 1024
   read-buf-size: 1024
   write-buf-size: 1024
 
+es:
+  host: localhost
+  port: 9200
+  password: ThisIsNapbad
+  

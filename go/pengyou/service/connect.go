@@ -2,36 +2,38 @@ package service
 
 import (
 	"pengyou/constant"
-	"pengyou/global/config"
 	"pengyou/model"
 	"pengyou/model/common/response"
 	"pengyou/model/entity"
 	"pengyou/utils/check"
 	"pengyou/utils/log"
 	"pengyou/utils/storage"
+	"strings"
 	"sync"
 	"time"
 
-	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"go.uber.org/zap"
 )
 
-var upGrade = websocket.Upgrader{
-	ReadBufferSize:  config.Cfg.Files.ReadBufSize,
-	WriteBufferSize: config.Cfg.Files.WriteBufSize,
-	CheckOrigin: func(r *http.Request) bool {
-		return true
-	},
-}
+var upGrade = websocket.Upgrader{}
 
 // establish websocket connection by userId
 func EstablishWsConn(c *gin.Context) {
-	userIdStr := c.GetHeader(constant.USER_ID)
+	upGrade.CheckOrigin(c.Request)
+
+	log.Logger.Info("upGrade",
+		zap.String("subprotocols", strings.Join(upGrade.Subprotocols, ",")),
+	)
+
+	userIdStr := "1"
+	// c.GetHeader(constant.USER_ID)
 
 	if check.IsBlank(&userIdStr) {
+		log.Logger.Error("userId is blank")
 		response.FailWithMessage(constant.REQUEST_ARGUMENT_ERROR, c)
 		return
 	}
@@ -39,6 +41,7 @@ func EstablishWsConn(c *gin.Context) {
 	userId, err := strconv.ParseUint(userIdStr, 10, 64)
 
 	if err != nil {
+		log.Logger.Error("userId is not a number", zap.Error(err))
 		response.FailWithMessage(constant.REQUEST_ARGUMENT_ERROR, c)
 		return
 	}
@@ -46,6 +49,7 @@ func EstablishWsConn(c *gin.Context) {
 	ws, err := upGrade.Upgrade(c.Writer, c.Request, nil)
 
 	if err != nil {
+		log.Logger.Error("upgrade websocket failed", zap.Error(err))
 		response.FailWithMessage(constant.ESTABLISH_WEBSOCKET_CONNECT_FAIL, c)
 		return
 	}

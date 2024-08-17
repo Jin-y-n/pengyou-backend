@@ -214,12 +214,10 @@ func InitFile(cfg *config.Config) {
 
 	if err != nil {
 		if os.IsNotExist(err) {
-			err = os.MkdirAll(fileDir, os.ModePerm)
+			err = os.MkdirAll(fileDir, 0755)
 			if err != nil {
 				panic(err)
 			}
-		} else {
-			panic(err)
 		}
 	}
 

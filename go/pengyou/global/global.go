@@ -4,15 +4,20 @@ import (
 	"fmt"
 
 	"pengyou/global/config"
+	"pengyou/router"
+	"pengyou/service"
 	"pengyou/utils/log"
 	"pengyou/utils/storage"
 
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
 
 var (
 	globalConfig *config.Config
 	Viper        *viper.Viper
+	GinEngine    *gin.Engine
 )
 
 func Init() {
@@ -34,7 +39,19 @@ func Init() {
 
 	storage.InitFile(globalConfig)
 
+	service.Init(globalConfig)
+
 	config.Cfg = globalConfig
+
+	GinEngine = router.ServiceRouter()
+
+	corsCfg := cors.New(
+		cors.Config{
+			AllowAllOrigins: true,
+			AllowMethods:    []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
+		})
+
+	GinEngine.Use(corsCfg)
 }
 
 func initViper() {
