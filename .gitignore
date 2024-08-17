@@ -6,6 +6,8 @@
 **/install*
 **/application-dev.yml
 **/application-live.yml
+**/config.yml
+**/config.yaml
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
