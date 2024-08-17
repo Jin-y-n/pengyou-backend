@@ -9,7 +9,6 @@ import (
 	"pengyou/utils/log"
 	"pengyou/utils/storage"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
@@ -31,27 +30,11 @@ func Init() {
 	// init Logger
 	log.NewZapLogger(&globalConfig.Zap)
 
-	// init redis
-	storage.InitRedis(&globalConfig.Redis)
-
-	// init mysql
-	storage.InitMySQL(globalConfig)
-
-	storage.InitFile(globalConfig)
-
 	service.Init(globalConfig)
+	storage.Init(globalConfig)
+	GinEngine = router.Init(globalConfig)
 
 	config.Cfg = globalConfig
-
-	GinEngine = router.ServiceRouter()
-
-	corsCfg := cors.New(
-		cors.Config{
-			AllowAllOrigins: true,
-			AllowMethods:    []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
-		})
-
-	GinEngine.Use(corsCfg)
 }
 
 func initViper() {

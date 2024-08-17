@@ -52,8 +52,12 @@ files:
   read-buf-size: 1024
   write-buf-size: 1024
 
-es:
+elasticsearch:
   host: localhost
   port: 9200
+  username: napbad
   password: ThisIsNapbad
+  nodes: 
+    - "http://localhost:9200"
+  
   
