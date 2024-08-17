@@ -9,7 +9,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
 )
 
-func ServiceRouter() *gin.Engine {
+func GinRouter() *gin.Engine {
 	r := gin.Default()
 
 	// swagger
