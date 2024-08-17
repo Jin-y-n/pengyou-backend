@@ -2,47 +2,53 @@ package security
 
 import (
 	"math/rand"
+	"time" // Added to seed the random number generator
 )
 
 const numberBytes = "0123456789"
 const characterBytes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-const defaultLength = 6 // 验证码长度
+const defaultLength = 6 // Default captcha length
 
+// SeedRandom seeds the random number generator.
+func SeedRandom() {
+	rand.Seed(time.Now().UnixNano())
+}
+
+// GenerateCaptcha generates a captcha code with the default length.
 func GenerateCaptcha() string {
-	// 初始化随机数生成器
-	rand.New(rand.NewSource(123))
+	SeedRandom()
 
-	// 创建一个长度为length的字节切片
+	// Create a byte slice with the default length
 	b := make([]byte, defaultLength)
 	for i := range b {
-		// 从numberBytes中随机选择一个字符
+		// Randomly select a character from numberBytes
 		b[i] = numberBytes[rand.Intn(len(numberBytes))]
 	}
 	return string(b)
 }
 
+// GenerateCaptchaWithLength generates a captcha code with a specified length.
 func GenerateCaptchaWithLength(length int) string {
-	// 初始化随机数生成器
-	rand.New(rand.NewSource(123))
+	SeedRandom()
 
-	// 创建一个长度为length的字节切片
+	// Create a byte slice with the specified length
 	b := make([]byte, length)
 	for i := range b {
-		// 从numberBytes中随机选择一个字符
+		// Randomly select a character from numberBytes
 		b[i] = numberBytes[rand.Intn(len(numberBytes))]
 	}
 
 	return string(b)
 }
 
+// GenerateCaptchaWithCharacter generates a captcha code with a specified length and characters.
 func GenerateCaptchaWithCharacter(length int) string {
-	// 初始化随机数生成器
-	rand.New(rand.NewSource(123))
+	SeedRandom()
 
-	// 创建一个长度为length的字节切片
+	// Create a byte slice with the specified length
 	b := make([]byte, length)
 	for i := range b {
-		// 从characterBytes中随机选择一个字符
+		// Randomly select a character from characterBytes
 		b[i] = characterBytes[rand.Intn(len(characterBytes))]
 	}
 

@@ -1,57 +1,69 @@
 package test
 
 import (
-	"pengyou/model/entity"
-
 	"fmt"
+	"pengyou/model/entity"
+	"testing"
 	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
-func testGorm() {
-	db, err := gorm.Open(mysql.Open("root:191019sJs_MySQL@tcp(8.137.96.68:3306)/pengyou?charset=utf8&parseTime=true"), &gorm.Config{})
+// TestGorm demonstrates basic GORM operations.
+func TestGorm(t *testing.T) {
+	db, err := gorm.Open(mysql.Open(getDBConnectionString()), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		panic("failed to connect database")
 	}
 
-	// 迁移 schema
-	db.AutoMigrate(&entity.User{})
+	// Migrate the schema
+	if err := db.AutoMigrate(&entity.User{}); err != nil {
+		panic("failed to auto migrate")
+	}
 
-	user := &entity.User{}
+	// Create a new user
+	user := &entity.User{
+		Username:      "Napbad",
+		Password:      "123456",
+		Phone:         "123456789",
+		Email:         "123456789@qq.com",
+		ClientIP:      "127.0.0.1",
+		DeviceInfo:    "123456789",
+		LoginTime:     time.Now(),
+		HeartBeatTime: time.Now(),
+		IsLogout:      0,
+		LogOutTime:    time.Now(),
 
-	user.Username = "Napbad"
-	user.Password = "123456"
-	user.Phone = "123456789"
-	user.Email = "123456789@qq.com"
-	user.ID = 1
-	user.ClientIP = "127.0.0.1"
-	user.DeviceInfo = "123456789"
-	user.LoginTime = time.Now()
-	user.HeartBeatTime = time.Now()
-	user.IsLogout = 0
-	user.LogOutTime = time.Now()
-	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
-	user.DeletedAt = gorm.DeletedAt{}
+		Model: gorm.Model{
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+			ID:        1,
+			DeletedAt: gorm.DeletedAt{},
+		},
+	}
 
-	// Create
-	db.Create(user)
+	if err := db.Create(user).Error; err != nil {
+		panic("failed to create user")
+	}
 
-	// Read
+	// Read a user record
 	var userForUse entity.User
-	db.Where("id = ?", 1).First(&userForUse) // 根据整型主键查找
-	fmt.Println()
+	if err := db.Where("id = ?", 1).First(&userForUse).Error; err != nil {
+		panic("failed to read user")
+	}
 	fmt.Println(userForUse)
-	// db.First(&userForUse, "code = ?", "D42") // 查找 code 字段值为 D42 的记录
 
-	// Update - 将 userForUse 的 price 更新为 200
-	// db.Model(&userForUse).Update("Price", 200)
-	// Update - 更新多个字段
-	// db.Model(&userForUse).Updates(Product{Price: 200, Code: "F42"}) // 仅更新非零值字段
-	// db.Model(&userForUse).Updates(map[string]interface{}{"Price": 200, "Code": "F42"})
+	// Delete a user record
+	if err := db.Delete(&entity.User{}, "ID = ?", 1).Error; err != nil {
+		panic("failed to delete user")
+	}
+}
 
-	// Delete - 删除 userForUse
-	db.Delete(&entity.User{}, "123456789")
+// getDBConnectionString returns the database connection string.
+func getDBConnectionString() string {
+	return "root:191019sJs_MySQL@tcp(8.137.96.68:3306)/pengyou?charset=utf8&parseTime=true"
 }

@@ -25,7 +25,7 @@ var upGrade = websocket.Upgrader{}
 func EstablishWsConn(c *gin.Context) {
 	upGrade.CheckOrigin(c.Request)
 
-	log.Logger.Info("upGrade",
+	log.Info("upGrade",
 		zap.String("subprotocols", strings.Join(upGrade.Subprotocols, ",")),
 	)
 
@@ -33,7 +33,7 @@ func EstablishWsConn(c *gin.Context) {
 	// c.GetHeader(constant.USER_ID)
 
 	if check.IsBlank(&userIdStr) {
-		log.Logger.Error("userId is blank")
+		log.Error("userId is blank")
 		response.FailWithMessage(constant.REQUEST_ARGUMENT_ERROR, c)
 		return
 	}
@@ -41,7 +41,7 @@ func EstablishWsConn(c *gin.Context) {
 	userId, err := strconv.ParseUint(userIdStr, 10, 64)
 
 	if err != nil {
-		log.Logger.Error("userId is not a number", zap.Error(err))
+		log.Error("userId is not a number", zap.Error(err))
 		response.FailWithMessage(constant.REQUEST_ARGUMENT_ERROR, c)
 		return
 	}
@@ -49,7 +49,7 @@ func EstablishWsConn(c *gin.Context) {
 	ws, err := upGrade.Upgrade(c.Writer, c.Request, nil)
 
 	if err != nil {
-		log.Logger.Error("upgrade websocket failed", zap.Error(err))
+		log.Error("upgrade websocket failed", zap.Error(err))
 		response.FailWithMessage(constant.ESTABLISH_WEBSOCKET_CONNECT_FAIL, c)
 		return
 	}
@@ -72,5 +72,5 @@ func EstablishWsConn(c *gin.Context) {
 
 	MsgHandler(storage.GetUserNode(userIdStr))
 
-	log.Logger.Info("user connect success: " + userIdStr)
+	log.Info("user connect success: " + userIdStr)
 }

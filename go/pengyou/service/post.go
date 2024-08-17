@@ -29,9 +29,9 @@ func PostUpload(c *gin.Context) {
 		return
 	}
 
-	log.Logger.Info("post: " + post)
-	log.Logger.Info("title: " + title)
-	log.Logger.Info("user: " + user)
+	log.Info("post: " + post)
+	log.Info("title: " + title)
+	log.Info("user: " + user)
 
 	response.OkWithMessage("upload success", c)
 }

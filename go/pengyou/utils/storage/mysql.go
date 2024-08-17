@@ -55,7 +55,7 @@ func InitMySQL(cfg *config.Config) *gorm.DB {
 	}
 	sqlDB.Ping()
 
-	plog.Logger.Info("mysql connect success -> " +
+	plog.Info("mysql connect success -> " +
 		mysqlConfig.Host + ":" +
 		strconv.Itoa(mysqlConfig.Port))
 

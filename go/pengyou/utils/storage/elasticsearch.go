@@ -12,8 +12,8 @@ func InitElasticSearch(cfg *config.Config) {
 	var err error
 	EsClient, err = elasticsearch.NewClient(elasticsearch.Config{
 
-		Username: cfg.Elasticsearch[0].Username,
-		Password: cfg.Elasticsearch[0].Password,
+		Username: cfg.Elasticsearch.Username,
+		Password: cfg.Elasticsearch.Password,
 	})
 	if err != nil {
 		panic(err)

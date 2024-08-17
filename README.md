@@ -235,11 +235,11 @@
 
 9. 帖子标签表 (post_label)
 
-| 字段名         | 类型                          | 描述      |
-|-------------|-----------------------------|---------|
-| id          | UNSIGNED INT AUTO_INCREMENT | 标签唯一标识符 |
-| label       | VARCHAR(100)                | 标签      |
-| description | VARCHAR(255)                | 标签描述    |
+| 字段名         | 类型                           | 描述      |
+|-------------|------------------------------|---------|
+| id          | UNSIGNED INT AUTOa_INCREMENT | 标签唯一标识符 |
+| label       | VARCHAR(100)                 | 标签      |
+| description | VARCHAR(255)                 | 标签描述    |
 
 10. 帖子修改历史表 (post_history)
 

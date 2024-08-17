@@ -24,12 +24,12 @@ func ReadWsFile(ws *websocket.Conn) ([]byte, bool) {
 	messageType, buf, err := ws.ReadMessage()
 
 	if err != nil {
-		log.Logger.Error("read file error" + err.Error())
+		log.Error("read file error" + err.Error())
 		return nil, false
 	}
 
 	if messageType != websocket.BinaryMessage {
-		log.Logger.Error("read file error: message type is not binary")
+		log.Error("read file error: message type is not binary")
 		return nil, false
 	}
 
@@ -40,7 +40,7 @@ func ReadWsFile(ws *websocket.Conn) ([]byte, bool) {
 func WriteWsFile(ws *websocket.Conn, buf []byte) bool {
 	err := ws.WriteMessage(websocket.BinaryMessage, buf)
 	if err != nil {
-		log.Logger.Error("write file error" + err.Error())
+		log.Error("write file error" + err.Error())
 		return false
 	}
 	return true
@@ -52,12 +52,12 @@ func SaveToFile(w *bufio.Writer, buf []byte) bool {
 	nn, err := w.Write(buf)
 
 	if err != nil {
-		log.Logger.Error("write file error" + err.Error())
+		log.Error("write file error" + err.Error())
 		return false
 	}
 
 	if nn != len(buf) {
-		log.Logger.Error("write file error, write bytes not equal to the length of the buffer")
+		log.Error("write file error, write bytes not equal to the length of the buffer")
 		return false
 	}
 
@@ -69,7 +69,7 @@ func ReadFile(fileName string) (*os.File, bool) {
 	file, err := os.OpenFile(config.Cfg.Files.FilePath+fileName, os.O_RDONLY, 0666)
 
 	if err != nil {
-		log.Logger.Error("open file error" + err.Error())
+		log.Error("open file error" + err.Error())
 		return nil, false
 	}
 
@@ -82,19 +82,19 @@ func CreateFile(fileName string) (*os.File, bool) {
 	file, err := os.Create(config.Cfg.Files.FilePath + fileName)
 
 	if err != nil {
-		log.Logger.Error("create file error" + err.Error())
+		log.Error("create file error" + err.Error())
 		return nil, false
 	}
 
 	if err := file.Close(); err != nil {
-		log.Logger.Error("close file error" + err.Error())
+		log.Error("close file error" + err.Error())
 		return nil, false
 	}
 
 	file, err = os.OpenFile(config.Cfg.Files.FilePath+fileName, os.O_RDWR|os.O_APPEND, 0666)
 
 	if err != nil {
-		log.Logger.Error("open file error" + err.Error())
+		log.Error("open file error" + err.Error())
 		return nil, false
 	}
 
@@ -106,7 +106,7 @@ func PersistFile() {
 	res, err := GetRedisMemoryUsed()
 
 	if err != nil {
-		log.Logger.Error("get memory used error" + err.Error())
+		log.Error("get memory used error" + err.Error())
 		return
 	}
 
@@ -131,12 +131,12 @@ func PersistAllRecord() {
 			)
 
 			if err != nil {
-				log.Logger.Error("read message error" + err.Error())
+				log.Error("read message error" + err.Error())
 				continue
 			}
 
 			for _, message := range res {
-				log.Logger.Info("read message and saving + " + message)
+				log.Info("read message and saving + " + message)
 
 			}
 		}
@@ -156,29 +156,29 @@ func PersistHandledRecord() {
 			fmt.Sprint(0), fmt.Sprint(lastTime))
 
 		if err != nil {
-			log.Logger.Error("read message error" + err.Error())
+			log.Error("read message error" + err.Error())
 			continue
 		}
 
 		// read the messages these are not saved
 		for _, message := range result {
-			log.Logger.Info("read message and saving + " + message)
+			log.Info("read message and saving + " + message)
 
 			splits := strings.Split(message, ",")
 
 			if len(splits) != 3 {
-				log.Logger.Error("read message error (not full argument) " + message)
+				log.Error("read message error (not full argument) " + message)
 				continue
 			}
 
 			userId, err := strconv.ParseUint(splits[0], 10, 64)
 			if err != nil {
-				log.Logger.Error("read message error (no sender) " + message)
+				log.Error("read message error (no sender) " + message)
 				continue
 			}
 			sendTime, err := time.Parse(splits[1], constant.TIME_FORMAT_STRING)
 			if err != nil {
-				log.Logger.Error("read message error (no sending time) " + message)
+				log.Error("read message error (no sending time) " + message)
 				continue
 			}
 			content := splits[2]
@@ -221,7 +221,7 @@ func InitFile(cfg *config.Config) {
 		}
 	}
 
-	log.Logger.Info("file storage directory init success")
+	log.Info("file storage directory init success")
 
 	defer file.Close()
 }

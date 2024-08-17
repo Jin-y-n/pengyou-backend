@@ -5,19 +5,20 @@ import (
 	"time"
 )
 
+// Zap holds configuration settings for the zap logger.
 type Zap struct {
-	Level         string `mapstructure:"level" json:"level" yaml:"level"`                            // 级别
-	Prefix        string `mapstructure:"prefix" json:"prefix" yaml:"prefix"`                         // 日志前缀
-	Format        string `mapstructure:"format" json:"format" yaml:"format"`                         // 输出
-	Director      string `mapstructure:"director" json:"director"  yaml:"director"`                  // 日志文件夹
-	EncodeLevel   string `mapstructure:"encode-level" json:"encode-level" yaml:"encode-level"`       // 编码级
-	StacktraceKey string `mapstructure:"stacktrace-key" json:"stacktrace-key" yaml:"stacktrace-key"` // 栈名
-	ShowLine      bool   `mapstructure:"show-line" json:"show-line" yaml:"show-line"`                // 显示行
-	LogInConsole  bool   `mapstructure:"log-in-console" json:"log-in-console" yaml:"log-in-console"` // 输出控制台
-	RetentionDay  int    `mapstructure:"retention-day" json:"retention-day" yaml:"retention-day"`    // 日志保留天数
+	Level         string `mapstructure:"level" json:"level" yaml:"level"`                            // Level
+	Prefix        string `mapstructure:"prefix" json:"prefix" yaml:"prefix"`                         // Prefix
+	Format        string `mapstructure:"format" json:"format" yaml:"format"`                         // Output format
+	Director      string `mapstructure:"director" json:"director" yaml:"director"`                   // Directory
+	EncodeLevel   string `mapstructure:"encode-level" json:"encode-level" yaml:"encode-level"`       // Level encoding
+	StacktraceKey string `mapstructure:"stacktrace-key" json:"stacktrace-key" yaml:"stacktrace-key"` // Stacktrace key
+	ShowLine      bool   `mapstructure:"show-line" json:"show-line" yaml:"show-line"`                // Show line number
+	LogInConsole  bool   `mapstructure:"log-in-console" json:"log-in-console" yaml:"log-in-console"` // Log to console
+	RetentionDay  int    `mapstructure:"retention-day" json:"retention-day" yaml:"retention-day"`    // Log retention days
 }
 
-// Levels 根据字符串转化为 zapcore.Levels
+// Levels converts the string level to a slice of zapcore.Level.
 func (c *Zap) Levels() []zapcore.Level {
 	levels := make([]zapcore.Level, 0, 7)
 	level, err := zapcore.ParseLevel(c.Level)
@@ -30,6 +31,7 @@ func (c *Zap) Levels() []zapcore.Level {
 	return levels
 }
 
+// Encoder creates a zapcore.Encoder based on the configuration.
 func (c *Zap) Encoder() zapcore.Encoder {
 	config := zapcore.EncoderConfig{
 		TimeKey:       "time",
@@ -50,19 +52,18 @@ func (c *Zap) Encoder() zapcore.Encoder {
 		return zapcore.NewJSONEncoder(config)
 	}
 	return zapcore.NewConsoleEncoder(config)
-
 }
 
-// LevelEncoder 根据 EncodeLevel 返回 zapcore.LevelEncoder
+// LevelEncoder returns a zapcore.LevelEncoder based on the EncodeLevel setting.
 func (c *Zap) LevelEncoder() zapcore.LevelEncoder {
-	switch {
-	case c.EncodeLevel == "LowercaseLevelEncoder": // 小写编码器(默认)
+	switch c.EncodeLevel {
+	case "LowercaseLevelEncoder": // Lowercase encoder (default)
 		return zapcore.LowercaseLevelEncoder
-	case c.EncodeLevel == "LowercaseColorLevelEncoder": // 小写编码器带颜色
+	case "LowercaseColorLevelEncoder": // Lowercase encoder with color
 		return zapcore.LowercaseColorLevelEncoder
-	case c.EncodeLevel == "CapitalLevelEncoder": // 大写编码器
+	case "CapitalLevelEncoder": // Uppercase encoder
 		return zapcore.CapitalLevelEncoder
-	case c.EncodeLevel == "CapitalColorLevelEncoder": // 大写编码器带颜色
+	case "CapitalColorLevelEncoder": // Uppercase encoder with color
 		return zapcore.CapitalColorLevelEncoder
 	default:
 		return zapcore.LowercaseLevelEncoder

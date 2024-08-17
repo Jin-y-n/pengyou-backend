@@ -36,7 +36,6 @@ redis:
     - "172.21.0.4:7001"
     - "172.21.0.2:7002"
 
-
 mysql:
   host: localhost
   port: 3306

@@ -25,7 +25,7 @@ func ServiceRouter() *gin.Engine {
 	// websocker connect
 	conn := r.Group("/conn")
 	{
-		conn.GET("/establish/ws", service.EstablishWsConn)
+		conn.GET("/establish/websocket", service.EstablishWsConn)
 	}
 
 	//

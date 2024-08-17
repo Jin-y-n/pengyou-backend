@@ -25,7 +25,7 @@ func MsgHandler(userNode *model.UserNode) {
 	ws := userNode.Conn
 	if config.Cfg == nil || config.Cfg.App.PublishKey == "" {
 		ws.WriteMessage(websocket.TextMessage, []byte(constant.SERVER_ERROR))
-		log.Logger.Error("PublishKey is not configured")
+		log.Error("PublishKey is not configured")
 		return
 	}
 
@@ -33,6 +33,7 @@ func MsgHandler(userNode *model.UserNode) {
 	go MsgSubscribe(ws, userNode)
 }
 
+// publish the message to redis
 func MsgPublish(ws *websocket.Conn, userNode *model.UserNode) {
 
 	// handler message
@@ -44,20 +45,20 @@ func MsgPublish(ws *websocket.Conn, userNode *model.UserNode) {
 			err := ws.ReadJSON(message)
 
 			if err != nil {
-				log.Logger.Warn("read ws message error:" + err.Error())
+				log.Warn("read ws message error:" + err.Error())
 				if strings.Contains(err.Error(), "websocket: close") {
 					userNode.Established = false
 					return
 				}
 			}
-
+			// TODO: uncommit this part to confirm the message time --------------------------------------------
 			// check the send time of the message is valid or not
 			// if math.Abs(float64(message.CreateAt.UnixMilli()-time.Now().UnixMilli())) > 1000 {
-			// 	log.Logger.Warn("message time error")
+			// 	log.Warn("message time error")
 			// 	ws.WriteMessage(websocket.TextMessage, []byte("message time error, please check your network and try again"))
 			// 	return
 			// }
-			log.Logger.Info("read ws message:" + string(message.Content))
+			log.Info("read ws message:" + string(message.Content))
 
 			switch message.RequestType {
 			case constant.MESSAGE_TYPE_TEXT:
@@ -82,17 +83,17 @@ func MsgPublish(ws *websocket.Conn, userNode *model.UserNode) {
 
 	defer func() {
 		ws.Close()
-		log.Logger.Info("close websocket")
+		log.Info("close websocket")
 	}()
 }
 
 func MsgSubscribe(ws *websocket.Conn, userNode *model.UserNode) {
 	for userNode.Established {
 		func() {
-			// log.Logger.Info("subscribing message [" +
-			// 	// userNode.User.Username +
-			// 	fmt.Sprint(userNode.User.ID) +
-			// 	"]....")
+			log.Info("subscribing message [" +
+				// userNode.User.Username +
+				fmt.Sprint(userNode.User.ID) +
+				"]....")
 
 			// get unhandled messages
 			now := time.Now().UnixMilli()
@@ -103,7 +104,7 @@ func MsgSubscribe(ws *websocket.Conn, userNode *model.UserNode) {
 				fmt.Sprint(float64(now)))
 
 			if err != nil {
-				log.Logger.Warn("subscribing message error:" + err.Error())
+				log.Warn("subscribing message error:" + err.Error())
 
 				if strings.Contains(err.Error(), "websocket: close") {
 					userNode.Established = false
@@ -112,7 +113,7 @@ func MsgSubscribe(ws *websocket.Conn, userNode *model.UserNode) {
 			} else {
 				// send unhandled messages
 				for _, message := range result {
-					log.Logger.Info("sending message:" + message)
+					log.Info("sending message:" + message)
 					ws.WriteMessage(websocket.TextMessage, []byte(message))
 
 					userNode.LastHandlerTime = now
@@ -124,7 +125,7 @@ func MsgSubscribe(ws *websocket.Conn, userNode *model.UserNode) {
 
 	defer func() {
 		ws.Close()
-		log.Logger.Info("close websocket")
+		log.Info("close websocket")
 	}()
 }
 
@@ -144,15 +145,15 @@ func publishText(message *request.MessageIn) {
 			Score:  float64(time.Now().UnixMilli()),
 			Member: messageRedis})
 
-	log.Logger.Info("publish message:" + string(message.Content))
+	log.Info("publish message:" + string(message.Content))
 }
 
 func uploadFile(ws *websocket.Conn, fileName string) bool {
-	log.Logger.Info("uploading file (" + fileName + ") ...")
+	log.Info("uploading file (" + fileName + ") ...")
 
 	file, success := storage.CreateFile(fileName)
 	if !success {
-		log.Logger.Warn("create file error: " + fileName)
+		log.Warn("create file error: " + fileName)
 	}
 	w := bufio.NewWriter(file)
 
@@ -168,12 +169,12 @@ func uploadFile(ws *websocket.Conn, fileName string) bool {
 		}
 
 		if !success {
-			log.Logger.Warn("read file error: " + fileName)
+			log.Warn("read file error: " + fileName)
 			return false
 		}
 
 		if !storage.SaveToFile(w, buf) {
-			log.Logger.Warn("save file error: " + fileName)
+			log.Warn("save file error: " + fileName)
 			return false
 		}
 	}
@@ -191,11 +192,11 @@ func downloadFile(ws *websocket.Conn, fileName string) {
 		n, err := r.Read(buf)
 		for n != 0 {
 			if err != nil {
-				log.Logger.Warn("read file error: " + fileName)
+				log.Warn("read file error: " + fileName)
 			}
 
 			if !storage.WriteWsFile(ws, buf) {
-				log.Logger.Warn("write file error: " + fileName)
+				log.Warn("write file error: " + fileName)
 			}
 		}
 	} else {

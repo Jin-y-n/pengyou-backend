@@ -48,3 +48,28 @@ func NewZapLogger(cfg *config.Zap) (*zap.Logger, error) {
 
 	return Logger, nil
 }
+
+// Info is a convenience function that wraps the Info method of the zap.Logger.
+func Info(msg string, fields ...zap.Field) {
+	Logger.Info(msg, fields...)
+}
+
+// Warn is a convenience function that wraps the Warn method of the zap.Logger.
+func Warn(msg string, fields ...zap.Field) {
+	Logger.Warn(msg, fields...)
+}
+
+// Error is a convenience function that wraps the Error method of the zap.Logger.
+func Error(msg string, fields ...zap.Field) {
+	Logger.Error(msg, fields...)
+}
+
+// Fatal is a convenience function that wraps the Fatal method of the zap.Logger.
+func Fatal(msg string, fields ...zap.Field) {
+	Logger.Fatal(msg, fields...)
+}
+
+// Debug is a convenience function that wraps the Debug method of the zap.Logger.
+func Debug(msg string, fields ...zap.Field) {
+	Logger.Debug(msg, fields...)
+}

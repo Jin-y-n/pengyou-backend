@@ -49,15 +49,15 @@ func RedisPublish(context context.Context, channel string, message string) error
 	var err error
 	if RedisClient != nil {
 		err = RedisClient.Publish(context, channel, message).Err()
-		log.Logger.Debug("publish message to redis: " + message)
+		log.Debug("publish message to redis: " + message)
 		return err
 	} else if RedisClusterClient != nil {
 		err = RedisClusterClient.Publish(context, channel, message).Err()
-		log.Logger.Debug("publish message to redis cluster: " + message)
+		log.Debug("publish message to redis cluster: " + message)
 		return err
 	}
 
-	log.Logger.Error("redis not init")
+	log.Error("redis not init")
 
 	return err
 }
@@ -77,11 +77,11 @@ func RedisSubsrcibe(context context.Context, channel string, callback func(messa
 		// RedisClient.LPop(context, channel)
 
 		// if cmd.Err() != nil {
-		// 	log.Logger.Error("receive message from redis error: " + err.Error())
+		// 	log.Error("receive message from redis error: " + err.Error())
 		// }
 
 		if err != nil {
-			log.Logger.Error("receive message from redis error: " + err.Error())
+			log.Error("receive message from redis error: " + err.Error())
 			return err
 		}
 
@@ -115,7 +115,7 @@ func InitRedis(cfg *config.Redis) {
 		redisType = "standalone"
 	}
 
-	log.Logger.Info("redis init success with " +
+	log.Info("redis init success with " +
 		redisType +
 		" -> " +
 		cfg.Addr)
