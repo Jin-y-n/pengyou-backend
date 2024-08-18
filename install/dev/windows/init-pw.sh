@@ -30,9 +30,9 @@ daemonize no
 "@ | Set-Content -Path .\redis\db2\conf\redis.conf
 
 # Start container for Redis instances
-docker run -d --name redis1 -p 12345:6379 --restart always --privileged -v "$(Get-Location).Path\redis\db1\conf:/usr/local/etc/redis" -v "$(Get-Location).Path\redis\db1\data:/data" redis redis-server /usr/local/etc/redis/redis.conf
+docker run -d --name redis1 -p 6379:6379 --restart always --privileged -v "$(Get-Location).Path\redis\db1\conf:/usr/local/etc/redis" -v "$(Get-Location).Path\redis\db1\data:/data" redis redis-server /usr/local/etc/redis/redis.conf
 
-docker run -d --name redis2 -p 12346:6379 --restart always --privileged -v "$(Get-Location).Path\redis\db2\conf:/usr/local/etc/redis" -v "$(Get-Location).Path\redis\db2\data:/data" redis redis-server /usr/local/etc/redis/redis.conf
+docker run -d --name redis2 -p 6380:6379 --restart always --privileged -v "$(Get-Location).Path\redis\db2\conf:/usr/local/etc/redis" -v "$(Get-Location).Path\redis\db2\data:/data" redis redis-server /usr/local/etc/redis/redis.conf
 
 # Start container for MySQL instance
 docker run --name mysql1 -d --restart always -e MYSQL_ROOT_PASSWORD=12345678 -p 3306:3306 -v "$(Get-Location).Path\mysql\db1\data:/var/lib/mysql"  ../../../sql:/docker-entrypoint-initdb.d --privileged mysql
