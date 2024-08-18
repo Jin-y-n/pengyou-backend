@@ -44,7 +44,7 @@ appendonly yes
 cluster-enabled yes
 cluster-config-file nodes.conf
 cluster-node-timeout 5000
-cluster-announce-ip 8.137.87.209
+cluster-announce-ip [this should be your ip address]
 cluster-announce-port $port
 cluster-announce-bus-port 1$port
 EOF
@@ -90,7 +90,7 @@ done
 
 # create cluster
 cluster_nodes=$(IFS=" "; echo "${nodes_info[*]}")
-create_cluster_cmd="redis-cli --cluster create -a [there should be your password] 8.137.87.209:9101 8.137.87.209:9102 8.137.87.209:9103 8.137.87.209:9104 8.137.87.209:9105 8.137.87.209:9106 --cluster-replicas 1"
+create_cluster_cmd="redis-cli --cluster create -a [there should be your password] [this should be your ip address]:9101 [this should be your ip address]:9102 [this should be your ip address]:9103 [this should be your ip address]:9104 [this should be your ip address]:9105 [this should be your ip address]:9106 --cluster-replicas 1"
 
 echo "$create_cluster_cmd"
 
