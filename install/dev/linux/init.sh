@@ -14,7 +14,7 @@ mkdir mysql/db1/data -p
 
     cat > "redis/db1/conf/redis.conf" <<EOF
 port 6379
-requirepass [this should be your password]
+requirepass 12345678
 bind 0.0.0.0
 protected-mode no
 daemonize no
@@ -22,7 +22,7 @@ EOF
 
     cat > "redis/db2/conf/redis.conf" <<EOF
 port 6379
-requirepass [this should be your password]
+requirepass 12345678
 bind 0.0.0.0
 protected-mode no
 daemonize no
@@ -34,4 +34,4 @@ podman run -d --name redis1 -p 12345:6379 --restart always --privileged -v $(pwd
 podman run -d --name redis2 -p 12346:6379 --restart always --privileged -v $(pwd)/redis/db2/conf:/usr/local/etc/redis -v $(pwd)/redis/db2/data:/data redis redis-server /usr/local/etc/redis/redis.conf
 
 
-podman run --name mysql1 -d --restart always -e MYSQL_ROOT_PASSWORD=[this should be your password] -p 3306:3306 -v $(pwd)/mysql/db1/data:/var/lib/mysql -v ../../../sql:/docker-entrypoint-initdb.d --privileged mysql
+podman run --name mysql1 -d --restart always -e MYSQL_ROOT_PASSWORD=12345678 -p 3306:3306 -v $(pwd)/mysql/db1/data:/var/lib/mysql -v ../../../sql:/docker-entrypoint-initdb.d --privileged mysql
