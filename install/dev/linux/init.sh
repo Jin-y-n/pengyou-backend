@@ -34,5 +34,4 @@ podman run -d --name redis1 -p 12345:6379 --restart always --privileged -v $(pwd
 podman run -d --name redis2 -p 12346:6379 --restart always --privileged -v $(pwd)/redis/db2/conf:/usr/local/etc/redis -v $(pwd)/redis/db2/data:/data redis redis-server /usr/local/etc/redis/redis.conf
 
 
-podman run --name mysql1 -d --restart always -e MYSQL_ROOT_PASSWORD=[this should be your password] -p 3306:3306 -v $(pwd)/mysql/db1/data:/var/lib/mysql --privileged mysql
-
+podman run --name mysql1 -d --restart always -e MYSQL_ROOT_PASSWORD=[this should be your password] -p 3306:3306 -v $(pwd)/mysql/db1/data:/var/lib/mysql -v ../../../sql:/docker-entrypoint-initdb.d --privileged mysql
