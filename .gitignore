@@ -7,13 +7,17 @@
 **/application-live.yml
 **/config.yml
 **/config.yaml
+**/pengyou/
 
 ### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
-.idea/sonarlint/
+**/.idea/modules.xml
+**/.idea/jarRepositories.xml
+**/.idea/dataSources.xml
+**/.idea/dataSources.local.xml
+**/.idea/dataSources
+**/.idea/compiler.xml
+**/.idea/libraries/
+**/.idea/sonarlint/
 *.iws
 *.iml
 *.ipr
