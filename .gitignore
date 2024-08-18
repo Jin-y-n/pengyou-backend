@@ -3,7 +3,6 @@
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-**/install*
 **/application-dev.yml
 **/application-live.yml
 **/config.yml
