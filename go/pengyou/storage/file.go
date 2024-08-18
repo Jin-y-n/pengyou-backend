@@ -12,6 +12,8 @@ import (
 	"pengyou/constant"
 	"pengyou/global/config"
 	"pengyou/model/entity"
+	db "pengyou/storage/database"
+	rds "pengyou/storage/redis"
 	"pengyou/utils/log"
 
 	"github.com/gorilla/websocket"
@@ -103,7 +105,7 @@ func CreateFile(fileName string) (*os.File, bool) {
 
 func PersistFile() {
 
-	res, err := GetRedisMemoryUsed()
+	res, err := rds.GetRedisMemoryUsed()
 
 	if err != nil {
 		log.Error("get memory used error" + err.Error())
@@ -124,9 +126,9 @@ func PersistAllRecord() {
 
 	for _, userNode := range userNodeMap {
 		if userNode.LastHandlerTime+1000 < now {
-			res, err := ZRangeByScore(
+			res, err := rds.ZRangeByScore(
 				context.Background(),
-				GenerateName(userNode.User.ID),
+				rds.GenerateName(userNode.User.ID),
 				fmt.Sprint(0), fmt.Sprint(now),
 			)
 
@@ -151,8 +153,8 @@ func PersistHandledRecord() {
 	for _, userNode := range userNodeMap {
 		lastTime := userNode.LastHandlerTime
 
-		result, err := ZRangeByScore(context.Background(),
-			GenerateName(userNode.User.ID),
+		result, err := rds.ZRangeByScore(context.Background(),
+			rds.GenerateName(userNode.User.ID),
 			fmt.Sprint(0), fmt.Sprint(lastTime))
 
 		if err != nil {
@@ -194,7 +196,7 @@ func PersistHandledRecord() {
 				IsRead: 1,
 			}
 
-			GormDB.Create(mesToStore)
+			db.GormDB.Create(mesToStore)
 
 			mesReceiveToStore := &entity.MessageReceive{
 				MessageSendId: mesToStore.ID,
@@ -202,7 +204,7 @@ func PersistHandledRecord() {
 
 				ReadAt: sendTime,
 			}
-			GormDB.Create(mesReceiveToStore)
+			db.GormDB.Create(mesReceiveToStore)
 		}
 	}
 }

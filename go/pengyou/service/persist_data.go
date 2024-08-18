@@ -1,7 +1,7 @@
 package service
 
 import (
-	"pengyou/utils/storage"
+	"pengyou/storage"
 )
 
 // this file implement the storage of message from redis to database

@@ -1,8 +1,6 @@
 package storage
 
-import (
-	"pengyou/model"
-)
+import "pengyou/model"
 
 // this file records the UserNode of all users's Connect
 

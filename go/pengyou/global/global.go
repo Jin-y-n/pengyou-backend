@@ -1,13 +1,14 @@
 package global
 
 import (
+	"context"
 	"fmt"
 
 	"pengyou/global/config"
-	"pengyou/router"
-	"pengyou/service"
+	// "pengyou/router"
+	// "pengyou/service"
+	"pengyou/storage"
 	"pengyou/utils/log"
-	"pengyou/utils/storage"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -17,6 +18,7 @@ var (
 	globalConfig *config.Config
 	Viper        *viper.Viper
 	GinEngine    *gin.Engine
+	Context      context.Context
 )
 
 func Init() {
@@ -30,9 +32,10 @@ func Init() {
 	// init Logger
 	log.NewZapLogger(&globalConfig.Zap)
 
-	service.Init(globalConfig)
+	// service.Init(globalConfig)
 	storage.Init(globalConfig)
-	GinEngine = router.Init(globalConfig)
+	// GinEngine = router.Init(globalConfig)
+	Context = context.Background()
 
 	config.Cfg = globalConfig
 }

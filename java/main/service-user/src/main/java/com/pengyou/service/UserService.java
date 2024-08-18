@@ -11,7 +11,10 @@ package com.pengyou.service;
 */
 
 import com.pengyou.model.dto.user.UserForAdd;
+import com.pengyou.model.dto.user.UserForVerify;
 
 public interface UserService {
     void register(UserForAdd user);
+
+    void verify(UserForVerify user);
 }

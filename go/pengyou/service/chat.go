@@ -9,8 +9,9 @@ import (
 	"pengyou/global/config"
 	"pengyou/model"
 	"pengyou/model/common/request"
+	"pengyou/storage"
+	rds "pengyou/storage/redis"
 	"pengyou/utils/log"
-	"pengyou/utils/storage"
 	"strings"
 	"time"
 
@@ -97,9 +98,9 @@ func MsgSubscribe(ws *websocket.Conn, userNode *model.UserNode) {
 
 			// get unhandled messages
 			now := time.Now().UnixMilli()
-			result, err := storage.ZRangeByScore(
+			result, err := rds.ZRangeByScore(
 				context.Background(),
-				storage.GenerateName(userNode.User.ID),
+				rds.GenerateName(userNode.User.ID),
 				fmt.Sprint(float64(userNode.LastHandlerTime)),
 				fmt.Sprint(float64(now)))
 
@@ -139,8 +140,8 @@ func publishText(message *request.MessageIn) {
 	}
 
 	// send message
-	storage.RedisClient.ZAdd(context.Background(),
-		storage.GenerateName(message.RecipientId),
+	rds.RedisClient.ZAdd(context.Background(),
+		rds.GenerateName(message.RecipientId),
 		redis.Z{
 			Score:  float64(time.Now().UnixMilli()),
 			Member: messageRedis})

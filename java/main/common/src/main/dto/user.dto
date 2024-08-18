@@ -7,3 +7,8 @@ input UserForAdd {
     captcha: String
 
 }
+
+input UserForVerify {
+    phone
+    email
+}

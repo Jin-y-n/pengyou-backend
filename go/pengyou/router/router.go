@@ -1,8 +1,8 @@
 package router
 
 import (
+	"pengyou/controller"
 	"pengyou/docs"
-	"pengyou/service"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"     // swagger embed files
@@ -16,27 +16,12 @@ func GinRouter() *gin.Engine {
 	docs.SwaggerInfo.BasePath = ""
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	// test
-	test := r.Group("/test")
+	// websocket connect
+	conn := r.Group("/websocket")
 	{
-		test.GET("/test", service.Test)
-	}
-
-	// websocker connect
-	conn := r.Group("/conn")
-	{
-		conn.GET("/establish/websocket", service.EstablishWsConn)
-	}
-
-	//
-	// chat := r.Group("/chat")
-	// {
-	// 	chat.POST("/start", service.HandleMessage)
-	// }
-
-	post := r.Group("/post")
-	{
-		post.POST("/upload", service.PostUpload)
+		conn.POST("/establish", controller.Establish)
+		conn.POST("/shutdown", controller.Shutdown)
+		conn.POST("/cut-chat", controller.CutChat)
 	}
 
 	return r
