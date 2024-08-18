@@ -48,20 +48,19 @@ allprojects {
         implementation("org.babyfish.jimmer:jimmer-spring-boot-starter:$jimmerVersion")
         implementation("org.babyfish.jimmer:jimmer-sql:$jimmerVersion")
         implementation("com.alibaba:druid:$druidVersion")
-        implementation("com.aliyun.oss:aliyun-sdk-oss:$aliOOSVersion")
+//        implementation("com.aliyun.oss:aliyun-sdk-oss:$aliOOSVersion")
         implementation("org.apache.commons:commons-pool2:$commonsPool2Version")
 
         runtimeOnly("com.mysql:mysql-connector-j")
 
 
         // Utils
-        implementation("io.github.openfeign:feign-core:$feignCoreVersion")
         implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jsrVersion")
         implementation("io.jsonwebtoken:jjwt:$jwtVersion")
         implementation("org.springframework.boot:spring-boot-starter-mail")
-        implementation("io.github.openfeign:feign-core:$feignCoreVersion")
-        implementation("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery:$nacosVersion")
-        implementation("org.springframework.cloud:spring-cloud-starter-loadbalancer:$springCloudLoadBalancerVersion")
+//        implementation("io.github.openfeign:feign-core:$feignCoreVersion")
+//        implementation("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery:$nacosVersion")
+//        implementation("org.springframework.cloud:spring-cloud-starter-loadbalancer:$springCloudLoadBalancerVersion")
         implementation("io.micrometer:micrometer-registry-prometheus:$prometheusVersion")
         implementation("org.redisson:redisson-spring-boot-starter:$redissonVersion")
 

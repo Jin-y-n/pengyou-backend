@@ -1,116 +1,155 @@
-# 分模块的社交App
+# Modular Social App
 
-朋有是一款旨在通过不同的社区吸引有不同爱好的人来一起交流、聊天、成为朋友的应用程序。我们的目标是帮助用户找到与自己性情匹配的伙伴。
+PengYou is an application designed to attract people with different interests to communicate, chat, and become friends through various communities. Our goal is to help users find compatible partners.
 
-[前往前端项目](https://github.com/Napbad/pengyou-frontend)
+- [Frontend Project](https://github.com/Napbad/pengyou-frontend)
 
-## 项目需求分析
+## Project Requirements Analysis
 
-### 核心功能需求
+### Core Functional Requirements
 
-#### 用户模块
-- **权限**
-  - **注册**  
-    - 支持使用邮箱或手机注册，邮箱验证通过IMAP/POP协议，短信验证集成阿里云服务。
-    - 邮箱与手机需进行双重验证确保安全性。
-  - **登录**  
-    - 支持多种登录方式：用户名、邮箱、手机号配以密码或验证码。
-    - 成功登录后，系统返回JWT令牌用于后续请求的身份验证。
-  - **登出**  
-    - 清除会话和本地存储的JWT令牌，确保用户隐私安全。
-  - **找回密码**  
-    - 通过手机或邮箱发送验证码，用户验证后可重置密码，同样需要二次验证。
+#### User Module
 
-- **资料**
-  - 用户可以编辑个人信息，包括但不限于：
-    - 人格类型
-    - 用户名
-    - 头像
-    - 个人简介
-    - 性别
-    - 生日
-    - 地区
-    - 职业
-    - 职位
-    - 教育背景
-    - 学校
-    - 专业
-    - 标签
+- **Permissions**
+  - **Registration**
+    - Support registration via email or mobile number, with email verification through IMAP/POP protocols and SMS verification integrated with Alibaba Cloud services.
+    - Both email and mobile numbers must undergo dual-factor verification to ensure security.
+  - **Login**
+    - Support multiple login methods: username, email, mobile number with password or verification code.
+    - Upon successful login, the system returns a JWT token for subsequent request authentication.
+  - **Logout**
+    - Clear session and locally stored JWT tokens to ensure user privacy.
+  - **Password Recovery**
+    - Send verification codes via mobile or email to allow users to reset their passwords, requiring dual-factor verification.
 
-- **聊天**
-  - 支持一对一聊天，消息类型包括文本、图片、视频、GIF、文件传输。
-  - 聊天记录保存，用户可随时查看历史对话。
-  - 用户可以添加、删除好友，以及通过关键词搜索添加好友。
+- **Profile**
+  - Users can edit personal information, including but not limited to:
+    - Personality type
+    - Username
+    - Avatar
+    - Bio
+    - Gender
+    - Birthday
+    - Location
+    - Occupation
+    - Job title
+    - Education background
+    - School
+    - Major
+    - Tags
 
-#### 社区模块
-- **发布**
-  - 用户可以发布视频、文本内容至社区。
-  - 内容发布前需进行审核（自动检测敏感词），确保符合社区准则。
+- **Chatting**
+  - Support one-to-one chats with message types including text, images, videos, GIFs, and file transfers.
+  - Chat history is saved, allowing users to view past conversations at any time.
+  - Users can add, delete friends, and search for friends by keyword.
 
-- **评论**
-  - 用户对帖子进行评论，支持多级回复。
-  - 内容发布前需进行审核（自动检测敏感词），确保合法合规。
-  - 评论管理，包括举报、删除不当评论。
+#### Community Module
 
-- **分区**
-  - 社区分为多个主题区域，便于用户根据兴趣浏览和参与讨论。
+- **Posting**
+  - Users can post videos and text content to the community.
+  - Content is reviewed before posting (automatically detects sensitive words) to ensure compliance with community guidelines.
 
-- **信息管理**
-  - 用户可编辑、删除自己的帖子和评论。
+- **Comments**
+  - Users can comment on posts with support for multi-level replies.
+  - Comments are reviewed before posting (automatically detects sensitive words) to ensure legality and compliance.
+  - Comment management, including reporting and removing inappropriate comments.
 
-#### 搜索
-- 实现用户、帖子、社区与评论的关键词、特征搜索功能。
-- 搜索结果按相关性排序，提供筛选和过滤选项。
+- **Categories**
+  - The community is divided into thematic areas, allowing users to browse and participate according to their interests.
 
-#### 后台管理
-- **用户管理**
-  - 查看、编辑、禁用用户账户。
-  - 监控用户行为，处理违规账号。
-- **内容审核**
-  - 审核用户发布的帖子和评论，确保内容合规。
-  - 接受并处理举报。
-  - 人工复审争议内容（自动检测敏感词没有检测到的）。
-- **系统监控**
-  - 监控系统性能，及时发现并解决问题。
+- **Content Management**
+  - Users can edit and delete their own posts and comments.
 
-### 可选功能需求
-- **好友分组**
-- **群组**
-  - 加入、退出群组，创建群组，管理群组信息（管理员），邀请成员。
-- **举报不良信息**
-- **系统配对，推荐**
-- **关注**
-- **即时消息提醒**
-- **评论通知**
-- **动态更新通知**
-- **微信、QQ登录等第三方登录**
-- **用户认证**
-- **附近**
-- **即时闲聊**
-- **即时休闲小游戏**
-- **接入AI**  
-  - 例如聊天机器人、智能推荐等功能。
+#### Search
 
----
+- Implement keyword and feature-based search functionality for users, posts, communities, and comments.
+- Search results are sorted by relevance, with filtering and sorting options provided.
 
-## 技术栈
-- **后端**: Go (或其他后端技术)
-- **前端**: Vue.js (或其他前端技术)
-- **数据库**: MySQL / MongoDB (或其他数据库技术)
-- **其他**: JWT, 阿里云服务, 自动敏感词检测等
+#### Backend Management
+
+- **User Management**
+  - View, edit, and disable user accounts.
+  - Monitor user behavior and handle violations.
+- **Content Review**
+  - Review user posts and comments to ensure compliance.
+  - Accept and process reports.
+  - Manually review controversial content (when automatic sensitive word detection fails).
+- **System Monitoring**
+  - Monitor system performance and promptly address issues.
+
+### Optional Functional Requirements
+
+- **Friend Groups**
+- **Groups**
+  - Join, leave groups, create and manage group information (admin), invite members.
+- **Report Inappropriate Content**
+- **System Matching and Recommendations**
+- **Follow**
+- **Instant Message Notifications**
+- **Comment Notifications**
+- **Dynamic Update Notifications**
+- **Third-party Login**
+  - WeChat, QQ, etc.
+- **User Verification**
+- **Nearby**
+- **Instant Casual Chat**
+- **Instant Casual Games**
+- **AI Integration**
+  - Chatbots, intelligent recommendations, etc.
 
 ---
 
-## 开发环境配置
+## Technology Stack
 
-
-
-## 联系我们
-- 如果有任何疑问或建议，请通过以下方式联系我们:
-  - Email: napbad.sen@gmail.com
-  - GitHub Issues: [点击这里](https://github.com/Napbad/pengyou-backend/issues/new)
+- **Backend**: Go (or another backend technology)
+- **Frontend**: Vue.js (or another frontend technology)
+- **Database**: MySQL / MongoDB (or another database technology)
+- **Other**: JWT, Alibaba Cloud Services, automatic sensitive word detection, etc.
 
 ---
 
-## 版权声明
-- 本项目遵循 MIT 许可证。更多信息请参阅 [LICENSE](LICENSE) 文件。
+## Development Environment Setup
+
+
+
+```bash
+cd ./install/dev
+```
+
+* init
+    * if you are **Linux** user
+
+      run
+      ```bash
+      ./linux/init.sh
+      ```
+
+    * if you are **Windows** user
+
+      run
+      ```bash
+      ./windows/init-pw.sh
+      ```
+      in powershell
+
+* database
+
+after that, you need to run init.sql in your mysql container
+
+like this:
+```bash
+podman exec -it mysql1 mysql -u root -p 12345678 
+```
+    Then, enter the content of `init.sql`.
+
+## Contact Us
+
+- For any questions or suggestions, please contact us via:
+    - Email: napbad.sen@gmail.com
+    - GitHub Issues: [Click here](https://github.com/Napbad/pengyou-backend/issues/new)
+
+---
+
+## Copyright Statement
+
+- This project is licensed under the Apache License. More information can be found in the [LICENSE](LICENSE) file.

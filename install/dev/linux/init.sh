@@ -1,6 +1,8 @@
 mkdir pengyou
 
 chmod 777 -R ./pengyou
+
+# shellcheck disable=SC2164
 cd pengyou
 
 mkdir redis/db1/conf -p
@@ -29,9 +31,14 @@ daemonize no
 EOF
 
 
+# shellcheck disable=SC2046
 podman run -d --name redis1 -p 12345:6379 --restart always --privileged -v $(pwd)/redis/db1/conf:/usr/local/etc/redis -v $(pwd)/redis/db1/data:/data redis redis-server /usr/local/etc/redis/redis.conf
 
+# shellcheck disable=SC2046
 podman run -d --name redis2 -p 12346:6379 --restart always --privileged -v $(pwd)/redis/db2/conf:/usr/local/etc/redis -v $(pwd)/redis/db2/data:/data redis redis-server /usr/local/etc/redis/redis.conf
 
+# shellcheck disable=SC2046
+podman run --name mysql1 -d --restart always -e MYSQL_ROOT_PASSWORD=12345678 -p 3306:3306 -v $(pwd)/mysql/db1/data:/var/lib/mysql --privileged mysql
 
-podman run --name mysql1 -d --restart always -e MYSQL_ROOT_PASSWORD=12345678 -p 3306:3306 -v $(pwd)/mysql/db1/data:/var/lib/mysql -v ../../../sql:/docker-entrypoint-initdb.d --privileged mysql
+# shellcheck disable=SC2002
+podman exec -it mysql1 mysql -uroot -p12345678 < ../../../sql/init.sql
