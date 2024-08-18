@@ -108,6 +108,29 @@ PengYou is an application designed to attract people with different interests to
 
 ---
 
+## Contribution Guidelines
+
+If you wish to contribute code to this project, please follow these steps:
+
+1. **Fork the repository**
+2. **Create a new branch**
+   ```bash
+   git checkout -b feature-name
+   ```
+3. **Commit your change**
+
+    ```bash
+    git commit -m 'Add some feature'
+    ```
+
+4. **Push changes to your branch**
+
+  ```bash
+  git push origin feature-name
+  ```
+
+5. **Submit a Pull Request on GitHub**
+
 ## Development Environment Setup
 
 
