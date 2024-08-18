@@ -1,0 +1,9 @@
+#!/usr/bin/expect
+#!/usr/bash
+
+spawn ./install-main.sh
+expect {
+"Can I set the above configuration? (type 'yes' to accept)" { send "yes\r"; exp_continue }
+}
+interact
+
