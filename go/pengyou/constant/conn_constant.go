@@ -12,4 +12,6 @@ var (
 
 	ESTABLISH_WEBSOCKET_CONNECT_FAIL    = "websocket连接失败"
 	ESTABLISH_WEBSOCKET_CONNECT_SUCCESS = "websocket连接成功"
+
+	CONNECTED_USER_NOT_FOUND = "该用户未连接"
 )

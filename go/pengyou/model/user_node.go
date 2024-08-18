@@ -1,7 +1,11 @@
 package model
 
 import (
+	"context"
+	"pengyou/constant"
+
 	"pengyou/model/entity"
+	rds "pengyou/storage/redis"
 	"sync"
 
 	"github.com/gorilla/websocket"
@@ -36,4 +40,17 @@ func AddUserNode(userId string, userNode *UserNode) {
 
 func RemoveUserNode(userId string) {
 	delete(userNodeMap, userId)
+}
+
+func GetUserChatList(userId string) {
+	// storage.RedisClient.Get()
+}
+
+func AddUserChatList(userId, chatterId string) {
+	res := rds.Get(context.Background(), constant.REDIS_USER_CHAT_LIST_PREFIX+userId)
+
+	if res == nil {
+
+	}
+
 }

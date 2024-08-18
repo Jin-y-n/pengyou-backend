@@ -10,4 +10,8 @@ var (
 	RESPONSE_CODE_ERROR   = 2
 
 	REQUEST_ARGUMENT_ERROR = "请求参数错误"
+
+	CHATTER_NOT_FOUND  = "聊天用户不存在"
+	CHATTER_NOT_ONLINE = "聊天用户不在线"
+	CHAT_CUT_SUCCESS   = "聊天已结束"
 )

@@ -1,18 +1,18 @@
 package service
 
 import (
+	"context"
+	"encoding/json"
+	"fmt"
 	"pengyou/constant"
 	"pengyou/model"
 	"pengyou/model/common/response"
 	"pengyou/model/entity"
-	"pengyou/utils/check"
+	"pengyou/storage"
+	rds "pengyou/storage/redis"
 	"pengyou/utils/log"
-	"pengyou/utils/storage"
-	"strings"
 	"sync"
 	"time"
-
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -22,29 +22,7 @@ import (
 var upGrade = websocket.Upgrader{}
 
 // establish websocket connection by userId
-func EstablishWsConn(c *gin.Context) {
-	upGrade.CheckOrigin(c.Request)
-
-	log.Info("upGrade",
-		zap.String("subprotocols", strings.Join(upGrade.Subprotocols, ",")),
-	)
-
-	userIdStr := "1"
-	// c.GetHeader(constant.USER_ID)
-
-	if check.IsBlank(&userIdStr) {
-		log.Error("userId is blank")
-		response.FailWithMessage(constant.REQUEST_ARGUMENT_ERROR, c)
-		return
-	}
-
-	userId, err := strconv.ParseUint(userIdStr, 10, 64)
-
-	if err != nil {
-		log.Error("userId is not a number", zap.Error(err))
-		response.FailWithMessage(constant.REQUEST_ARGUMENT_ERROR, c)
-		return
-	}
+func EstablishWsConn(c *gin.Context, userId uint) {
 
 	ws, err := upGrade.Upgrade(c.Writer, c.Request, nil)
 
@@ -56,10 +34,10 @@ func EstablishWsConn(c *gin.Context) {
 
 	user := entity.User{}
 
-	user.ID = uint(userId)
+	user.ID = userId
 
 	// add user node record
-	storage.AddUserNode(userIdStr,
+	storage.AddUserNode(fmt.Sprint(userId),
 		&model.UserNode{
 			Conn:            ws,
 			User:            &user,
@@ -70,7 +48,73 @@ func EstablishWsConn(c *gin.Context) {
 		},
 	)
 
-	MsgHandler(storage.GetUserNode(userIdStr))
+	MsgHandler(storage.GetUserNode(string(userId)))
 
-	log.Info("user connect success: " + userIdStr)
+	log.Info("user connect success: " + string(userId))
+}
+
+func ShutdownWsConn(c *gin.Context, userId uint) {
+	user := storage.GetUserNode(string(userId))
+
+	if user == nil {
+		log.Error("user not found: " + string(userId))
+		response.FailWithMessage(constant.CONNECTED_USER_NOT_FOUND, c)
+	}
+
+	if user.Conn == nil {
+		log.Error("user not connect: " + string(userId))
+	}
+
+	user.Conn.Close()
+	log.Info("user disconnect success: " + string(userId))
+}
+
+func CutChat(c *gin.Context, userId, objectId uint) {
+
+	usr := rds.Get(context.Background(), constant.REDIS_USER_CHAT_LIST_PREFIX+string(userId))
+	if usr.Val() == "" {
+		log.Error("user not found: " + string(userId))
+		response.FailWithMessage(constant.CONNECTED_USER_NOT_FOUND, c)
+		return
+	}
+	list := &model.UserChatList{}
+
+	usrBytes, err := usr.Bytes()
+	if err != nil {
+		log.Error("get bytes error:", zap.Error(err), zap.String("src:", usr.Val()))
+		response.FailWithMessage(constant.CHATTER_NOT_FOUND, c)
+		return
+	}
+
+	err = json.Unmarshal(usrBytes, list)
+	if err != nil {
+		log.Error("data unmarshal failed", zap.Error(err))
+		response.FailWithMessage(constant.SERVER_ERROR, c)
+		return
+	}
+
+	for i, v := range list.Chatters {
+		if v == string(userId) {
+			list.Chatters = append(list.Chatters[:i], list.Chatters[i+1:]...)
+		}
+	}
+
+	chatListBytes, err := json.Marshal(list)
+	if err != nil {
+		log.Error("data marshal failed", zap.Error(err))
+		response.FailWithMessage(constant.SERVER_ERROR, c)
+		return
+	}
+
+	rds.Set(context.Background(), constant.REDIS_USER_CHAT_LIST_PREFIX+string(userId), string(chatListBytes))
+
+	userNode := storage.GetUserNode(string(objectId))
+	if userNode == nil {
+		log.Error("user node not found", zap.String("userId", string(objectId)))
+		response.FailWithMessage(constant.CHATTER_NOT_FOUND, c)
+		return
+	}
+
+	userNode.Conn.WriteMessage(websocket.TextMessage, []byte("your connection to "+string(userId)+" has been cut"))
+	response.OkWithMessage(constant.CHAT_CUT_SUCCESS, c)
 }
