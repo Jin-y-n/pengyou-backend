@@ -1,11 +1,7 @@
 package model
 
 import (
-	"context"
-	"pengyou/constant"
-
 	"pengyou/model/entity"
-	rds "pengyou/storage/redis"
 	"sync"
 
 	"github.com/gorilla/websocket"
@@ -23,6 +19,9 @@ type UserNode struct {
 	// lock
 	Lock   *sync.RWMutex
 	WsLock *sync.Mutex
+
+	// last heart beat time
+	Chatters []string
 
 	// last hadler time
 	LastHandlerTime int64
@@ -42,15 +41,10 @@ func RemoveUserNode(userId string) {
 	delete(userNodeMap, userId)
 }
 
-func GetUserChatList(userId string) {
-	// storage.RedisClient.Get()
+func (un *UserNode) GetUserChatList() []string {
+	return un.Chatters
 }
 
-func AddUserChatList(userId, chatterId string) {
-	res := rds.Get(context.Background(), constant.REDIS_USER_CHAT_LIST_PREFIX+userId)
-
-	if res == nil {
-
-	}
-
+func (un *UserNode) AddUserChatList(chatterId string) {
+	un.Chatters = append(un.Chatters, chatterId)
 }

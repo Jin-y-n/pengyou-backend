@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"pengyou/constant"
 	"pengyou/model"
@@ -24,6 +23,7 @@ var upGrade = websocket.Upgrader{}
 // establish websocket connection by userId
 func EstablishWsConn(c *gin.Context, userId uint) {
 
+	// upgrade http connection to websocket connection
 	ws, err := upGrade.Upgrade(c.Writer, c.Request, nil)
 
 	if err != nil {
@@ -32,8 +32,8 @@ func EstablishWsConn(c *gin.Context, userId uint) {
 		return
 	}
 
+	// storage info to user node
 	user := entity.User{}
-
 	user.ID = userId
 
 	// add user node record
@@ -48,12 +48,15 @@ func EstablishWsConn(c *gin.Context, userId uint) {
 		},
 	)
 
+	// begin handlering message
 	MsgHandler(storage.GetUserNode(string(userId)))
 
 	log.Info("user connect success: " + string(userId))
 }
 
+// cut the connection
 func ShutdownWsConn(c *gin.Context, userId uint) {
+	// close connection
 	user := storage.GetUserNode(string(userId))
 
 	if user == nil {
@@ -66,55 +69,71 @@ func ShutdownWsConn(c *gin.Context, userId uint) {
 	}
 
 	user.Conn.Close()
+
+	// and send the message to all chatters with this user
+
 	log.Info("user disconnect success: " + string(userId))
 }
 
+func HeartBeat(c *gin.Context, userId uint) {
+	rds.Set(context.Background(), constant.REDIS_USER_HEARTBEAT_PREFIX+string(userId), time.Now().String())
+}
+
+func EstablishChatTo(c *gin.Context, from, to uint) {
+	userNode := storage.GetUserNode(fmt.Sprint(from))
+	if userNode == nil || !userNode.Established {
+		log.Warn("user node not found", zap.String("userId", fmt.Sprint(from)))
+	}
+}
+
+// the function that handle the connect link between two users
+
 func CutChat(c *gin.Context, userId, objectId uint) {
 
-	usr := rds.Get(context.Background(), constant.REDIS_USER_CHAT_LIST_PREFIX+string(userId))
-	if usr.Val() == "" {
-		log.Error("user not found: " + string(userId))
-		response.FailWithMessage(constant.CONNECTED_USER_NOT_FOUND, c)
-		return
-	}
-	list := &model.UserChatList{}
+	// usr := rds.Get(context.Background(), constant.REDIS_USER_CHAT_LIST_PREFIX+string(userId))
+	// if usr.Val() == "" {
+	// 	log.Error("user not found: " + string(userId))
+	// 	response.FailWithMessage(constant.CONNECTED_USER_NOT_FOUND, c)
+	// 	return
+	// }
+	// list := &model.UserChatList{}
 
-	usrBytes, err := usr.Bytes()
-	if err != nil {
-		log.Error("get bytes error:", zap.Error(err), zap.String("src:", usr.Val()))
-		response.FailWithMessage(constant.CHATTER_NOT_FOUND, c)
-		return
-	}
+	// usrBytes, err := usr.Bytes()
+	// if err != nil {
+	// 	log.Error("get bytes error:", zap.Error(err), zap.String("src:", usr.Val()))
+	// 	response.FailWithMessage(constant.CHATTER_NOT_FOUND, c)
+	// 	return
+	// }
 
-	err = json.Unmarshal(usrBytes, list)
-	if err != nil {
-		log.Error("data unmarshal failed", zap.Error(err))
-		response.FailWithMessage(constant.SERVER_ERROR, c)
-		return
-	}
+	// err = json.Unmarshal(usrBytes, list)
+	// if err != nil {
+	// 	log.Error("data unmarshal failed", zap.Error(err))
+	// 	response.FailWithMessage(constant.SERVER_ERROR, c)
+	// 	return
+	// }
 
-	for i, v := range list.Chatters {
-		if v == string(userId) {
-			list.Chatters = append(list.Chatters[:i], list.Chatters[i+1:]...)
-		}
-	}
+	// for i, v := range list.Chatters {
+	// 	if v == string(userId) {
+	// 		list.Chatters = append(list.Chatters[:i], list.Chatters[i+1:]...)
+	// 	}
+	// }
 
-	chatListBytes, err := json.Marshal(list)
-	if err != nil {
-		log.Error("data marshal failed", zap.Error(err))
-		response.FailWithMessage(constant.SERVER_ERROR, c)
-		return
-	}
+	// chatListBytes, err := json.Marshal(list)
+	// if err != nil {
+	// 	log.Error("data marshal failed", zap.Error(err))
+	// 	response.FailWithMessage(constant.SERVER_ERROR, c)
+	// 	return
+	// }
 
-	rds.Set(context.Background(), constant.REDIS_USER_CHAT_LIST_PREFIX+string(userId), string(chatListBytes))
+	// rds.Set(context.Background(), constant.REDIS_USER_CHAT_LIST_PREFIX+string(userId), string(chatListBytes))
 
-	userNode := storage.GetUserNode(string(objectId))
-	if userNode == nil {
-		log.Error("user node not found", zap.String("userId", string(objectId)))
-		response.FailWithMessage(constant.CHATTER_NOT_FOUND, c)
-		return
-	}
+	// userNode := storage.GetUserNode(string(objectId))
+	// if userNode == nil {
+	// 	log.Error("user node not found", zap.String("userId", string(objectId)))
+	// 	response.FailWithMessage(constant.CHATTER_NOT_FOUND, c)
+	// 	return
+	// }
 
-	userNode.Conn.WriteMessage(websocket.TextMessage, []byte("your connection to "+string(userId)+" has been cut"))
-	response.OkWithMessage(constant.CHAT_CUT_SUCCESS, c)
+	// userNode.Conn.WriteMessage(websocket.TextMessage, []byte("your connection to "+string(userId)+" has been cut"))
+	// response.OkWithMessage(constant.CHAT_CUT_SUCCESS, c)
 }

@@ -474,7 +474,7 @@ id must not be null
 
 #### Description
 
-Queries posts published by himself/herself.
+Queries posts published by himself/herself.1
 
 #### Input
 
@@ -485,12 +485,12 @@ Queries posts published by himself/herself.
   "contain": "title,content,created_at,updated_at,status,section,label",
   "status": "1 // Status (0 = Draft, 1 = Published). ",
   "create_time_order_rule": "ASC // Create time order rule. ",
-  "label": [
+  "labels": [
     {
       "id": "1 // Label ID. "
     }
   ],
-  "section": [
+  "sections": [
     {
       "id": "1 // Section ID. "
     }
@@ -510,12 +510,12 @@ author must not be null, create_time_order_rule default is ASC
     "title": "New Post // Title. ",
     "content": "This is a new post. // Content. ",
     "status": "1 // Status (0 = Draft, 1 = Published). ",
-    "label": [
+    "labels": [
       {
         "id": "1 // Label ID. "
       }
     ],
-    "section": [
+    "sections": [
       {
         "id": "1 // Section ID. "
       }
@@ -906,7 +906,7 @@ id must not be null
 }
 ```
 
-### PostTagAdd (/admin/post-label/add)
+### PostLabelAdd (/admin/post-label/add)
 
 #### Description
 
@@ -921,7 +921,7 @@ Add a post label
 }
 ```
 
-label must not be not null
+label must not be null
 
 #### output
 
@@ -969,21 +969,25 @@ Queries posts.
   "author": 0,
   "title": "string",
   "content": "string",
-  "created_at_before": "2023-04-01T12:00:00Z",
-  "updated_at_before": "2023-04-01T12:00:00Z",
-  "created_at_after": "2023-04-01T12:00:00Z",
-  "updated_at_after": "2023-04-01T12:00:00Z",
+  "minCreatedAt": "2023-04-01T12:00:00Z",
+  "maxCreatedAt": "2023-04-01T12:00:00Z",
+  "minModifiedAt": "2023-04-01T12:00:00Z",
+  "maxModifiedAt": "2023-04-01T12:00:00Z",
   "status": 0,
-  "created_person": 0,
-  "updated_person": 0,
-  "label": {
-    "id": 0,
-    "name": "string"
-  },
-  "section": {
-    "id": 0,
-    "name": "string"
-  }
+  "createdPerson": 0,
+  "modifiedPerson": 0,
+  "labelIds": [ 
+    0
+  ],
+  "labelNames": [
+    "string"
+  ],
+  "sectionIds": [
+    0
+  ],
+  "sectionNames": [
+    "string"
+  ]
 }
 
 ```
@@ -997,24 +1001,24 @@ Queries posts.
     "author": 0,
     "title": "string",
     "content": "string",
-    "created_at": "2023-04-01T12:00:00Z",
-    "updated_at": "2023-04-01T12:00:00Z",
+    "createdAt": "2023-04-01T12:00:00Z",
+    "modifiedAt": "2023-04-01T12:00:00Z",
     "status": 0,
-    "created_person": 0,
-    "updated_person": 0,
+    "createdPerson": 0,
+    "modifiedPerson": 0,
     "labels": [
       {
         "id": 0,
-        "name": "string"
+        "label": "string"
       }
     ],
     "sections": [
       {
         "id": 0,
-        "name": "string"
+        "section": "string"
       }
     ],
-    "is_delete": 0
+    "deleteAt": null
   }
 ]
 ```
@@ -1040,7 +1044,6 @@ Deletes a post.
   "message": ""
 }
 ```
-
 
 
 

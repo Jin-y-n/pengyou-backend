@@ -13,7 +13,7 @@ func Init(cfg *config.Config) {
 	// init mysql
 	db.InitMySQL(cfg)
 
-	InitFile(cfg)
+	// InitFile(cfg)
 
 	InitElasticSearch(cfg)
 }

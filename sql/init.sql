@@ -423,19 +423,19 @@ VALUES (1, 'Tech News', 'Latest news in technology.'),
        (4, 'Study Tips', 'Tips for studying effectively.'),
        (5, 'Movie Reviews', 'Reviews of recent movies.');
 
-INSERT INTO post (id, author, title, content, label)
-VALUES (1,1, 'My First Post', 'This is my first post on this platform.', 1),
-       (2,2, 'A Day in My Life', 'Here is a glimpse into my daily routine.', 2),
-       (3,3, 'Healthy Breakfast Ideas', 'Some healthy breakfast options.', 3),
-       (4,4, 'How to Study Effectively', 'Tips for improving your study habits.', 4),
-       (5,5, 'Top Movies of the Year', 'My top picks for the best movies this year.', 5);
+INSERT INTO post (id, author, title, content)
+VALUES (1,1, 'My First Post', 'This is my first post on this platform.'),
+       (2,2, 'A Day in My Life', 'Here is a glimpse into my daily routine.'),
+       (3,3, 'Healthy Breakfast Ideas', 'Some healthy breakfast options.'),
+       (4,4, 'How to Study Effectively', 'Tips for improving your study habits.'),
+       (5,5, 'Top Movies of the Year', 'My top picks for the best movies this year.');
 
-INSERT INTO post_history (id, author, title, content, label)
-VALUES ( 1,1, 'My First Post (History)', 'This is the original version of my first post.', 1),
-       ( 2,2, 'A Day in My Life (History)', 'Here is the original version of my daily routine.', 2),
-       ( 3,3, 'Healthy Breakfast Ideas (History)', 'Some original healthy breakfast options.', 3),
-       ( 4,4, 'How to Study Effectively (History)', 'Original tips for improving your study habits.', 4),
-       ( 5,5, 'Top Movies of the Year (History)', 'My original top picks for the best movies this year.', 5);
+INSERT INTO post_history (id, author, title, content)
+VALUES ( 1,1, 'My First Post (History)', 'This is the original version of my first post.'),
+       ( 2,2, 'A Day in My Life (History)', 'Here is the original version of my daily routine.'),
+       ( 3,3, 'Healthy Breakfast Ideas (History)', 'Some original healthy breakfast options.'),
+       ( 4,4, 'How to Study Effectively (History)', 'Original tips for improving your study habits.'),
+       ( 5,5, 'Top Movies of the Year (History)', 'My original top picks for the best movies this year.');
 
 INSERT INTO post_label_mapping (post_id, label_id)
 VALUES (1, 1), -- Tech News
