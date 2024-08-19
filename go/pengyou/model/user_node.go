@@ -24,6 +24,9 @@ type UserNode struct {
 	Lock   *sync.RWMutex
 	WsLock *sync.Mutex
 
+	// last heart beat time
+	Chatters []string
+
 	// last hadler time
 	LastHandlerTime int64
 }

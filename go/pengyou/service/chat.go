@@ -91,10 +91,6 @@ func MsgPublish(ws *websocket.Conn, userNode *model.UserNode) {
 func MsgSubscribe(ws *websocket.Conn, userNode *model.UserNode) {
 	for userNode.Established {
 		func() {
-			log.Info("subscribing message [" +
-				// userNode.User.Username +
-				fmt.Sprint(userNode.User.ID) +
-				"]....")
 
 			// get unhandled messages
 			now := time.Now().UnixMilli()
