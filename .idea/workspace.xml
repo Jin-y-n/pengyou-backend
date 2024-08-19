@@ -5,16 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="642aee68-99f1-462f-94cb-d2ead90d535f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/redis_constant.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/constant/redis_constant.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/conn_constant.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/exception_constant.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/file_constant.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/message_constant.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/post_constant.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/redis_constant.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/request_constant.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/response_constant.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/time_constant.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/user_constant.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/go/pengyou/controller/connect.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/controller/connect.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/model/user_chat_list.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/model/user_node.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/model/user_node.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/service/chat.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/service/chat.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go/pengyou/service/connect.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/service/connect.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/service/init.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/service/init.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/storage/file.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/storage/file.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/storage/init.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/storage/init.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go/pengyou/storage/redis/redis_encapsulated.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/storage/redis/redis_encapsulated.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/storage/user_node_util.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/storage/user_node_util.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/utils/check/check_string.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/utils/check/check_string.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/main/common/src/main/dto/user.dto" beforeDir="false" afterPath="$PROJECT_DIR$/java/main/common/src/main/dto/user.dto" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,6 +119,7 @@
     &quot;Gradle.main [build].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.main [clean].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.main:common [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.main:common [clean].executor&quot;: &quot;Run&quot;,
     &quot;Notification.DisplayName-DoNotAsk-Statistic Notification Group&quot;: &quot;Statistic&quot;,
     &quot;Notification.DoNotAsk-Statistic Notification Group&quot;: &quot;true&quot;,
     &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
@@ -175,7 +188,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.ServiceAdmin">
+  <component name="RunManager" selected="Gradle.main:common [clean]">
     <configuration name="main [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -242,6 +255,28 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="main:common [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/java/main/common" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
     <configuration name="ServiceAdmin" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="main.service-admin.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.pengyou.ServiceAdmin" />
@@ -258,6 +293,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.main:common [clean]" />
         <item itemvalue="Gradle.main:common [build]" />
         <item itemvalue="Gradle.main [clean]" />
         <item itemvalue="Gradle.main [build]" />
@@ -312,6 +348,8 @@
       <workItem from="1723947050225" duration="4168000" />
       <workItem from="1723960892565" duration="695000" />
       <workItem from="1723985789082" duration="7000" />
+      <workItem from="1724034893510" duration="828000" />
+      <workItem from="1724047075851" duration="4000" />
     </task>
     <servers />
   </component>
