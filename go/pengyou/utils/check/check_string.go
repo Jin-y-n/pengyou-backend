@@ -44,3 +44,18 @@ func UIsNilOrBlank(s *string) bool {
 	}
 	return UIsBlank(*s)
 }
+
+// IsNumberString checks if a string contains only number characters.
+func IsNumberString(s *string) bool {
+	if s == nil {
+		return false
+	}
+
+	for _, r := range *s {
+		if !unicode.IsNumber(r) {
+			return false
+		}
+	}
+
+	return true
+}

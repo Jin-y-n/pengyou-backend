@@ -53,7 +53,9 @@ func EstablishWsConn(c *gin.Context, userId uint) {
 	log.Info("user connect success: " + string(userId))
 }
 
+// cut the connection
 func ShutdownWsConn(c *gin.Context, userId uint) {
+	// close connection
 	user := storage.GetUserNode(string(userId))
 
 	if user == nil {
@@ -66,7 +68,22 @@ func ShutdownWsConn(c *gin.Context, userId uint) {
 	}
 
 	user.Conn.Close()
+
+	// and send the message to all chatters with this user
+
 	log.Info("user disconnect success: " + string(userId))
+}
+
+func HeartBeat(c *gin.Context, userId uint) {
+	rds.Set(context.Background(), constant.REDIS_USER_HEARTBEAT_PREFIX+string(userId), time.Now().String())
+}
+
+func EstablishChatTo(c *gin.Context, from, to uint) {
+	userNode := storage.GetUserNode(fmt.Sprint(from))
+	if userNode == nil {
+		log.Warn("user node not found", zap.String("userId", fmt.Sprint(from)))
+	}
+
 }
 
 func CutChat(c *gin.Context, userId, objectId uint) {

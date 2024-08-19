@@ -5,15 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="642aee68-99f1-462f-94cb-d2ead90d535f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/templateLanguages.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/redis_constant.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/constant/redis_constant.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/controller/connect.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/controller/connect.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/service/connect.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/service/connect.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/storage/redis/redis_encapsulated.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/storage/redis/redis_encapsulated.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/storage/user_node_util.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/storage/user_node_util.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/pengyou/utils/check/check_string.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/utils/check/check_string.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/java/main/common/src/main/dto/user.dto" beforeDir="false" afterPath="$PROJECT_DIR$/java/main/common/src/main/dto/user.dto" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,19 +119,20 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
-    &quot;Spring Boot.ServiceAdmin.executor&quot;: &quot;Run&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Spring Boot.ServiceAdmin.executor&quot;: &quot;Debug&quot;,
     &quot;Spring Boot.ServiceUser.executor&quot;: &quot;Debug&quot;,
     &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
     &quot;jdk.selected.JAVA_MODULE&quot;: &quot;21&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/napbad/Project/Java/jdk-master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/napbad/Project/Muti/pengyou/backend/.idea&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.appearance&quot;,
@@ -148,11 +150,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/.idea" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/java/main/service-user/src/main/resources" />
       <recent name="$PROJECT_DIR$/java/main/service-admin/src/main/resources" />
       <recent name="$PROJECT_DIR$/java/main/common/src/main/resources" />
-      <recent name="$PROJECT_DIR$/java/main/service-admin/src/main/java/com/pengyou" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -308,6 +310,8 @@
       <workItem from="1723942979452" duration="309000" />
       <workItem from="1723943316066" duration="891000" />
       <workItem from="1723947050225" duration="4168000" />
+      <workItem from="1723960892565" duration="695000" />
+      <workItem from="1723985789082" duration="7000" />
     </task>
     <servers />
   </component>

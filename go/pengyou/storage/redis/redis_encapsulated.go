@@ -2,12 +2,14 @@ package rds
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"pengyou/global/config"
 	"pengyou/utils/log"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -136,4 +138,57 @@ func Set(context context.Context, key string, value string) *redis.StatusCmd {
 	}
 
 	return nil
+}
+
+func SetWithExpire(context context.Context, key string, value string, expire time.Duration) *redis.StatusCmd {
+	if RedisClient != nil {
+		return RedisClient.Set(context, key, value, expire)
+	} else if RedisClusterClient != nil {
+		return RedisClusterClient.Set(context, key, value, expire)
+	}
+
+	return nil
+}
+
+func SetObj(context context.Context, key string, value interface{}) *redis.StatusCmd {
+	return SetObjWithExpire(context, key, value, 0)
+}
+
+func SetObjWithExpire(context context.Context, key string, value interface{}, expire time.Duration) *redis.StatusCmd {
+	bytes, err := json.Marshal(value)
+	res := &redis.StatusCmd{}
+
+	if err != nil {
+		res.SetErr(err)
+		return res
+	}
+
+	if RedisClient != nil {
+		return RedisClient.Set(context, key, bytes, expire)
+	} else if RedisClusterClient != nil {
+		return RedisClusterClient.Set(context, key, bytes, expire)
+	}
+
+	res.SetErr(errors.New("redis not init"))
+	return res
+}
+
+// this function is used to find all keys with the given prefix
+func ScanKeysWithPrefix(prefix string) ([]string, error) {
+	var keys []string
+	cursor := uint64(0)
+	var result *redis.ScanCmd
+	for {
+		result = RedisClient.Scan(context.Background(), cursor, prefix+"*", 10)
+		err := result.Err()
+		if err != nil {
+			return nil, err
+		}
+		keysPart, _ := result.Val()
+		keys = append(keys, keysPart...)
+		if cursor == 0 {
+			break
+		}
+	}
+	return keys, nil
 }
