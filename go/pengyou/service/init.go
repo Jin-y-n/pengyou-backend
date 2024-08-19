@@ -19,4 +19,5 @@ func Init(cfg *config.Config) {
 		},
 	}
 	log.Info("init service: websocket.upGrader")
+
 }

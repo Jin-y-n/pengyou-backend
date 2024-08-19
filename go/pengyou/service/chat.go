@@ -19,6 +19,8 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+var mesDispatchRule = make(map[string]func(message string))
+
 // this file implements the chat function
 func MsgHandler(userNode *model.UserNode) {
 
@@ -110,6 +112,9 @@ func MsgSubscribe(ws *websocket.Conn, userNode *model.UserNode) {
 			} else {
 				// send unhandled messages
 				for _, message := range result {
+
+					MessageDispatcher(message, map[string]func(message string))
+
 					log.Info("sending message:" + message)
 					ws.WriteMessage(websocket.TextMessage, []byte(message))
 
@@ -152,7 +157,7 @@ func uploadFile(ws *websocket.Conn, fileName string) bool {
 	if !success {
 		log.Warn("create file error: " + fileName)
 	}
-	w := bufio.NewWriter(file)
+	// w := bufio.NewWriter(file)
 
 	defer file.Close()
 
@@ -170,10 +175,10 @@ func uploadFile(ws *websocket.Conn, fileName string) bool {
 			return false
 		}
 
-		if !storage.SaveToFile(w, buf) {
-			log.Warn("save file error: " + fileName)
-			return false
-		}
+		// if !storage.SaveToFile(w, buf) {
+		// 	log.Warn("save file error: " + fileName)
+		// 	return false
+		// }
 	}
 
 	return true
@@ -192,11 +197,20 @@ func downloadFile(ws *websocket.Conn, fileName string) {
 				log.Warn("read file error: " + fileName)
 			}
 
-			if !storage.WriteWsFile(ws, buf) {
-				log.Warn("write file error: " + fileName)
-			}
+			// if !storage.WriteWsFile(ws, buf) {
+			// 	log.Warn("write file error: " + fileName)
+			// }
 		}
 	} else {
 		ws.WriteMessage(websocket.TextMessage, []byte("file not found"))
+	}
+}
+
+// this function is designed to dispatch the messages subscribed from redis
+func MessageDispatcher(message string, rule map[string]func(message string)) {
+	for k, v := range rule {
+		if strings.HasPrefix(message, k) {
+			v(message)
+		}
 	}
 }

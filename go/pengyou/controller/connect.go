@@ -63,7 +63,6 @@ func EstablishChatTo(c *gin.Context) {
 	objectIdStr, succ := c.GetPostForm(constant.CHATTER_ID)
 
 	if !check.IsNumberString(&userIdStr) || !succ || !check.IsNumberString(&objectIdStr) {
-
 		response.FailWithMessage(constant.REQUEST_ARGUMENT_ERROR, c)
 		return
 	}
@@ -84,7 +83,6 @@ func CutChat(c *gin.Context) {
 		log.Error("userId is wrong")
 		response.FailWithMessage(constant.REQUEST_ARGUMENT_ERROR, c)
 	}
-
 	if !succ || !check.IsNumberString(&objectIdStr) {
 		log.Error("chatterId is wrong")
 		response.FailWithMessage(constant.REQUEST_ARGUMENT_ERROR, c)

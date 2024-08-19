@@ -23,6 +23,7 @@ var upGrade = websocket.Upgrader{}
 // establish websocket connection by userId
 func EstablishWsConn(c *gin.Context, userId uint) {
 
+	// upgrade http connection to websocket connection
 	ws, err := upGrade.Upgrade(c.Writer, c.Request, nil)
 
 	if err != nil {
@@ -31,8 +32,8 @@ func EstablishWsConn(c *gin.Context, userId uint) {
 		return
 	}
 
+	// storage info to user node
 	user := entity.User{}
-
 	user.ID = userId
 
 	// add user node record
@@ -47,6 +48,7 @@ func EstablishWsConn(c *gin.Context, userId uint) {
 		},
 	)
 
+	// begin handlering message
 	MsgHandler(storage.GetUserNode(string(userId)))
 
 	log.Info("user connect success: " + string(userId))
@@ -82,22 +84,6 @@ func EstablishChatTo(c *gin.Context, from, to uint) {
 	if userNode == nil || !userNode.Established {
 		log.Warn("user node not found", zap.String("userId", fmt.Sprint(from)))
 	}
-
-	go func() {
-
-		// publish to redis to the target user
-		rds.RedisPublish(context.Background(),
-			rds.GenerateName(to),
-			constant.REDIS_ESTABLISH_CONNECTION_PREFIX+fmt.Sprint(from))
-
-		// subscribe the target user's response
-		rds.RedisSubsrcibe(context.Background(),
-			rds.GenerateName(from), func(message string) {
-				// add the chatter to the user's chat list
-				userNode.Chatters = append(userNode.Chatters, fmt.Sprint(to))
-			})
-	}()
-
 }
 
 // the function that handle the connect link between two users
