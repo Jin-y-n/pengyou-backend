@@ -1023,6 +1023,51 @@ Queries posts.
 ]
 ```
 
+### PostQuery (admin/post/update)
+
+#### Description
+
+update posts.
+
+#### Input
+
+```json
+{
+  "id": 0,
+  "author": 0,
+  "title": "string",
+  "content": "string",
+  "minCreatedAt": "2023-04-01T12:00:00Z",
+  "maxCreatedAt": "2023-04-01T12:00:00Z",
+  "minModifiedAt": "2023-04-01T12:00:00Z",
+  "maxModifiedAt": "2023-04-01T12:00:00Z",
+  "status": 0,
+  "createdPerson": 0,
+  "modifiedPerson": 0,
+  "labelIds": [ 
+    0
+  ],
+  "labelNames": [
+    "string"
+  ],
+  "sectionIds": [
+    0
+  ],
+  "sectionNames": [
+    "string"
+  ]
+}
+
+```
+
+#### output
+
+```json
+   {
+  "message": ""
+}
+```
+
 ### PostDelete (admin/post/delete)
 
 #### Description
