@@ -4,34 +4,37 @@ import (
 	"pengyou/constant"
 	"pengyou/model/common/response"
 	"pengyou/service"
-	"pengyou/utils/check"
+	"pengyou/utils/check/string"
 	"pengyou/utils/log"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-// this function is listening to the heartbeat of the user
+// HeartBeat this function is listening to the heartbeat of the user
 func HeartBeat(c *gin.Context) {
-	header := c.GetHeader(constant.USER_ID)
+	header := c.GetHeader(constant.UserId)
 
-	if check.IsNumberString(&header) {
+	if string.IsNumberString(&header) {
 		id, err := strconv.ParseInt(header, 10, 64)
 		if err != nil {
-			response.FailWithMessage(constant.REQUEST_ARGUMENT_ERROR, c)
+			response.FailWithMessage(constant.RequestArgumentError, c)
 			return
 		}
 		service.HeartBeat(c, uint(id))
+	} else {
+		log.Error("user id is not a number")
+		response.FailWithMessage(constant.RequestArgumentError, c)
 	}
 }
 
-// this is for connect user to server
+// Establish this is for connect user to server
 func Establish(c *gin.Context) {
 
-	userIdStr := c.GetHeader(constant.USER_ID)
+	userIdStr := c.GetHeader(constant.UserId)
 
-	if !check.IsNumberString(&userIdStr) {
-		response.FailWithMessage(constant.REQUEST_ARGUMENT_ERROR, c)
+	if !string.IsNumberString(&userIdStr) {
+		response.FailWithMessage(constant.RequestArgumentError, c)
 		return
 	}
 
@@ -40,14 +43,14 @@ func Establish(c *gin.Context) {
 	service.EstablishWsConn(c, uint(userId))
 }
 
-// this is for shutdown the connection from the user
+// Shutdown this is for shutdown the connection from the user
 func Shutdown(c *gin.Context) {
 
-	userIdStr := c.GetHeader(constant.USER_ID)
+	userIdStr := c.GetHeader(constant.UserId)
 
-	if !check.IsNumberString(&userIdStr) {
+	if !string.IsNumberString(&userIdStr) {
 
-		response.FailWithMessage(constant.REQUEST_ARGUMENT_ERROR, c)
+		response.FailWithMessage(constant.RequestArgumentError, c)
 
 		return
 	}
@@ -57,13 +60,13 @@ func Shutdown(c *gin.Context) {
 	service.ShutdownWsConn(c, uint(userId))
 }
 
-// establish chat to the target user
+// EstablishChatTo establish chat to the target user
 func EstablishChatTo(c *gin.Context) {
-	userIdStr := c.GetHeader(constant.USER_ID)
-	objectIdStr, succ := c.GetPostForm(constant.CHATTER_ID)
+	userIdStr := c.GetHeader(constant.UserId)
+	objectIdStr, success := c.GetPostForm(constant.ChatterId)
 
-	if !check.IsNumberString(&userIdStr) || !succ || !check.IsNumberString(&objectIdStr) {
-		response.FailWithMessage(constant.REQUEST_ARGUMENT_ERROR, c)
+	if !string.IsNumberString(&userIdStr) || !success || !string.IsNumberString(&objectIdStr) {
+		response.FailWithMessage(constant.RequestArgumentError, c)
 		return
 	}
 
@@ -73,19 +76,19 @@ func EstablishChatTo(c *gin.Context) {
 	service.EstablishChatTo(c, uint(userId), uint(objectId))
 }
 
-// cut chat with the target user
+// CutChat cut chat with the target user
 func CutChat(c *gin.Context) {
 
-	userIdStr := c.GetHeader(constant.USER_ID)
-	objectIdStr, succ := c.GetPostForm(constant.CHATTER_ID)
+	userIdStr := c.GetHeader(constant.UserId)
+	objectIdStr, success := c.GetPostForm(constant.ChatterId)
 
-	if !check.IsNumberString(&userIdStr) {
+	if !string.IsNumberString(&userIdStr) {
 		log.Error("userId is wrong")
-		response.FailWithMessage(constant.REQUEST_ARGUMENT_ERROR, c)
+		response.FailWithMessage(constant.RequestArgumentError, c)
 	}
-	if !succ || !check.IsNumberString(&objectIdStr) {
+	if !success || !string.IsNumberString(&objectIdStr) {
 		log.Error("chatterId is wrong")
-		response.FailWithMessage(constant.REQUEST_ARGUMENT_ERROR, c)
+		response.FailWithMessage(constant.RequestArgumentError, c)
 	}
 
 	userId, _ := strconv.ParseUint(userIdStr, 10, 64)

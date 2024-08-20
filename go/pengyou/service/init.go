@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// init service package
+// Init service package
 func Init(cfg *config.Config) {
 	upGrade = websocket.Upgrader{
 		ReadBufferSize:  cfg.Files.ReadBufSize,
@@ -20,4 +20,6 @@ func Init(cfg *config.Config) {
 	}
 	log.Info("init service: websocket.upGrader")
 
+	CheckUserConnect()
+	log.Info("begin removing disconnected user...")
 }
