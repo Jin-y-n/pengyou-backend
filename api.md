@@ -859,6 +859,217 @@ listening the websocket and receive the message
 
 # ADMIN-relative
 
+### AdminRegister (admin/account/register)
+
+#### Description
+
+Add an admin.
+
+#### input
+
+```json
+  {
+  "username": "string",
+  "password": "string",
+  "email": "example@exxample.com",
+  "phone": "1234567890",
+  "createdTime": "2023-04-01T12:00:00Z",
+  "modifiedTime": "2023-04-01T12:00:00Z",
+  "createdPerson": 0,
+  "modifiedPerson": 0,
+  "role": 0,
+  "captcha": "6-digit captcha"
+}
+```
+
+#### output
+
+```json
+  {
+  "message": ""
+}
+```
+
+### AdminLogin (admin/account/login)
+
+#### Description
+
+Login as an admin.
+
+#### input
+
+```json
+{
+  "username": "string",
+  "password": "string",
+  "email": "example@exxample.com",
+  "phone": "1234567890"
+}
+```
+
+#### output
+
+```json
+
+
+{
+  "user": {
+    "username": "string",
+    "password": "string",
+    "email": "example@exxample.com",
+    "phone": "1234567890",
+    "role": 0
+  },
+  "jwt": "string"
+}
+```
+
+### AdminLogout (admin/account/logout)
+
+#### Description
+
+Logout as an admin.
+
+#### input
+
+```json
+  {
+  "id": 0
+}
+```
+
+#### output
+
+```json
+{
+  "message": ""
+}
+```
+
+### AdminUpdate (admin/account/update)
+
+#### Description
+
+Update an admin.
+
+#### input
+
+```json
+{
+  "id": 0,
+  "username": "string",
+  "password": "string",
+  "email": "example@example.com",
+  "phone": "1234567890"
+}
+```
+
+#### output
+
+```json
+{
+  "message": ""
+}
+
+```
+
+### AdminDelete (admin/account/delete)
+
+#### Description
+
+Delete an admin.
+
+#### input
+
+```json
+  {
+  "ids": [
+    0
+  ]
+}
+```
+
+#### output
+
+```json
+  {
+  "message": ""
+}
+```
+
+### AdminUpdate (admin/account/update)
+
+#### Description
+
+Update an admin.
+
+#### input
+
+```json
+  {
+  "id": 0,
+  "username": "string",
+  "password": "string",
+  "email": "example@example.com",
+  "phone": "1234567890",
+  "modifiedTime": "2023-04-01T12:00:00Z",
+  "modifiedPerson": 0,
+  "role": 0,
+  "modifiedByRoot": 0
+}
+```
+
+#### output
+
+```json
+  {
+  "message": ""
+}
+```
+
+### AdminQuery (admin/account/query)
+
+#### Description
+
+Queries admins.
+
+#### input
+
+```json
+  {
+  "id": 0,
+  "author": "string",
+  "password": "string",
+  "email": "example@example.com",
+  "phone": "1234567890",
+  "minCreatedTime": "2023-04-01T12:00:00Z",
+  "maxCreatedTime": "2023-04-01T12:00:00Z",
+  "minModifiedTime": "2023-04-01T12:00:00Z",
+  "maxModifiedTime": "2023-04-01T12:00:00Z",
+  "createdPerson": 0,
+  "modifiedPerson": 0,
+  "role": 0
+}
+```
+
+#### output
+
+```json
+  {
+  "id": 0,
+  "author": "string",
+  "password": "string",
+  "email": "example@example.com",
+  "phone": "1234567890",
+  "createdTime": "2023-04-01T12:00:00Z",
+  "modifiedTime": "2023-04-01T12:00:00Z",
+  "createdPerson": 0,
+  "modifiedPerson": 0,
+  "deleteAt": null,
+  "role": 0
+}
+```
+
 ### PostSectionAdd (/admin/post-section/add)
 
 #### Description
@@ -976,7 +1187,7 @@ Queries posts.
   "status": 0,
   "createdPerson": 0,
   "modifiedPerson": 0,
-  "labelIds": [ 
+  "labelIds": [
     0
   ],
   "labelNames": [
@@ -1023,7 +1234,7 @@ Queries posts.
 ]
 ```
 
-### PostQuery (admin/post/update)
+### PostUpdate (admin/post/update)
 
 #### Description
 
@@ -1044,7 +1255,7 @@ update posts.
   "status": 0,
   "createdPerson": 0,
   "modifiedPerson": 0,
-  "labelIds": [ 
+  "labelIds": [
     0
   ],
   "labelNames": [
@@ -1063,7 +1274,7 @@ update posts.
 #### output
 
 ```json
-   {
+{
   "message": ""
 }
 ```
