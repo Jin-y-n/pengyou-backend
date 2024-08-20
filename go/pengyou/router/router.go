@@ -20,8 +20,13 @@ func GinRouter() *gin.Engine {
 	conn := r.Group("/websocket")
 	{
 		conn.POST("/establish", controller.Establish)
+		conn.POST("/establish-chat-to", controller.EstablishChatTo)
 		conn.POST("/shutdown", controller.Shutdown)
 		conn.POST("/cut-chat", controller.CutChat)
+	}
+
+	search := r.Group("/search")
+	{
 	}
 
 	return r

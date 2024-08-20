@@ -10,6 +10,10 @@ import (
 	"pengyou/storage"
 	rds "pengyou/storage/redis"
 	"pengyou/utils/log"
+	strutil "pengyou/utils/string"
+	wsutil "pengyou/utils/ws"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -59,24 +63,40 @@ func ShutdownWsConn(c *gin.Context, userId uint) {
 	// close connection
 	user := storage.GetUserNode(string(userId))
 
-	if user == nil {
+	if user != nil {
+		if user.Conn == nil {
+			log.Error("user not connect: " + string(userId))
+		}
+
+		user.Conn.Close()
+
+		// and send the message to all chatters with this user
+
+		if chatter := storage.GetUserNode(string(userId)).Chatters; chatter != nil {
+
+			for _, v := range chatter {
+				chatterId, err := strconv.ParseUint(v, 10, 64)
+				if err != nil {
+					log.Error("parse chatter chatterId error: " + v)
+					continue
+				}
+
+				rds.RedisPublish(context.Background(), rds.GenerateName(uint(chatterId)), constant.REDIS_DISCONNECT_MESSAGE_PREFIX+string(userId))
+			}
+		}
+
+		log.Info("user disconnect success: " + string(userId))
+	} else {
 		log.Error("user not found: " + string(userId))
 		response.FailWithMessage(constant.CONNECTED_USER_NOT_FOUND, c)
 	}
 
-	if user.Conn == nil {
-		log.Error("user not connect: " + string(userId))
-	}
-
-	user.Conn.Close()
-
-	// and send the message to all chatters with this user
-
-	log.Info("user disconnect success: " + string(userId))
 }
 
 func HeartBeat(c *gin.Context, userId uint) {
-	rds.Set(context.Background(), constant.REDIS_USER_HEARTBEAT_PREFIX+string(userId), time.Now().String())
+	rds.SetWithExpire(context.Background(), constant.REDIS_USER_HEARTBEAT_PREFIX+string(userId), time.Now().String(), constant.HEART_BEAT_TIMEOUT)
+
+	log.Info("user heartbeat: " + string(userId))
 }
 
 func EstablishChatTo(c *gin.Context, from, to uint) {
@@ -84,56 +104,67 @@ func EstablishChatTo(c *gin.Context, from, to uint) {
 	if userNode == nil || !userNode.Established {
 		log.Warn("user node not found", zap.String("userId", fmt.Sprint(from)))
 	}
+
+	rds.RedisPublish(context.Background(),
+		constant.REDIS_ESTABLISH_CHAT_MESSAGE_FROM_PREFIX+fmt.Sprint(from),
+		fmt.Sprint(to))
+	userNode.Chatters = append(userNode.Chatters, fmt.Sprint(to))
+
+	response.OkWithMessage(constant.CHAT_ESTABLISH_SUCCESS, c)
 }
 
 // the function that handle the connect link between two users
+func CutChat(c *gin.Context, userId, chatterId uint) {
 
-func CutChat(c *gin.Context, userId, objectId uint) {
+	userNode := storage.GetUserNode(strconv.Itoa(int(userId)))
+	if userNode == nil || !userNode.Established {
+		log.Warn("user node not found", zap.String("userId", fmt.Sprint(userId)))
+	}
 
-	// usr := rds.Get(context.Background(), constant.REDIS_USER_CHAT_LIST_PREFIX+string(userId))
-	// if usr.Val() == "" {
-	// 	log.Error("user not found: " + string(userId))
-	// 	response.FailWithMessage(constant.CONNECTED_USER_NOT_FOUND, c)
-	// 	return
-	// }
-	// list := &model.UserChatList{}
+	chatter := strconv.Itoa(int(chatterId))
 
-	// usrBytes, err := usr.Bytes()
-	// if err != nil {
-	// 	log.Error("get bytes error:", zap.Error(err), zap.String("src:", usr.Val()))
-	// 	response.FailWithMessage(constant.CHATTER_NOT_FOUND, c)
-	// 	return
-	// }
+	for _, v := range userNode.Chatters {
+		if v == chatter {
+			userNode.Chatters = strutil.RemoveElementByValue(userNode.Chatters, v)
 
-	// err = json.Unmarshal(usrBytes, list)
-	// if err != nil {
-	// 	log.Error("data unmarshal failed", zap.Error(err))
-	// 	response.FailWithMessage(constant.SERVER_ERROR, c)
-	// 	return
-	// }
+			rds.RedisPublish(context.Background(), rds.GenerateName(chatterId), constant.REDIS_CUT_CHAT_MESSAGE_FROM_PREFIX+chatter)
 
-	// for i, v := range list.Chatters {
-	// 	if v == string(userId) {
-	// 		list.Chatters = append(list.Chatters[:i], list.Chatters[i+1:]...)
-	// 	}
-	// }
+			wsutil.SendTextMessage(userNode.Conn, constant.CUT_CHAT_MESSAGE_RESPONSE_SUCCESS)
+			return
+		}
+	}
+}
 
-	// chatListBytes, err := json.Marshal(list)
-	// if err != nil {
-	// 	log.Error("data marshal failed", zap.Error(err))
-	// 	response.FailWithMessage(constant.SERVER_ERROR, c)
-	// 	return
-	// }
+func CheckUserConnect() {
+	prefix, err := rds.ScanKeysWithPrefix(constant.REDIS_USER_HEARTBEAT_PREFIX)
+	if err != nil {
+		return
+	}
 
-	// rds.Set(context.Background(), constant.REDIS_USER_CHAT_LIST_PREFIX+string(userId), string(chatListBytes))
+	for _, v := range prefix {
+		if cmd := rds.Get(context.Background(), v); cmd.Err() == nil {
+			if t, err := time.Parse(constant.TIME_FORMAT_STRING, cmd.Val()); err == nil {
+				if t.Add(constant.HEART_BEAT_TIMEOUT).Before(time.Now()) {
+					userNode := storage.GetUserNode(strings.Trim(v, constant.REDIS_USER_HEARTBEAT_PREFIX))
+					if userNode != nil {
+						wsutil.SendTextMessage(userNode.Conn, constant.CONNECT_CUTTED)
 
-	// userNode := storage.GetUserNode(string(objectId))
-	// if userNode == nil {
-	// 	log.Error("user node not found", zap.String("userId", string(objectId)))
-	// 	response.FailWithMessage(constant.CHATTER_NOT_FOUND, c)
-	// 	return
-	// }
+						chatter := userNode.Chatters
+						for _, v := range chatter {
+							chatterId, err := strconv.ParseUint(v, 10, 64)
+							if err != nil {
+								log.Error("convert string to int failed : ", zap.String("arg", v))
+							} else {
+								rds.RedisPublish(context.Background(), rds.GenerateName(uint(chatterId)), constant.REDIS_USER_DISCONNECT+v)
+							}
 
-	// userNode.Conn.WriteMessage(websocket.TextMessage, []byte("your connection to "+string(userId)+" has been cut"))
-	// response.OkWithMessage(constant.CHAT_CUT_SUCCESS, c)
+						}
+
+						userNode.Established = false
+					}
+
+				}
+			}
+		}
+	}
 }

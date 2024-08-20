@@ -3,6 +3,7 @@ package global
 import (
 	"context"
 	"fmt"
+	"pengyou/router"
 
 	"pengyou/global/config"
 	// "pengyou/router"
@@ -34,7 +35,7 @@ func Init() {
 
 	// service.Init(globalConfig)
 	storage.Init(globalConfig)
-	// GinEngine = router.Init(globalConfig)
+	GinEngine = router.Init(globalConfig)
 	Context = context.Background()
 
 	config.Cfg = globalConfig

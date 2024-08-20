@@ -11,7 +11,11 @@ import (
 	"pengyou/model/common/request"
 	"pengyou/storage"
 	rds "pengyou/storage/redis"
+	chatutil "pengyou/utils/chat"
 	"pengyou/utils/log"
+	strutil "pengyou/utils/string"
+	wsutil "pengyou/utils/ws"
+	"strconv"
 	"strings"
 	"time"
 
@@ -36,7 +40,7 @@ func MsgHandler(userNode *model.UserNode) {
 	go MsgSubscribe(ws, userNode)
 }
 
-// publish the message to redis
+// MsgPublish publish the message to redis
 func MsgPublish(ws *websocket.Conn, userNode *model.UserNode) {
 
 	// handler message
@@ -54,13 +58,12 @@ func MsgPublish(ws *websocket.Conn, userNode *model.UserNode) {
 					return
 				}
 			}
-			// TODO: uncommit this part to confirm the message time --------------------------------------------
 			// check the send time of the message is valid or not
-			// if math.Abs(float64(message.CreateAt.UnixMilli()-time.Now().UnixMilli())) > 1000 {
-			// 	log.Warn("message time error")
-			// 	ws.WriteMessage(websocket.TextMessage, []byte("message time error, please check your network and try again"))
-			// 	return
-			// }
+			if math.Abs(float64(message.CreateAt.UnixMilli()-time.Now().UnixMilli())) > 1000 {
+				log.Warn("message time error")
+				ws.WriteMessage(websocket.TextMessage, []byte("message time error, please check your network and try again"))
+				return
+			}
 			log.Info("read ws message:" + string(message.Content))
 
 			switch message.RequestType {
@@ -78,9 +81,6 @@ func MsgPublish(ws *websocket.Conn, userNode *model.UserNode) {
 					[]byte("upload file success"))
 				publishText(message)
 			}
-
-			math.Abs(1)
-
 		}()
 	}
 
@@ -113,10 +113,55 @@ func MsgSubscribe(ws *websocket.Conn, userNode *model.UserNode) {
 				// send unhandled messages
 				for _, message := range result {
 
-					MessageDispatcher(message, map[string]func(message string))
+					// TODO: more message types
+					// MessageDispatcher(message, map[string]func(message string))
+					if strings.HasPrefix(message, constant.REDIS_DISCONNECT_MESSAGE_PREFIX) {
 
-					log.Info("sending message:" + message)
-					ws.WriteMessage(websocket.TextMessage, []byte(message))
+						from := strings.TrimPrefix(message, constant.REDIS_DISCONNECT_MESSAGE_PREFIX)
+						userNode.Chatters = strutil.RemoveElementByValue(userNode.Chatters, from)
+						wsutil.SendTextMessage(ws, constant.RESP_DISCONNECT_MESSAGE_PREFIX+from)
+
+					} else if strings.HasPrefix(message, constant.REDIS_ESTABLISH_CHAT_MESSAGE_FROM_PREFIX) {
+
+						go func() {
+							from := strings.TrimPrefix(message, constant.REDIS_ESTABLISH_CHAT_MESSAGE_FROM_PREFIX)
+
+							wsutil.SendTextMessage(ws, constant.RESP_ESTABLISH_CHAT_MESSAGE_FROM_PREFIX+from)
+
+							chatutil.AddEstablishRequestNode(from, strconv.Itoa(int(userNode.User.ID)))
+							count := 1
+							for {
+								time.Sleep(1 * time.Second)
+
+								if count < 6 && chatutil.GetEstablishRequestNode(from, strconv.Itoa(int(userNode.User.ID))) {
+									chatutil.RemoveEstablishRequestNode(from, strconv.Itoa(int(userNode.User.ID)))
+									userNode.Chatters = append(userNode.Chatters, from)
+									wsutil.SendTextMessage(ws, constant.CHAT_ESTABLISH_SUCCESS_FROM+from)
+
+									return
+								}
+
+								if count >= 6 {
+									wsutil.SendTextMessage(ws, constant.CHAT_ESTABLISH_FAIL_FROM+from)
+									return
+								}
+								count++
+							}
+						}()
+					} else if strings.HasPrefix(message, constant.REDIS_CUT_CHAT_MESSAGE_FROM_PREFIX) {
+						from := strings.TrimPrefix(message, constant.REDIS_CUT_CHAT_MESSAGE_FROM_PREFIX)
+
+						userNode.Chatters = strutil.RemoveElementByValue(userNode.Chatters, from)
+						wsutil.SendTextMessage(ws, constant.RESP_CHAT_CUTTED_FROM+from)
+					} else if (strings.HasPrefix(message, constant.REDIS_USER_DISCONNECT)) {
+
+						from := strings.TrimPrefix(message, constant.REDIS_USER_DISCONNECT)
+
+						userNode.Chatters = strutil.RemoveElementByValue(userNode.Chatters, from)
+						wsutil.SendTextMessage(ws, constant.RESP_CHATTRT_DISCONNECTED+from)
+					} else {
+						wsutil.SendTextMessage(ws, message)
+					}
 
 					userNode.LastHandlerTime = now
 				}
@@ -202,7 +247,7 @@ func downloadFile(ws *websocket.Conn, fileName string) {
 			// }
 		}
 	} else {
-		ws.WriteMessage(websocket.TextMessage, []byte("file not found"))
+		wsutil.SendTextMessage(ws, "file not found")
 	}
 }
 

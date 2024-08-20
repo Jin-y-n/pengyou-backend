@@ -12,11 +12,11 @@ import (
 var Logger *zap.Logger
 
 // NewZapLogger creates a zap.Logger instance based on the Zap configuration.
-func NewZapLogger(cfg *config.Zap) (*zap.Logger, error) {
+func NewZapLogger(cfg *config.Zap) {
 	// Set the log level
 	atomicLevel := zap.NewAtomicLevel()
 	if err := atomicLevel.UnmarshalText([]byte(cfg.Level)); err != nil {
-		return nil, err
+		return
 	}
 
 	// Create the encoder
@@ -30,12 +30,12 @@ func NewZapLogger(cfg *config.Zap) (*zap.Logger, error) {
 		// Create the file path
 		err := os.MkdirAll(cfg.Director, os.ModePerm)
 		if err != nil {
-			return nil, err
+			return
 		}
 		filePath := filepath.Join(cfg.Director, "app.log")
 		f, err := os.OpenFile(filePath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
 		if err != nil {
-			return nil, err
+			return
 		}
 		syncer = zapcore.AddSync(f)
 	}
@@ -46,7 +46,7 @@ func NewZapLogger(cfg *config.Zap) (*zap.Logger, error) {
 	// Create the logger
 	Logger = zap.New(core, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel))
 
-	return Logger, nil
+	Logger.Info("Logger initialized")
 }
 
 // Info is a convenience function that wraps the Info method of the zap.Logger.

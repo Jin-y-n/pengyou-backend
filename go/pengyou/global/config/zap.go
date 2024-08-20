@@ -31,7 +31,7 @@ func (c *Zap) Levels() []zapcore.Level {
 	return levels
 }
 
-// Encoder creates a zapcore.Encoder based on the configuration.
+// Encoder creates a zap core.Encoder based on the configuration.
 func (c *Zap) Encoder() zapcore.Encoder {
 	config := zapcore.EncoderConfig{
 		TimeKey:       "time",
