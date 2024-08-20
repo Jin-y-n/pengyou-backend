@@ -12,4 +12,3 @@ input UserForVerify {
     phone
     email
 }
-

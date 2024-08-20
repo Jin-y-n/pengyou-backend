@@ -9,11 +9,15 @@ package com.pengyou;
 
 */
 
+import com.pengyou.exception.BaseException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+
 @SpringBootApplication
 public class ServiceAdmin {
+
+
     public static void main(String[] args) {
         SpringApplication.run(ServiceAdmin.class, args);
     }

@@ -146,8 +146,7 @@ CREATE TABLE post
     PRIMARY KEY (id),
     FOREIGN KEY (author) REFERENCES user (id) ON DELETE CASCADE,
     FOREIGN KEY (created_person) REFERENCES user (id) ON DELETE SET NULL,
-    FOREIGN KEY (modified_person) REFERENCES user (id) ON DELETE SET NULL,
-    FOREIGN KEY (label) REFERENCES post_label (id) ON DELETE SET NULL
+    FOREIGN KEY (modified_person) REFERENCES user (id) ON DELETE SET NULL
 );
 
 
@@ -165,8 +164,7 @@ CREATE TABLE post_history
     delete_at       TIMESTAMP    NULL DEFAULT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (author) REFERENCES user (id) ON DELETE CASCADE,
-    FOREIGN KEY (modified_person) REFERENCES user (id) ON DELETE SET NULL,
-    FOREIGN KEY (label) REFERENCES post_label (id) ON DELETE SET NULL
+    FOREIGN KEY (modified_person) REFERENCES user (id) ON DELETE SET NULL
 );
 
 
@@ -534,8 +532,4 @@ VALUES (1,1, 2),
        (3,3, 4),
        (4,4, 5),
        (5,5, 1);
-
-
-
-
 

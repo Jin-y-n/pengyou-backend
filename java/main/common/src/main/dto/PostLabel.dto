@@ -1,0 +1,11 @@
+export com.pengyou.model.entity.PostLabel
+    -> package com.pengyou.model.dto.postlabel
+
+input PostLabelForAdd {
+    #allScalars
+    -id
+}
+
+PostLabelForDelete {
+    ids: MutableList<Long?>
+}

@@ -1,0 +1,12 @@
+export com.pengyou.model.entity.PostSection
+    -> package com.pengyou.model.dto.postsection
+
+input PostSectionForAdd{
+    #allScalars
+    -id
+}
+
+PostSectionForDelete{
+    ids: MutableList<Long?>
+}
+
