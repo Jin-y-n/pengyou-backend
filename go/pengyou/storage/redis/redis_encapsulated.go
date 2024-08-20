@@ -223,3 +223,9 @@ func ScanKeysWithPrefix(prefix string) ([]string, error) {
 	}
 	return keys, nil
 }
+
+func Del(key string) {
+	if RedisClient != nil {
+		RedisClient.Del(context.Background(), key)
+	}
+}

@@ -136,12 +136,12 @@ func CutChat(c *gin.Context, userId, chatterId uint) {
 }
 
 func CheckUserConnect() {
-	prefix, err := rds.ScanKeysWithPrefix(constant.REDIS_USER_HEARTBEAT_PREFIX)
+	keysWithPrefix, err := rds.ScanKeysWithPrefix(constant.REDIS_USER_HEARTBEAT_PREFIX)
 	if err != nil {
 		return
 	}
 
-	for _, v := range prefix {
+	for _, v := range keysWithPrefix {
 		if cmd := rds.Get(context.Background(), v); cmd.Err() == nil {
 			if t, err := time.Parse(constant.TIME_FORMAT_STRING, cmd.Val()); err == nil {
 				if t.Add(constant.HEART_BEAT_TIMEOUT).Before(time.Now()) {
@@ -159,6 +159,7 @@ func CheckUserConnect() {
 							}
 
 						}
+						rds.Del(context.Background(), v)
 
 						userNode.Established = false
 					}
