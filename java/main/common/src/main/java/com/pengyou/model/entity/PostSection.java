@@ -3,6 +3,7 @@ package com.pengyou.model.entity;
 import org.babyfish.jimmer.sql.*;
 
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface PostSection {
     )
     long id();
 
-    @Nullable
+    @NotNull
     String section();
 
     @Nullable

@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-//@Api
+@Api
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/post")
+@RequestMapping("/admin/post")
 public class PostController {
     private final PostService postService;
 
@@ -33,12 +33,11 @@ public class PostController {
     public Result delete(
             @RequestBody PostForDelete postForDelete
     ) {
-
         postService.delete(postForDelete);
         return Result.success("Post删除成功");
     }
 
-//    @Api
+    @Api
     @PostMapping("/update")
     public Result update(
             @RequestBody PostForUpdate postForUpdate

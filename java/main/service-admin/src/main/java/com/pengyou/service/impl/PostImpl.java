@@ -1,6 +1,7 @@
 package com.pengyou.service.impl;
 
 
+import com.pengyou.exception.BaseException;
 import com.pengyou.model.dto.post.PostForDelete;
 import com.pengyou.model.dto.post.PostForQuery;
 import com.pengyou.model.dto.post.PostForUpdate;
@@ -8,6 +9,7 @@ import com.pengyou.model.dto.post.PostForView;
 import com.pengyou.model.entity.Post;
 import com.pengyou.model.entity.PostTable;
 import com.pengyou.service.PostService;
+import io.reactivex.rxjava3.exceptions.QueueOverflowException;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.ast.mutation.SaveMode;
@@ -23,13 +25,17 @@ public class PostImpl implements PostService {
 
     @Override
     public List<PostForView> query(PostForQuery postForQuery) {
-        return sqlClient
+        List<PostForView> execute = sqlClient
                 .createQuery(postTable)
                 .where(postForQuery)
                 .select(
                         postTable.fetch(PostForView.class)
                 )
                 .execute();
+        if (execute.isEmpty()){
+            throw new BaseException("Post查询失败");
+        }
+        return execute;
     }
 
     @Override

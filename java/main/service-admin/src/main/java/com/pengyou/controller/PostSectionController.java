@@ -1,5 +1,6 @@
 package com.pengyou.controller;
 
+import com.pengyou.constant.SectionConstant;
 import com.pengyou.model.Result;
 import com.pengyou.model.dto.postsection.PostSectionForAdd;
 import com.pengyou.model.dto.postsection.PostSectionForDelete;
@@ -11,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-//@Api
+@Api
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/post-section")
+@RequestMapping("/admin/post-section")
 public class PostSectionController {
     private final PostSectionService postSectionService;
 
@@ -24,7 +25,7 @@ public class PostSectionController {
             @RequestBody PostSectionForAdd postSectionForAdd
     ){
         postSectionService.add(postSectionForAdd);
-        return Result.success("PostSection添加成功");
+        return Result.success(SectionConstant.SECTION_ADD_SUCCESS);
     }
 
     @Api
@@ -33,6 +34,6 @@ public class PostSectionController {
             @RequestBody PostSectionForDelete postSectionForDelete
     ){
         postSectionService.delete(postSectionForDelete);
-        return Result.success("PostSection删除成功");
+        return Result.success(SectionConstant.SECTION_DELETE_SUCCESS);
     }
 }

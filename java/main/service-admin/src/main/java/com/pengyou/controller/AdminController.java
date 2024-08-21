@@ -4,6 +4,7 @@ import com.pengyou.config.properties.JwtProperties;
 import com.pengyou.constant.AccountConstant;
 import com.pengyou.constant.JwtClaimsConstant;
 import com.pengyou.constant.RedisConstant;
+import com.pengyou.constant.VerifyConstant;
 import com.pengyou.exception.common.CaptchaErrorException;
 import com.pengyou.model.Result;
 import com.pengyou.model.dto.admin.*;
@@ -24,7 +25,7 @@ import java.util.HashMap;
 @Api
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/admin/account")
 public class AdminController {
     private final AdminService adminService;
     private final JwtProperties jwtProperties;
@@ -46,6 +47,10 @@ public class AdminController {
             throw new CaptchaErrorException();
         }
 
+        if(adminForRegister.getRole() == 0){
+            adminForRegister.setRole((short) 2);
+        }
+
         adminService.register(adminForRegister);
         return Result.success(AccountConstant.ACCOUNT_REGISTER_SUCCESS);
     }
@@ -56,7 +61,7 @@ public class AdminController {
             @RequestBody AdminForVerify adminForVerify
     ) {
         adminService.verify(adminForVerify);
-        return Result.success("Admin验证成功");
+        return Result.success(VerifyConstant.VERIFY_CODE_SENT);
     }
 
     @Api
@@ -83,7 +88,7 @@ public class AdminController {
             @RequestBody AdminForLogout adminForLogout
     ) {
         adminService.logout(adminForLogout);
-        return Result.success("Admin登出成功");
+        return Result.success(AccountConstant.ACCOUNT_LOGOUT_SUCCESS);
     }
 
     @Api
@@ -101,7 +106,7 @@ public class AdminController {
             @RequestBody AdminForUpdate adminForUpdate
     ) {
         adminService.update(adminForUpdate);
-        return Result.success("Admin更新成功");
+        return Result.success(AccountConstant.ACCOUNT_CHANGE_SUCCESS);
     }
 
     @Api

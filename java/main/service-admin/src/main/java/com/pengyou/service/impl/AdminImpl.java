@@ -1,9 +1,12 @@
 package com.pengyou.service.impl;
 
 import com.pengyou.constant.AccountConstant;
+import com.pengyou.constant.AuthorityConstant;
 import com.pengyou.constant.RedisConstant;
+import com.pengyou.exception.BaseException;
 import com.pengyou.exception.InitFailedException;
 import com.pengyou.exception.LoginFailedException;
+import com.pengyou.exception.NoAuthorityException;
 import com.pengyou.exception.common.InputInvalidException;
 import com.pengyou.model.dto.admin.*;
 import com.pengyou.model.entity.Admin;
@@ -15,6 +18,7 @@ import com.pengyou.util.verify.MailUtil;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.ast.Predicate;
+import org.babyfish.jimmer.sql.ast.mutation.SimpleSaveResult;
 import org.babyfish.jimmer.sql.ast.tuple.Tuple3;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -63,8 +67,16 @@ public class AdminImpl implements AdminService {
                     }
             );
         }
-        sqlClient
+        SimpleSaveResult<Admin> insert = sqlClient
                 .insert(adminForRegister);
+
+        sqlClient
+                .createUpdate(adminTable)
+                .set(adminTable.createdPerson(), insert.getModifiedEntity().id())
+                .set(adminTable.modifiedPerson(), insert.getModifiedEntity().id())
+                .where(adminTable.username().eq(insert.getModifiedEntity().username()))
+                .execute();
+
 
     }
 
@@ -98,19 +110,29 @@ public class AdminImpl implements AdminService {
 
     @Override
     public void update(AdminForUpdate adminForUpdate) {
+        if (adminForUpdate.getModifiedPerson() == adminForUpdate.getCreatedPerson()) {
+            throw new NoAuthorityException(AuthorityConstant.NO_AUTHORIZATION);
+        }
+
         sqlClient
                 .update(adminForUpdate);
     }
 
     @Override
     public List<AdminForView> query(AdminForQuery adminForQuery) {
-        return sqlClient
+
+        List<AdminForView> execute = sqlClient
                 .createQuery(adminTable)
                 .where(adminForQuery)
                 .select(
                         adminTable.fetch(AdminForView.class)
                 )
                 .execute();
+
+        if (execute.isEmpty()) {
+            throw new BaseException("Admin查询失败");
+        }
+        return execute;
     }
 
     @Override
@@ -126,7 +148,7 @@ public class AdminImpl implements AdminService {
         Optional<AdminForLoginView> first = execute.stream().findFirst();
 
         if (first.isEmpty()) {
-            throw new LoginFailedException("");
+            throw new LoginFailedException("Admin登录失败");
         }
 
         return first.get();
