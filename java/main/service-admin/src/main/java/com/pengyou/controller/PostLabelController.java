@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-//@Api
+@Api
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/post-label")
+@RequestMapping("/admin/post-label")
 public class PostLabelController {
     private final PostLabelService postLabelService;
 

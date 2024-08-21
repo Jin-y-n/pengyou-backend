@@ -82,6 +82,15 @@ redis:
     database: ${redis.lock.database}
     connect-time-out: ${redis.lock.connect-time-out}
     time-out: ${redis.lock.time-out}
+pengyou:
+  jwt:
+    secret-key: ${pengyou.jwt.secret-key}
+    expiration: ${pengyou.jwt.expiration}
+    token-name: ${pengyou.jwt.token-name}
+    ttl: ${pengyou.jwt.ttl}
+
+
+
 
 
 

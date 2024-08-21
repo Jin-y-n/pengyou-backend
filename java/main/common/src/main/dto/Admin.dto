@@ -8,8 +8,6 @@ input AdminForRegister {
     phone
     createdTime
     modifiedTime
-    createdPerson
-    modifiedPerson
     role
     captcha : String
 }
@@ -50,9 +48,8 @@ input AdminForUpdate {
     email
     phone
     modifiedTime
+    createdPerson
     modifiedPerson
-    role
-    modifiedByRoot
 }
 
 specification AdminForQuery {

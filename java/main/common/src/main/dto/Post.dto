@@ -52,11 +52,11 @@ PostForView{
     createdPerson
     modifiedPerson
     labels{
-        #allScalars
+        #allScalars(this)
         -description
     }
     sections{
-        #allScalars
+        #allScalars(this)
         -description
     }
     deleteAt
@@ -65,3 +65,36 @@ PostForView{
 PostForDelete{
     ids: MutableList<Long?>
 }
+
+specification SearchForPosts {
+    id
+    author
+    like/i(title)
+    like/i(content)
+    flat(labels) {
+        valueIn(id) as labelIds
+        valueIn(label) as labelNames
+    }
+    flat(sections) {
+        valueIn(id) as sectionIds
+        valueIn(section) as sectionNames
+    }
+}
+
+SearchForPostsView {
+    id
+    author
+    title
+    content
+    createdAt
+    modifiedAt
+    labels {
+        id
+        label
+    }
+    sections {
+        id
+        section
+    }
+}
+

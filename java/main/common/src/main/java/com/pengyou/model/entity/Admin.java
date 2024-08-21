@@ -1,6 +1,5 @@
 package com.pengyou.model.entity;
 
-import com.esotericsoftware.kryo.util.Null;
 import org.babyfish.jimmer.sql.*;
 
 
@@ -36,20 +35,16 @@ public interface Admin {
     @Nullable
     LocalDateTime modifiedTime();
 
-    @Nullable
-    Long createdPerson();
+    long createdPerson();
 
-    @Nullable
-    Long modifiedPerson();
+    long modifiedPerson();
 
     @Nullable
     @LogicalDeleted("now")
     LocalDateTime deleteAt();
 
-    @Nullable
-    Short role();
+    short role(); // 1：超级管理员 2：普通管理员
 
-    @Nullable
-    Short modifiedByRoot();
+    short modifiedByRoot(); // 1:被超级修改 0：被普通修改
 }
 
