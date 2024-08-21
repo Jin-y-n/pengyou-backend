@@ -1,0 +1,31 @@
+export com.pengyou.model.entity.PostSection
+    -> package com.pengyou.model.dto.postsection
+
+input PostSectionForAdd{
+    #allScalars(this)!
+    -id
+}
+
+PostSectionForDelete{
+    ids: MutableList<Long?>
+}
+
+specification SearchForSections {
+    id
+    like/i(section)
+    like/i(description)
+}
+
+SearchForSectionsView {
+    #allScalars(this)
+}
+
+specification SectionForQuery {
+    id
+    section
+}
+
+SectionForQueryView {
+    #allScalars(this)
+}
+

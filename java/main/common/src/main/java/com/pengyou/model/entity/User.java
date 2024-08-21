@@ -1,14 +1,11 @@
 package com.pengyou.model.entity;
 
-import org.babyfish.jimmer.sql.Entity;
-import org.babyfish.jimmer.sql.Id;
-import org.babyfish.jimmer.sql.GeneratedValue;
-import org.babyfish.jimmer.sql.Key;
+import org.babyfish.jimmer.sql.*;
 
-import org.babyfish.jimmer.sql.GenerationType;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Entity for table "user"
@@ -69,5 +66,17 @@ public interface User {
     Long modifiedPerson();
 
     Short modifiedByAdmin();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_tag_mapping",
+            joinColumnName = "user_id",
+            inverseJoinColumnName = "tag_id"
+    )
+    List<Tag> tags();
+
+    @OneToOne(mappedBy = "user")
+    @Nullable
+    UserProfile userProfile();
 }
 

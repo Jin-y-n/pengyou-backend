@@ -17,11 +17,23 @@ func GinRouter() *gin.Engine {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// websocket connect
-	conn := r.Group("/websocket")
+	conn := r.Group("/connect")
 	{
 		conn.POST("/establish", controller.Establish)
+		conn.POST("/establish-chat-to", controller.EstablishChatTo)
 		conn.POST("/shutdown", controller.Shutdown)
 		conn.POST("/cut-chat", controller.CutChat)
+		conn.POST("/heart-beat", controller.HeartBeat)
+	}
+
+	chat := r.Group("/chat")
+	{
+		chat.POST("/saf", nil)
+	}
+
+	search := r.Group("/query")
+	{
+		search.POST("/post", controller.SearchPost)
 	}
 
 	return r

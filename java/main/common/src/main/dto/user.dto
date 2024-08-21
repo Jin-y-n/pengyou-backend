@@ -13,3 +13,35 @@ input UserForVerify {
     email
 }
 
+specification SearchForUsers {
+    id
+    like/i(username)
+    email
+    phone
+    tags {
+        id
+        like/i(name)
+    }
+}
+
+SearchForUsersView {
+    id
+    loginTime
+    userProfile {
+        id
+        userId
+        displayName
+        avatarId
+        bio
+        gender
+        occupation
+        education
+        school
+        major
+        website
+    }
+    tags {
+        id
+        name
+    }
+}

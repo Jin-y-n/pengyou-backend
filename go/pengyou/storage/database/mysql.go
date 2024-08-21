@@ -53,7 +53,11 @@ func InitMySQL(cfg *config.Config) *gorm.DB {
 	if err != nil {
 		panic("failed to connect database")
 	}
-	sqlDB.Ping()
+	err = sqlDB.Ping()
+	if err != nil {
+		panic("failed to connect database")
+		return nil
+	}
 
 	plog.Info("mysql connect success -> " +
 		mysqlConfig.Host + ":" +

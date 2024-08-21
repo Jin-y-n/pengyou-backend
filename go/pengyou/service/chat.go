@@ -11,7 +11,12 @@ import (
 	"pengyou/model/common/request"
 	"pengyou/storage"
 	rds "pengyou/storage/redis"
+	chatutil "pengyou/utils/chat"
+	fileutil "pengyou/utils/file"
 	"pengyou/utils/log"
+	strutil "pengyou/utils/string"
+	wsutil "pengyou/utils/ws"
+	"strconv"
 	"strings"
 	"time"
 
@@ -21,13 +26,13 @@ import (
 
 var mesDispatchRule = make(map[string]func(message string))
 
-// this file implements the chat function
+// MsgHandler this file implements the chat function
 func MsgHandler(userNode *model.UserNode) {
 
-	// check the connect
+	// check connect
 	ws := userNode.Conn
 	if config.Cfg == nil || config.Cfg.App.PublishKey == "" {
-		ws.WriteMessage(websocket.TextMessage, []byte(constant.SERVER_ERROR))
+		wsutil.SendTextMessage(ws, constant.ServerError)
 		log.Error("PublishKey is not configured")
 		return
 	}
@@ -36,7 +41,7 @@ func MsgHandler(userNode *model.UserNode) {
 	go MsgSubscribe(ws, userNode)
 }
 
-// publish the message to redis
+// MsgPublish publish the message to redis
 func MsgPublish(ws *websocket.Conn, userNode *model.UserNode) {
 
 	// handler message
@@ -54,38 +59,33 @@ func MsgPublish(ws *websocket.Conn, userNode *model.UserNode) {
 					return
 				}
 			}
-			// TODO: uncommit this part to confirm the message time --------------------------------------------
 			// check the send time of the message is valid or not
-			// if math.Abs(float64(message.CreateAt.UnixMilli()-time.Now().UnixMilli())) > 1000 {
-			// 	log.Warn("message time error")
-			// 	ws.WriteMessage(websocket.TextMessage, []byte("message time error, please check your network and try again"))
-			// 	return
-			// }
+			if math.Abs(float64(message.CreateAt.UnixMilli()-time.Now().UnixMilli())) > 1000 {
+				log.Warn("message time error")
+				wsutil.SendTextMessage(ws, "message time error, please check your network and try again")
+				return
+			}
 			log.Info("read ws message:" + string(message.Content))
 
 			switch message.RequestType {
-			case constant.MESSAGE_TYPE_TEXT:
+			case constant.MessageTypeText:
 				publishText(message)
-			case constant.MESSAGE_TYPE_FILE_REQUEST:
+			case constant.MessageTypeFileRequest:
 				success := uploadFile(ws, message.Content)
 				if !success {
-					ws.WriteMessage(websocket.TextMessage,
-						[]byte("upload file error, please try again"))
+					wsutil.SendTextMessage(ws, "upload file error, please try again")
 					return
 				}
 
-				ws.WriteMessage(websocket.TextMessage,
-					[]byte("upload file success"))
+				wsutil.SendTextMessage(ws, "upload file success")
+
 				publishText(message)
 			}
-
-			math.Abs(1)
-
 		}()
 	}
 
 	defer func() {
-		ws.Close()
+		wsutil.Close(ws)
 		log.Info("close websocket")
 	}()
 }
@@ -113,10 +113,55 @@ func MsgSubscribe(ws *websocket.Conn, userNode *model.UserNode) {
 				// send unhandled messages
 				for _, message := range result {
 
-					MessageDispatcher(message, map[string]func(message string))
+					// TODO: more message types
+					// MessageDispatcher(message, map[string]func(message string))
+					if strings.HasPrefix(message, constant.RedisDisconnectMessagePrefix) {
 
-					log.Info("sending message:" + message)
-					ws.WriteMessage(websocket.TextMessage, []byte(message))
+						from := strings.TrimPrefix(message, constant.RedisDisconnectMessagePrefix)
+						userNode.Chatters = strutil.RemoveElementByValue(userNode.Chatters, from)
+						wsutil.SendTextMessage(ws, constant.RESP_DISCONNECT_MESSAGE_PREFIX+from)
+
+					} else if strings.HasPrefix(message, constant.RedisEstablishChatMessageFromPrefix) {
+
+						go func() {
+							from := strings.TrimPrefix(message, constant.RedisEstablishChatMessageFromPrefix)
+
+							wsutil.SendTextMessage(ws, constant.RespEstablishChatMessageFromPrefix+from)
+
+							chatutil.AddEstablishRequestNode(from, strconv.Itoa(int(userNode.User.ID)))
+							count := 1
+							for {
+								time.Sleep(1 * time.Second)
+
+								if count < 6 && chatutil.GetEstablishRequestNode(from, strconv.Itoa(int(userNode.User.ID))) {
+									chatutil.RemoveEstablishRequestNode(from, strconv.Itoa(int(userNode.User.ID)))
+									userNode.Chatters = append(userNode.Chatters, from)
+									wsutil.SendTextMessage(ws, constant.ChatEstablishSuccessFrom+from)
+
+									return
+								}
+
+								if count >= 6 {
+									wsutil.SendTextMessage(ws, constant.ChatEstablishFailFrom+from)
+									return
+								}
+								count++
+							}
+						}()
+					} else if strings.HasPrefix(message, constant.RedisCutChatMessageFromPrefix) {
+						from := strings.TrimPrefix(message, constant.RedisCutChatMessageFromPrefix)
+
+						userNode.Chatters = strutil.RemoveElementByValue(userNode.Chatters, from)
+						wsutil.SendTextMessage(ws, constant.RespChatCutFrom+from)
+					} else if strings.HasPrefix(message, constant.RedisUserDisconnect) {
+
+						from := strings.TrimPrefix(message, constant.RedisUserDisconnect)
+
+						userNode.Chatters = strutil.RemoveElementByValue(userNode.Chatters, from)
+						wsutil.SendTextMessage(ws, constant.RespChatterDisconnected+from)
+					} else {
+						wsutil.SendTextMessage(ws, message)
+					}
 
 					userNode.LastHandlerTime = now
 				}
@@ -126,7 +171,7 @@ func MsgSubscribe(ws *websocket.Conn, userNode *model.UserNode) {
 	}
 
 	defer func() {
-		ws.Close()
+		wsutil.Close(ws)
 		log.Info("close websocket")
 	}()
 }
@@ -137,7 +182,7 @@ func publishText(message *request.MessageIn) {
 		RecipientId: message.RecipientId,
 		SenderId:    message.SenderId,
 		SentAt:      time.Now(),
-		Type:        constant.MESSAGE_TYPE_TEXT,
+		Type:        constant.MessageTypeText,
 	}
 
 	// send message
@@ -159,7 +204,7 @@ func uploadFile(ws *websocket.Conn, fileName string) bool {
 	}
 	// w := bufio.NewWriter(file)
 
-	defer file.Close()
+	defer fileutil.Close(file)
 
 	// loop read
 	loop := true
@@ -186,7 +231,7 @@ func uploadFile(ws *websocket.Conn, fileName string) bool {
 
 func downloadFile(ws *websocket.Conn, fileName string) {
 	if file, success := storage.ReadFile(fileName); success {
-		defer file.Close()
+		defer fileutil.Close(file)
 
 		r := bufio.NewReader(file)
 		buf := make([]byte, config.Cfg.Files.ReadBufSize)
@@ -202,11 +247,11 @@ func downloadFile(ws *websocket.Conn, fileName string) {
 			// }
 		}
 	} else {
-		ws.WriteMessage(websocket.TextMessage, []byte("file not found"))
+		wsutil.SendTextMessage(ws, "file not found")
 	}
 }
 
-// this function is designed to dispatch the messages subscribed from redis
+// MessageDispatcher this function is designed to dispatch the messages subscribed from redis
 func MessageDispatcher(message string, rule map[string]func(message string)) {
 	for k, v := range rule {
 		if strings.HasPrefix(message, k) {

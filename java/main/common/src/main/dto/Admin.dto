@@ -1,0 +1,80 @@
+export com.pengyou.model.entity.Admin
+    -> package com.pengyou.model.dto.admin
+
+input AdminForRegister {
+    username
+    password
+    email
+    phone
+    createdTime
+    modifiedTime
+    role
+    captcha : String
+}
+
+specification AdminForLogin {
+    username
+    password
+    email
+    phone
+}
+
+AdminForLoginView {
+    id
+    username
+    password
+    email
+    phone
+    role
+}
+
+AdminForLogout {
+    id
+}
+
+AdminForVerify {
+    email
+    phone
+}
+
+AdminForDelete {
+    ids : MutableList<Long?>
+}
+
+input AdminForUpdate {
+    id
+    username
+    password
+    email
+    phone
+    modifiedTime
+    createdPerson
+    modifiedPerson
+}
+
+specification AdminForQuery {
+    id
+    like/i(username)
+    email
+    phone
+    ge(createdTime)
+    le(createdTime)
+    ge(modifiedTime)
+    le(modifiedTime)
+    createdPerson
+    modifiedPerson
+    role
+}
+
+AdminForView {
+    id
+    username
+    email
+    phone
+    createdTime
+    modifiedTime
+    createdPerson
+    modifiedPerson
+    deleteAt
+    role
+}

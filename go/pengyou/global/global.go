@@ -3,10 +3,10 @@ package global
 import (
 	"context"
 	"fmt"
+	"pengyou/router"
+	"pengyou/service"
 
 	"pengyou/global/config"
-	// "pengyou/router"
-	// "pengyou/service"
 	"pengyou/storage"
 	"pengyou/utils/log"
 
@@ -32,11 +32,11 @@ func Init() {
 	// init Logger
 	log.NewZapLogger(&globalConfig.Zap)
 
-	// service.Init(globalConfig)
 	storage.Init(globalConfig)
-	// GinEngine = router.Init(globalConfig)
-	Context = context.Background()
 
+	Context = context.Background()
+	service.Init(globalConfig)
+	GinEngine = router.Init(globalConfig)
 	config.Cfg = globalConfig
 }
 

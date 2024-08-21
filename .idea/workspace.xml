@@ -4,30 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="642aee68-99f1-462f-94cb-d2ead90d535f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/conn_constant.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/exception_constant.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/file_constant.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/message_constant.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/post_constant.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/redis_constant.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/request_constant.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/response_constant.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/time_constant.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/constant/user_constant.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/controller/connect.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/controller/connect.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/model/user_chat_list.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/model/user_node.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/model/user_node.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/service/chat.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/service/chat.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/service/connect.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/service/connect.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/service/init.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/service/init.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/storage/file.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/storage/file.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/storage/init.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/storage/init.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/pengyou/storage/redis/redis_encapsulated.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/pengyou/storage/redis/redis_encapsulated.go" afterDir="false" />
-    </list>
+    <list default="true" id="642aee68-99f1-462f-94cb-d2ead90d535f" name="Changes" comment="Changes" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -100,6 +77,10 @@
   <component name="GoLibraries">
     <option name="indexEntireGoPath" value="true" />
   </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -118,8 +99,10 @@
     &quot;Gradle.Build main.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.main [build].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.main [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.main:common [buildDependents].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.main:common [build].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.main:common [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.构建 main.executor&quot;: &quot;Run&quot;,
     &quot;Notification.DisplayName-DoNotAsk-Statistic Notification Group&quot;: &quot;Statistic&quot;,
     &quot;Notification.DoNotAsk-Statistic Notification Group&quot;: &quot;true&quot;,
     &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
@@ -133,13 +116,13 @@
     &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Spring Boot.ServiceAdmin.executor&quot;: &quot;Debug&quot;,
-    &quot;Spring Boot.ServiceUser.executor&quot;: &quot;Debug&quot;,
+    &quot;Spring Boot.ServiceAdmin.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.ServiceUser.executor&quot;: &quot;Run&quot;,
     &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
     &quot;jdk.selected.JAVA_MODULE&quot;: &quot;21&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/napbad/Project/Muti/pengyou/backend/.idea&quot;,
+    &quot;last_opened_file_path&quot;: &quot;F:/College/IDEA_project/pengyou-backend/java/main/service-user/src/main/resources&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -163,13 +146,14 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\College\IDEA_project\pengyou-backend\java\main\service-user\src\main\resources" />
+      <recent name="F:\College\IDEA_project\pengyou-backend\java\main\service-admin\src\main\resources" />
       <recent name="$PROJECT_DIR$/.idea" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/java/main/service-user/src/main/resources" />
-      <recent name="$PROJECT_DIR$/java/main/service-admin/src/main/resources" />
-      <recent name="$PROJECT_DIR$/java/main/common/src/main/resources" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\College\IDEA_project\pengyou-backend\java\main" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/temp/install" />
       <recent name="$PROJECT_DIR$/temp" />
@@ -188,7 +172,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.main:common [clean]">
+  <component name="RunManager" selected="Gradle.main:common [build]">
     <configuration name="main [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -223,6 +207,28 @@
         <option name="taskNames">
           <list>
             <option value="clean" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="main:common [buildDependents]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/java/main/common" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="buildDependents" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -293,8 +299,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.main:common [clean]" />
         <item itemvalue="Gradle.main:common [build]" />
+        <item itemvalue="Gradle.main:common [buildDependents]" />
+        <item itemvalue="Gradle.main:common [clean]" />
         <item itemvalue="Gradle.main [clean]" />
         <item itemvalue="Gradle.main [build]" />
       </list>
@@ -303,8 +310,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.20224.300" />
-        <option value="bundled-js-predefined-d6986cc7102b-410509235cf1-JavaScript-IU-242.20224.300" />
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
       </set>
     </attachedChunks>
   </component>
@@ -350,6 +357,11 @@
       <workItem from="1723985789082" duration="7000" />
       <workItem from="1724034893510" duration="828000" />
       <workItem from="1724047075851" duration="4000" />
+      <workItem from="1724155252220" duration="2609000" />
+      <workItem from="1724202393184" duration="5444000" />
+      <workItem from="1724207856463" duration="3186000" />
+      <workItem from="1724211056800" duration="17324000" />
+      <workItem from="1724238213252" duration="3373000" />
     </task>
     <servers />
   </component>

@@ -859,6 +859,221 @@ listening the websocket and receive the message
 
 # ADMIN-relative
 
+### AdminRegister (admin/account/register)
+
+#### Description
+
+Add an admin.
+
+#### input
+
+```json
+  {
+  "username": "string",
+  "password": "string",
+  "email": "example@exxample.com",
+  "phone": "1234567890",
+  "createdTime": "2023-04-01T12:00:00Z",
+  "modifiedTime": "2023-04-01T12:00:00Z",
+  "createdPerson": 0,
+  "modifiedPerson": 0,
+  "role": 0,
+  "captcha": "6-digit captcha"
+}
+```
+
+#### output
+
+```json
+  {
+  "message": ""
+}
+```
+
+### AdminLogin (admin/account/login)
+
+#### Description
+
+Login as an admin.
+
+#### input
+
+```json
+{
+  "username": "string",
+  "password": "string",
+  "email": "example@exxample.com",
+  "phone": "1234567890"
+}
+```
+
+#### output
+
+```json
+
+
+{
+  "user": {
+    "id": 0,
+   "username": "string",
+   "password": "string",
+   "email": "example@exxample.com",
+   "phone": "1234567890",
+   "role": 0
+  },
+  "jwt": "string"
+}
+```
+
+### AdminLogout (admin/account/logout)
+
+#### Description
+
+Logout as an admin.
+
+#### input
+
+```json
+  {
+  "id": 0
+}
+```
+
+#### output
+
+```json
+{
+  "message": ""
+}
+```
+
+### AdminUpdate (admin/account/update)
+
+#### Description
+
+Update an admin.
+
+#### input
+
+```json
+{
+  "id": 0,
+  "username": "string",
+  "password": "string",
+  "email": "example@example.com",
+  "phone": "1234567890"
+}
+```
+
+#### output
+
+```json
+{
+  "message": ""
+}
+
+```
+
+### AdminDelete (admin/account/delete)
+
+#### Description
+
+Delete an admin.
+
+#### input
+
+```json
+  {
+  "ids": [
+    0
+  ]
+}
+```
+
+#### output
+
+```json
+  {
+  "message": ""
+}
+```
+
+### AdminUpdate (admin/account/update)
+
+#### Description
+
+
+Update an admin.
+must be a complete object
+
+
+#### input
+
+```json
+  {
+  "id": 0,
+  "username": "string",
+  "password": "string",
+  "email": "example@example.com",
+  "phone": "1234567890",
+  "modifiedTime": "2023-04-01T12:00:00Z",
+  "modifiedPerson": 0,
+  "role": 0,
+  "modifiedByRoot": 0
+}
+```
+
+#### output
+
+```json
+  {
+  "message": ""
+}
+```
+
+### AdminQuery (admin/account/query)
+
+#### Description
+
+Queries admins.
+
+#### input
+
+```json
+  {
+  "id": 0,
+  "username": "string",
+  "password": "string",
+  "email": "example@example.com",
+  "phone": "1234567890",
+  "minCreatedTime": "2023-04-01T12:00:00Z",
+  "maxCreatedTime": "2023-04-01T12:00:00Z",
+  "minModifiedTime": "2023-04-01T12:00:00Z",
+  "maxModifiedTime": "2023-04-01T12:00:00Z",
+  "createdPerson": 0,
+  "modifiedPerson": 0,
+  "role": 0
+}
+```
+
+#### output
+
+```json
+  {
+  "id": 0,
+  "username": "string",
+  "password": "string",
+  "email": "example@example.com",
+  "phone": "1234567890",
+  "createdTime": "2023-04-01T12:00:00Z",
+  "modifiedTime": "2023-04-01T12:00:00Z",
+  "createdPerson": 0,
+  "modifiedPerson": 0,
+  "deleteAt": null,
+  "role": 0
+}
+```
+
 ### PostSectionAdd (/admin/post-section/add)
 
 #### Description
@@ -892,7 +1107,9 @@ Delete a post section.
 
 ```json
 {
-  "id": "1 // Section ID. "
+  "ids": [
+    0
+  ]
 }
 ```
 
@@ -941,7 +1158,9 @@ Delete a post label
 
 ```json
 {
-  "id": "1 // Label ID. "
+  "ids": [
+    0
+  ]
 }
 ```
 
@@ -976,7 +1195,7 @@ Queries posts.
   "status": 0,
   "createdPerson": 0,
   "modifiedPerson": 0,
-  "labelIds": [ 
+  "labelIds": [
     0
   ],
   "labelNames": [
@@ -1023,6 +1242,48 @@ Queries posts.
 ]
 ```
 
+### PostUpdate (admin/post/update)
+
+#### Description
+
+update posts.
+must a complete post object
+
+#### Input
+
+```json
+{
+  "id": 0,
+  "author": 0,
+  "title": "string",
+  "content": "string",
+  "status": 0,
+  "modifiedAt": "2024-08-20T06:04:53Z",
+  "modifiedPerson": 0,
+  "labels": [
+    {
+      "id": 0,
+      "label": "string"
+    }
+  ],
+  "sections": [
+    {
+      "id": 0,
+      "section": "string"
+    }
+  ]
+}
+
+```
+
+#### output
+
+```json
+{
+  "message": ""
+}
+```
+
 ### PostDelete (admin/post/delete)
 
 #### Description
@@ -1033,7 +1294,9 @@ Deletes a post.
 
 ```json
 {
-  "id": 0
+  "ids": [
+    0
+  ]
 }
 ```
 
@@ -1043,7 +1306,8 @@ Deletes a post.
    {
   "message": ""
 }
-```
+
+
 
 
 

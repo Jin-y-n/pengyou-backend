@@ -1,0 +1,100 @@
+export com.pengyou.model.entity.Post
+    -> package com.pengyou.model.dto.post
+
+input PostForUpdate {
+    id
+    author
+    title
+    content
+    status
+    modifiedAt
+    modifiedPerson
+    labels {
+        id
+        label
+    }
+    sections {
+        id
+        section
+    }
+}
+
+specification PostForQuery{
+    id
+    author
+    like/i(title)
+    like/i(content)
+    ge(createdAt)
+    le(createdAt)
+    ge(modifiedAt)
+    le(modifiedAt)
+    status
+    createdPerson
+    modifiedPerson
+    flat(labels) {
+        valueIn(id) as labelIds
+        valueIn(label) as labelNames
+    }
+    flat(sections) {
+        valueIn(id) as sectionIds
+        valueIn(section) as sectionNames
+    }
+}
+
+PostForView{
+    id
+    author
+    title
+    content
+    createdAt
+    modifiedAt
+    status
+    createdPerson
+    modifiedPerson
+    labels{
+        #allScalars(this)
+        -description
+    }
+    sections{
+        #allScalars(this)
+        -description
+    }
+    deleteAt
+}
+
+PostForDelete{
+    ids: MutableList<Long?>
+}
+
+specification SearchForPosts {
+    id
+    author
+    like/i(title)
+    like/i(content)
+    flat(labels) {
+        valueIn(id) as labelIds
+        valueIn(label) as labelNames
+    }
+    flat(sections) {
+        valueIn(id) as sectionIds
+        valueIn(section) as sectionNames
+    }
+}
+
+SearchForPostsView {
+    id
+    author
+    title
+    content
+    createdAt
+    modifiedAt
+    labels {
+        id
+        label
+    }
+    sections {
+        id
+        section
+    }
+}
+
