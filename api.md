@@ -18,7 +18,7 @@ Every response is formatted as JSON:
 
 ## User-related Endpoints
 
-### Verify (/user/account/register)
+### Verify (/user/account/verify)
 
 #### Description
 

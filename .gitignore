@@ -7,7 +7,7 @@
 **/application-live.yml
 **/config.yml
 **/config.yaml
-**/install/**/pengyou/
+install/**/pengyou/
 
 ### IntelliJ IDEA ###
 **/.idea/modules.xml

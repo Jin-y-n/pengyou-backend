@@ -11,9 +11,11 @@ package com.pengyou.service.impl;
 */
 
 import com.pengyou.constant.RedisConstant;
+import com.pengyou.exception.LoginFailedException;
 import com.pengyou.exception.common.InputInvalidException;
-import com.pengyou.model.dto.user.UserForAdd;
-import com.pengyou.model.dto.user.UserForVerify;
+import com.pengyou.model.dto.user.*;
+import com.pengyou.model.entity.AdminTable;
+import com.pengyou.model.entity.UserTable;
 import com.pengyou.service.UserService;
 import com.pengyou.util.security.AccountUtil;
 import com.pengyou.util.verify.CaptchaGenerator;
@@ -24,16 +26,18 @@ import org.babyfish.jimmer.sql.JSqlClient;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final JSqlClient jSqlClient;
-
     private final RedisTemplate<String, String> template;
-
     private final MailUtil mailUtil;
+    private final UserTable userTable = UserTable.$;
 
     @Override
     public void register(UserForAdd user) {
@@ -62,5 +66,30 @@ public class UserServiceImpl implements UserService {
         }
 
         throw new InputInvalidException();
+    }
+
+    @Override
+    public UserForLoginView login(UserForLogin userForLogin) {
+
+        List<UserForLoginView> execute = jSqlClient
+                .createQuery(userTable)
+                .where(userForLogin)
+                .select(
+                        userTable.fetch(UserForLoginView.class)
+                )
+                .execute();
+        Optional<UserForLoginView> first = execute.stream().findFirst();
+
+        if (first.isEmpty()) {
+            throw new LoginFailedException("");
+        }
+
+        return first.get();
+    }
+
+    @Override
+    public void update(UserForUpdate user) {
+        jSqlClient
+                .update(user);
     }
 }

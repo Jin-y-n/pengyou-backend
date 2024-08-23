@@ -8,10 +8,7 @@ import com.pengyou.model.dto.post.UserPostForUpdate;
 import com.pengyou.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.client.meta.Api;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api
 @RestController

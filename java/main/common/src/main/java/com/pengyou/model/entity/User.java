@@ -77,6 +77,6 @@ public interface User {
 
     @OneToOne(mappedBy = "user")
     @Nullable
-    UserProfile userProfile();
+    UserProfile profile();
 }
 
