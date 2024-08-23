@@ -11,6 +11,7 @@ import com.pengyou.model.entity.PostTable;
 import com.pengyou.service.PostService;
 import io.reactivex.rxjava3.exceptions.QueueOverflowException;
 import lombok.RequiredArgsConstructor;
+import org.babyfish.jimmer.Page;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.ast.mutation.SaveMode;
 import org.springframework.stereotype.Service;
@@ -24,18 +25,18 @@ public class PostImpl implements PostService {
     private final PostTable postTable = PostTable.$;
 
     @Override
-    public List<PostForView> query(PostForQuery postForQuery) {
-        List<PostForView> execute = sqlClient
+    public Page<PostForView> query(PostForQuery postForQuery) {
+        Page<PostForView> page = sqlClient
                 .createQuery(postTable)
                 .where(postForQuery)
                 .select(
                         postTable.fetch(PostForView.class)
                 )
-                .execute();
-        if (execute.isEmpty()){
+                .fetchPage(postForQuery.getPageIndex(), postForQuery.getPageSize());
+            if (page.getTotalRowCount() == 0){
             throw new BaseException("Post查询失败");
         }
-        return execute;
+        return page;
     }
 
     @Override

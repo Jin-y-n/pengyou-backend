@@ -27,7 +27,7 @@ public class SearchController {
             @RequestBody SearchForUsers searchForUsers
     ) {
 
-        return Result.success(searchService.searchUsers(searchForUsers));
+        return Result.success("Users查询成功",searchService.searchUsers(searchForUsers));
     }
 
     @Api
@@ -35,7 +35,7 @@ public class SearchController {
     public Result posts(
             @RequestBody SearchForPosts searchForPosts
     ) {
-        return Result.success(searchService.searchPosts(searchForPosts));
+        return Result.success("Posts查询成功",searchService.searchPosts(searchForPosts));
     }
 
     @Api
@@ -43,7 +43,7 @@ public class SearchController {
     public Result tags(
             @RequestBody SearchForTags searchFortags
     ) {
-        return Result.success(searchService.searchTags(searchFortags));
+        return Result.success("Tags查询成功",searchService.searchTags(searchFortags));
     }
 
     @Api
@@ -51,7 +51,7 @@ public class SearchController {
     public Result labels(
             @RequestBody SearchForLabels searchForlabels
     ) {
-        return Result.success(searchService.searchLabels(searchForlabels));
+        return Result.success("Labels查询成功",searchService.searchLabels(searchForlabels));
     }
 
     @Api
@@ -59,6 +59,6 @@ public class SearchController {
     public Result sections(
             @RequestBody SearchForSections searchForSections
     ) {
-        return Result.success(searchService.searchSections(searchForSections));
+        return Result.success("Sections查询成功",searchService.searchSections(searchForSections));
     }
 }

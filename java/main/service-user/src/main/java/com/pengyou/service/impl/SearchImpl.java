@@ -14,10 +14,10 @@ import com.pengyou.model.dto.user.SearchForUsersView;
 import com.pengyou.model.entity.*;
 import com.pengyou.service.SearchService;
 import lombok.RequiredArgsConstructor;
+import org.babyfish.jimmer.Page;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,77 +25,83 @@ public class SearchImpl implements SearchService {
     private final JSqlClient sqlClient;
 
     @Override
-    public List<SearchForUsersView> searchUsers(SearchForUsers searchForUsers) {
-        List<SearchForUsersView> execute = sqlClient
+    public Page<SearchForUsersView> searchUsers(SearchForUsers searchForUsers) {
+        Page<SearchForUsersView> page = sqlClient
                 .createQuery(UserTable.$)
                 .where(searchForUsers)
                 .select(
                         UserTable.$.fetch(SearchForUsersView.class)
                 )
-                .execute();
-        if (execute.isEmpty()){
-            throw new BaseException("用户查询失败");
+                .fetchPage(searchForUsers.getPageIndex(), searchForUsers.getPageSize());
+
+        if (page.getTotalRowCount() == 0) {
+            throw new BaseException("Post不存在");
         }
-        return execute;
+        return page;
     }
 
     @Override
-    public List<SearchForTagsView> searchTags(SearchForTags searchForTags) {
-        List<SearchForTagsView> execute = sqlClient
+    public Page<SearchForTagsView> searchTags(SearchForTags searchForTags) {
+        Page<SearchForTagsView> page = sqlClient
                 .createQuery(TagTable.$)
                 .where(searchForTags)
                 .select(
                         TagTable.$.fetch(SearchForTagsView.class)
                 )
-                .execute();
-        if (execute.isEmpty()){
-            throw new BaseException("用户查询失败");
+                .fetchPage(searchForTags.getPageIndex(), searchForTags.getPageSize());
+
+        if (page.getTotalRowCount() == 0) {
+            throw new BaseException("Post不存在");
         }
-        return execute;
+        return page;
     }
 
     @Override
-    public List<SearchForLabelsView> searchLabels(SearchForLabels searchForLabels) {
-        List<SearchForLabelsView> execute = sqlClient
+    public Page<SearchForLabelsView> searchLabels(SearchForLabels searchForLabels) {
+        Page<SearchForLabelsView> page = sqlClient
                 .createQuery(PostLabelTable.$)
                 .where(searchForLabels)
                 .select(
                         PostLabelTable.$.fetch(SearchForLabelsView.class)
                 )
-                .execute();
-        if (execute.isEmpty()){
-            throw new BaseException("用户查询失败");
+                .fetchPage(searchForLabels.getPageIndex(), searchForLabels.getPageSize());
+
+        if (page.getTotalRowCount() == 0) {
+            throw new BaseException("Post不存在");
         }
-        return execute;
+        return page;
     }
 
     @Override
-    public List<SearchForSectionsView> searchSections(SearchForSections searchForSections) {
-        List<SearchForSectionsView> execute = sqlClient
+    public Page<SearchForSectionsView> searchSections(SearchForSections searchForSections) {
+        Page<SearchForSectionsView> page = sqlClient
                 .createQuery(PostSectionTable.$)
                 .where(searchForSections)
                 .select(
                         PostSectionTable.$.fetch(SearchForSectionsView.class)
                 )
-                .execute();
-        if (execute.isEmpty()){
-            throw new BaseException("用户查询失败");
+                .fetchPage(searchForSections.getPageIndex(), searchForSections.getPageSize());
+
+        if (page.getTotalRowCount() == 0) {
+            throw new BaseException("Post不存在");
         }
-        return execute;
+        return page;
     }
 
     @Override
-    public List<SearchForPostsView> searchPosts(SearchForPosts searchForPosts) {
-        List<SearchForPostsView> execute = sqlClient
+    public Page<SearchForPostsView> searchPosts(SearchForPosts searchForPosts) {
+        Page<SearchForPostsView> page = sqlClient
                 .createQuery(PostTable.$)
                 .where(searchForPosts)
                 .select(
                         PostTable.$.fetch(SearchForPostsView.class)
                 )
-                .execute();
-        if (execute.isEmpty()){
-            throw new BaseException("用户查询失败");
+                .fetchPage(searchForPosts.getPageIndex(), searchForPosts.getPageSize());
+
+
+        if (page.getTotalRowCount() == 0) {
+            throw new BaseException("Post不存在");
         }
-        return execute;
+        return page;
     }
 }

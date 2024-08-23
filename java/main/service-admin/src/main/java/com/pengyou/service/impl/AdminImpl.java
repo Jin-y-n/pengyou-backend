@@ -16,6 +16,7 @@ import com.pengyou.util.security.AccountUtil;
 import com.pengyou.util.verify.CaptchaGenerator;
 import com.pengyou.util.verify.MailUtil;
 import lombok.RequiredArgsConstructor;
+import org.babyfish.jimmer.Page;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.ast.Predicate;
 import org.babyfish.jimmer.sql.ast.mutation.SimpleSaveResult;
@@ -119,20 +120,20 @@ public class AdminImpl implements AdminService {
     }
 
     @Override
-    public List<AdminForView> query(AdminForQuery adminForQuery) {
+    public Page<AdminForView> query(AdminForQuery adminForQuery) {
 
-        List<AdminForView> execute = sqlClient
+        Page<AdminForView> page = sqlClient
                 .createQuery(adminTable)
                 .where(adminForQuery)
                 .select(
                         adminTable.fetch(AdminForView.class)
                 )
-                .execute();
+                .fetchPage(adminForQuery.getPageIndex(), adminForQuery.getPageSize());
 
-        if (execute.isEmpty()) {
+        if (page.getTotalRowCount() == 0) {
             throw new BaseException("Admin查询失败");
         }
-        return execute;
+        return page;
     }
 
     @Override

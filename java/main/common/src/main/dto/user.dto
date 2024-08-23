@@ -29,11 +29,11 @@ UserForLoginView {
     phone
     loginTime
     tags{
-    #allScalars
+    #allScalars(this)
     -description
     }
     profile{
-    #allScalars
+    #allScalars(this)
     -modifiedAt
     -createdPerson
     -modifiedPerson
@@ -43,7 +43,7 @@ UserForLoginView {
 
 input UserForUpdate {
     profile{
-    #allScalars
+    #allScalars(this)
     -createdAt
     -modifiedAt
     -createdPerson
@@ -53,6 +53,8 @@ input UserForUpdate {
 }
 
 specification SearchForUsers {
+    pageIndex: Int
+    pageSize: Int
     id
     like/i(username)
     email

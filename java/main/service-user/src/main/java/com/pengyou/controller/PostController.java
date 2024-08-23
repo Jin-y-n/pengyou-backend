@@ -48,6 +48,7 @@ public class PostController {
     public Result queryPost(
             @RequestBody UserPostForQuery userPostForQuery
     ) {
+        System.out.println(userPostForQuery.getPageIndex());
         return Result.success("Post查询成功",postService.queryPost(userPostForQuery));
     }
 }

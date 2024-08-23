@@ -20,6 +20,8 @@ input PostForUpdate {
 }
 
 specification PostForQuery{
+    pageIndex: Int
+    pageSize: Int
     id
     author
     like/i(title)
@@ -67,6 +69,8 @@ PostForDelete{
 }
 
 specification SearchForPosts {
+    pageIndex: Int
+    pageSize: Int
     id
     author
     like/i(title)
@@ -135,6 +139,8 @@ input UserPostForDelete {
 }
 
 specification UserPostForQuery {
+    pageIndex: Int
+    pageSize: Int
     id
     author
     like/i(title)

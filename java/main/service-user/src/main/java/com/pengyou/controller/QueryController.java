@@ -21,7 +21,7 @@ public class QueryController {
     public Result queryLabel(
             @RequestBody LabelForQuery labelForQuery
     ) {
-        return Result.success(queryService.queryLabel(labelForQuery));
+        return Result.success("Label查询成功",queryService.queryLabel(labelForQuery));
     }
 
     @Api
@@ -29,7 +29,7 @@ public class QueryController {
     public Result querySection(
             @RequestBody SectionForQuery sectionForQuery
     ) {
-        return Result.success(queryService.querySection(sectionForQuery));
+        return Result.success("Section查询成功",queryService.querySection(sectionForQuery));
     }
 
     @Api
@@ -37,7 +37,7 @@ public class QueryController {
     public Result queryTag(
             @RequestBody TagForQuery tagForQuery
     ) {
-        return Result.success(queryService.queryTag(tagForQuery));
+        return Result.success("Tag查询成功",queryService.queryTag(tagForQuery));
     }
 
 }

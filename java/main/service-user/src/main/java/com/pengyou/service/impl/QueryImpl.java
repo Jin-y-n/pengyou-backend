@@ -12,10 +12,10 @@ import com.pengyou.model.entity.PostSectionTable;
 import com.pengyou.model.entity.TagTable;
 import com.pengyou.service.QueryService;
 import lombok.RequiredArgsConstructor;
+import org.babyfish.jimmer.Page;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,56 +23,52 @@ import java.util.Optional;
 public class QueryImpl implements QueryService {
     private final JSqlClient sqlClient;
     @Override
-    public TagForQueryView queryTag(TagForQuery tagForQuery) {
-        List<TagForQueryView> execute = sqlClient
+    public Page<TagForQueryView> queryTag(TagForQuery tagForQuery) {
+        Page<TagForQueryView> page = sqlClient
                 .createQuery(TagTable.$)
                 .where(tagForQuery)
                 .select(
                         TagTable.$.fetch(TagForQueryView.class)
                 )
-                .execute();
+                .fetchPage(tagForQuery.getPageIndex(),tagForQuery.getPageSize());
 
-        Optional<TagForQueryView> first = execute.stream().findFirst();
 
-        if (first.isEmpty()) {
-            throw new BaseException("Tag不存在");
+        if (page.getTotalRowCount() == 0) {
+            throw new BaseException("Post不存在");
         }
-        return first.get();
+        return page;
     }
 
     @Override
-    public LabelForQueryView queryLabel(LabelForQuery labelForQuery) {
-        List<LabelForQueryView> execute = sqlClient
+    public Page<LabelForQueryView> queryLabel(LabelForQuery labelForQuery) {
+        Page<LabelForQueryView> page = sqlClient
                 .createQuery(PostLabelTable.$)
                 .where(labelForQuery)
                 .select(
                         PostLabelTable.$.fetch(LabelForQueryView.class)
                 )
-                .execute();
+                .fetchPage(labelForQuery.getPageIndex(),labelForQuery.getPageSize());
 
-        Optional<LabelForQueryView> first = execute.stream().findFirst();
-
-        if (first.isEmpty()) {
-            throw new BaseException("Label不存在");
+        if (page.getTotalRowCount() == 0) {
+            throw new BaseException("Post不存在");
         }
-        return first.get();
+        return page;
     }
 
     @Override
-    public SectionForQueryView querySection(SectionForQuery sectionForQuery) {
-        List<SectionForQueryView> execute = sqlClient
+    public Page<SectionForQueryView> querySection(SectionForQuery sectionForQuery) {
+        Page<SectionForQueryView> page = sqlClient
                 .createQuery(PostSectionTable.$)
                 .where(sectionForQuery)
                 .select(
                         PostSectionTable.$.fetch(SectionForQueryView.class)
                 )
-                .execute();
+                .fetchPage(sectionForQuery.getPageIndex(),sectionForQuery.getPageSize());
 
-        Optional<SectionForQueryView> first = execute.stream().findFirst();
 
-        if (first.isEmpty()) {
-            throw new BaseException("Section不存在");
+        if (page.getTotalRowCount() == 0) {
+            throw new BaseException("Post不存在");
         }
-        return first.get();
+        return page;
     }
 }

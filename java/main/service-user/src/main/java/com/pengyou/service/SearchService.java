@@ -10,13 +10,14 @@ import com.pengyou.model.dto.tag.SearchForTags;
 import com.pengyou.model.dto.tag.SearchForTagsView;
 import com.pengyou.model.dto.user.SearchForUsers;
 import com.pengyou.model.dto.user.SearchForUsersView;
+import org.babyfish.jimmer.Page;
 
-import java.util.List;
+
 
 public interface SearchService {
-    List<SearchForUsersView> searchUsers(SearchForUsers searchForUsers);
-    List<SearchForTagsView> searchTags(SearchForTags searchForTags);
-    List<SearchForLabelsView> searchLabels(SearchForLabels searchForLabel);
-    List<SearchForSectionsView> searchSections(SearchForSections searchForSections);
-    List<SearchForPostsView> searchPosts(SearchForPosts searchForPosts);
+    Page<SearchForUsersView> searchUsers(SearchForUsers searchForUsers);
+    Page<SearchForTagsView> searchTags(SearchForTags searchForTags);
+    Page<SearchForLabelsView> searchLabels(SearchForLabels searchForLabel);
+    Page<SearchForSectionsView> searchSections(SearchForSections searchForSections);
+    Page<SearchForPostsView> searchPosts(SearchForPosts searchForPosts);
 }
