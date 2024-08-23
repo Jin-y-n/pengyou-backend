@@ -19,7 +19,7 @@ import org.babyfish.jimmer.client.meta.Api;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
-@Api
+//@Api
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
