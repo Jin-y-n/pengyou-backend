@@ -72,6 +72,8 @@ public class AdminController {
     public Result login(
             @RequestBody AdminForLogin adminForLogin
     ) {
+        // 密码加密
+        adminForLogin.setPassword(SHA256Encryption.getSHA256(adminForLogin.getPassword()));
         AdminForLoginView admin = this.adminService.login(adminForLogin);
         if (admin != null) {
             HashMap<String, Object> map = new HashMap<>();

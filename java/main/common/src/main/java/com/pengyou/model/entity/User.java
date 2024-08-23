@@ -4,6 +4,7 @@ import com.pengyou.cnoverter.PasswordConverter;
 import org.babyfish.jimmer.jackson.JsonConverter;
 import org.babyfish.jimmer.sql.*;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
@@ -23,7 +24,7 @@ public interface User {
     @Key
     String username();
 
-    @JsonConverter(PasswordConverter.class)
+    @NotNull
     String password();
 
     @Nullable

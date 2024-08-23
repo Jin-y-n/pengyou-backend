@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
-@ConfigurationProperties(prefix = "moyanshushe.auth.exclude")
+@ConfigurationProperties(prefix = "pengyou.auth.exclude")
 public class AuthExcludePathProperties {
     private List<String> excludePaths;
 

@@ -44,6 +44,7 @@ public class UserController {
             @RequestBody UserForAdd user
             ) {
 
+
         String captcha = user.getCaptcha();
 
         if (captcha.equals(template.opsForValue().get(RedisConstant.USER_CAPTCHA+user.getEmail()))) {
@@ -54,6 +55,8 @@ public class UserController {
             throw new CaptchaErrorException();
         }
 
+        // 密码加密
+        user.setPassword(SHA256Encryption.getSHA256(user.getPassword()));
         userService.register(user);
 
         return Result.success("success -- register");
@@ -75,6 +78,8 @@ public class UserController {
     public Result login(
             @RequestBody UserForLogin userForLogin
     ) {
+        // 密码加密
+        userForLogin.setPassword(SHA256Encryption.getSHA256(userForLogin.getPassword()));
         UserForLoginView user = this.userService.login(userForLogin);
         if (user != null) {
             HashMap<String, Object> map = new HashMap<>();
@@ -93,7 +98,7 @@ public class UserController {
     public Result update(
             @RequestBody UserForUpdate user
     ) {
-
+//        user.
         userService.update(user);
         return Result.success("Profile update successful");
     }

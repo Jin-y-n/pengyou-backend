@@ -29,15 +29,16 @@ UserForLoginView {
     phone
     loginTime
     tags{
-    #allScalars(this)
-    -description
+        #allScalars(this)
+        -description
     }
     profile{
     #allScalars(this)
-    -modifiedAt
-    -createdPerson
-    -modifiedPerson
-    -modifiedByAdmin
+        -modifiedAt
+        -createdPerson
+        -modifiedPerson
+        -modifiedByAdmin
+        -deleteAt
     }
 }
 

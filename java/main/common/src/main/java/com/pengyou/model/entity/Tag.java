@@ -25,7 +25,7 @@ public interface Tag {
     String description();
 
     @ManyToMany(mappedBy = "tags")
-    List<User> user();
+    List<User> users();
 
 }
 

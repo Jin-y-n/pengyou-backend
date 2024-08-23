@@ -88,5 +88,15 @@ pengyou:
     expiration: ${pengyou.jwt.expiration}
     token-name: ${pengyou.jwt.token-name}
     ttl: ${pengyou.jwt.ttl}
+  auth:
+    exclude:
+      exclude-paths:
+        - /openapi.yml
+        - /openapi.html
+        - /ts.zip
+        - /favicon.ico
+        - /admin/account/register
+        - /admin/account/login
+        - /admin/account/verify
 
 
