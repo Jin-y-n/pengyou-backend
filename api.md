@@ -386,14 +386,16 @@ Adds a new post.
   "title": "New Post // Title. ",
   "content": "This is a new post. // Content. ",
   "status": "1 // Status (0 = Draft, 1 = Published). ",
-  "label": [
+  "labels": [
     {
-      "id": "1 // Label ID. "
+      "id": "1 // Label ID. ",
+      "label": "Developer // Label name"
     }
   ],
-  "section": [
+  "sections": [
     {
-      "id": "1 // Section ID. "
+      "id": "1 // Section ID. ",
+      "section": "Development // Section name"
     }
   ]
 }
@@ -425,14 +427,16 @@ Updates a post.
   "title": "Updated Post // Title. ",
   "content": "This is an updated post. // Content. ",
   "status": "1 // Status (0 = Draft, 1 = Published). ",
-  "label": [
+  "labels": [
     {
-      "id": "1 // Label ID. "
+      "id": "1 // Label ID. ",
+      "label": "Developer // Label name"
     }
   ],
-  "section": [
+  "sections": [
     {
-      "id": "1 // Section ID. "
+      "id": "1 // Section ID. ",
+      "section": "Development // Section name"
     }
   ]
 }
@@ -456,7 +460,9 @@ Deletes a post.
 
 ```json
 {
-  "id": "1 // Post ID. "
+  "ids": [
+    0
+  ]
 }
 ```
 
@@ -480,20 +486,25 @@ Queries posts published by himself/herself.1
 
 ```json
 {
-  "id": "1 // Post ID. ",
-  "author": "1 // Author ID. ",
-  "contain": "title,content,created_at,updated_at,status,section,label",
-  "status": "1 // Status (0 = Draft, 1 = Published). ",
-  "create_time_order_rule": "ASC // Create time order rule. ",
-  "labels": [
-    {
-      "id": "1 // Label ID. "
-    }
+  "id": 0,
+  "author": 0,
+  "title": "string",
+  "content": "string",
+  "minCreatedAt": "2023-04-01T12:00:00Z",
+  "maxCreatedAt": "2023-04-01T12:00:00Z",
+  "minModifiedAt": "2023-04-01T12:00:00Z",
+  "maxModifiedAt": "2023-04-01T12:00:00Z",
+  "labelsIds": [
+    0
   ],
-  "sections": [
-    {
-      "id": "1 // Section ID. "
-    }
+  "labelName": [
+    "string"
+  ],
+  "sectionsIds": [
+    0
+  ],
+  "sectionName": [
+    "string"
   ]
 }
 ```
@@ -524,7 +535,7 @@ author must not be null, create_time_order_rule default is ASC
 ]
 ```
 
-### TagQuery (/user/tag/query)
+### TagQuery (/user/query/tag) 
 
 #### Description
 
@@ -552,7 +563,7 @@ Queries tags.
 
 ```
 
-### LabelQuery (/user/label/query)
+### LabelQuery (/user/query/label)
 
 #### Description
 
@@ -563,7 +574,7 @@ Queries labels.
 ```json
 {
   "id": "1 // Label ID. ",
-  "name": "Label // Name. "
+  "label": "Label // Name. "
 }
 ```
 
@@ -573,14 +584,14 @@ Queries labels.
 [
   {
     "id": "1 // Label ID. ",
-    "name": "name // Label name",
+    "label": "name // Label name",
     "description": "description // Label description"
   }
 ]
 
 ```
 
-### SectionQuery (/user/section/query)
+### SectionQuery (/user/query/section)
 
 #### Description
 
@@ -591,7 +602,7 @@ Queries sections.
 ```json
 {
   "id": "1 // Section ID. ",
-  "name": "Section // Name. "
+  "section": "Section // Name. "
 }
 ```
 
@@ -601,7 +612,7 @@ Queries sections.
 [
   {
     "id": "1 // Section ID. ",
-    "name": "name // Section name",
+    "section": "name // Section name",
     "description": "description // Section description"
   }
 ]
@@ -619,10 +630,10 @@ Searches for users.
 ```json
 {
   "id": "1 // User ID. ",
-  "username": "johndoe // Username. ",
+  "username": "username // Username. ",
   "email": "johndoe@example.com // Email. ",
   "phone": "1234567890 // Phone number. ",
-  "tag": [
+  "tags": [
     {
       "id": "1 // Tag ID. ",
       "name": "Tag // Name. "
@@ -638,26 +649,26 @@ Searches for users.
 [
   {
     "id": "1    // User unique identifier.",
-    "login_time": "2023-04-01T12:00:00Z     // Last login time.",
+    "loginTime": "2023-04-01T12:00:00Z     // Last login time.",
     "user_profile": {
       "id": "1    // Unique identifier for the user profile.",
-      "user_id": "1     // User ID.",
-      "display_name": "John Doe     // Display name.",
-      "avatar_id": "https:    //example.com/avatar.jpg    // Avatar URL.",
+      "userId": "1     // User ID.",
+      "displayName": "John Doe     // Display name.",
+      "avatarId": "https:    //example.com/avatar.jpg    // Avatar URL.",
       "bio": "A passionate developer.     // Biography.",
       "gender": "0    // Gender (0 = Male, 1 = Female, 2 = Other).",
       "occupation": "Software Engineer    // Occupation.",
       "education": "Bachelor of Science in Computer Science     // Education background.",
       "school": "University of Technology     // School.",
       "major": "Computer Science    // Major.",
-      "website": "https:    //example.com/johndoe     // Website.",
-      "tag": [
-        {
-          "id": "1    // Unique identifier for the tag.",
-          "name": "Developer    // Tag name."
-        }
-      ]
-    }
+      "website": "https:    //example.com/johndoe     // Website."
+    },
+    "tags": [
+      {
+        "id": "1    // Unique identifier for the tag.",
+        "name": "Developer    // Tag name."
+      }
+    ]
   }
 ]
 
@@ -761,14 +772,18 @@ Searches for posts.
   "author": 0,
   "title": "string",
   "content": "string",
-  "label": {
-    "id": 0,
-    "name": "string"
-  },
-  "section": {
-    "id": 0,
-    "name": "string"
-  }
+  "labelsIds": [
+    0
+  ],
+  "labelName": [
+    "string"
+  ],
+  "sectionsIds": [
+    0
+  ],
+  "sectionName": [
+    "string"
+  ]
 }
 ```
 
@@ -781,13 +796,15 @@ Searches for posts.
     "author": 0,
     "title": "string",
     "content": "string",
-    "label": {
+    "createdAt": "2023-04-01T12:00:00Z",
+    "modifiedAt": "2023-04-01T12:00:00Z",
+    "labels": {
       "id": 0,
-      "name": "string"
+      "label": "string"
     },
-    "section": {
+    "sections": {
       "id": 0,
-      "name": "string"
+      "section": "string"
     }
   }
 ]
@@ -859,7 +876,7 @@ listening the websocket and receive the message
 
 # ADMIN-relative
 
-### AdminRegister (admin/account/register)
+### AdminRegister (admin/account/register) // 862
 
 #### Description
 
@@ -875,8 +892,6 @@ Add an admin.
   "phone": "1234567890",
   "createdTime": "2023-04-01T12:00:00Z",
   "modifiedTime": "2023-04-01T12:00:00Z",
-  "createdPerson": 0,
-  "modifiedPerson": 0,
   "role": 0,
   "captcha": "6-digit captcha"
 }
