@@ -7,15 +7,18 @@ import com.pengyou.model.dto.post.UserPostForQuery;
 import com.pengyou.model.dto.post.UserPostForUpdate;
 import com.pengyou.service.PostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.babyfish.jimmer.client.meta.Api;
 import org.springframework.web.bind.annotation.*;
 
 @Api
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user/post")
 public class PostController {
     private final PostService postService;
+
     @Api
     @PostMapping("/add")
     public Result addPost(
@@ -48,7 +51,6 @@ public class PostController {
     public Result queryPost(
             @RequestBody UserPostForQuery userPostForQuery
     ) {
-        System.out.println(userPostForQuery.getPageIndex());
-        return Result.success("Post查询成功",postService.queryPost(userPostForQuery));
+        return Result.success("Post查询成功", postService.queryPost(userPostForQuery));
     }
 }

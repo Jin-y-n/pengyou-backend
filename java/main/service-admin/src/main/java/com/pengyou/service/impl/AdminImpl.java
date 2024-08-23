@@ -111,7 +111,9 @@ public class AdminImpl implements AdminService {
 
     @Override
     public void update(AdminForUpdate adminForUpdate) {
-        if (adminForUpdate.getModifiedPerson() == adminForUpdate.getCreatedPerson()) {
+        if (adminForUpdate.getModifiedPerson() == adminForUpdate.getId()
+//            ||
+        ) {
             throw new NoAuthorityException(AuthorityConstant.NO_AUTHORIZATION);
         }
 

@@ -1138,6 +1138,33 @@ id must not be null
 }
 ```
 
+### PostSectionQuery (/admin/post-label/section)
+
+#### Description
+
+Add a post label
+
+#### input
+
+```json
+{
+  "id": 0,
+  "section": "section // section. "
+}
+```
+
+label must not be null
+
+#### output
+
+```json
+{
+  "id": 0,
+  "section": "label // Label. ",
+  "description": "description // Description. "
+}
+```
+
 ### PostLabelAdd (/admin/post-label/add)
 
 #### Description
@@ -1186,6 +1213,33 @@ id must not be null
 ```json
 {
   "message": ""
+}
+```
+
+### PostLabelQuery (/admin/post-label/query)
+
+#### Description
+
+Add a post label
+
+#### input
+
+```json
+{
+  "id": 0,
+  "label": "label // Label. "
+}
+```
+
+label must not be null
+
+#### output
+
+```json
+{
+  "id": 0,
+  "label": "label // Label. ",
+  "description": "description // Description. "
 }
 ```
 

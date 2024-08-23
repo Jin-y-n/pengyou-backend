@@ -33,3 +33,13 @@ SectionForQueryView {
     #allScalars(this)
 }
 
+specification PostSectionForQuery {
+    pageIndex: Int
+    pageSize: Int
+    id
+    like/i(section)
+}
+
+PostSectionForQueryView {
+    #allScalars(this)
+}

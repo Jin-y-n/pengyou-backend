@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.HashMap;
 
 @Api
@@ -32,7 +33,7 @@ import java.util.HashMap;
 public class AdminController {
     private final AdminService adminService;
     private final JwtProperties jwtProperties;
-    private final RedisTemplate<String,String> template;
+    private final RedisTemplate<String, String> template;
 
     @Api
     @PostMapping("/register")
@@ -42,9 +43,9 @@ public class AdminController {
 
         String captcha = adminForRegister.getCaptcha();
 
-        if (captcha.equals(template.opsForValue().get(RedisConstant.ADMIN_CAPTCHA+adminForRegister.getEmail()))) {
+        if (captcha.equals(template.opsForValue().get(RedisConstant.ADMIN_CAPTCHA + adminForRegister.getEmail()))) {
             adminForRegister.setPhone(null);
-        } else if (captcha.equals(template.opsForValue().get(RedisConstant.ADMIN_CAPTCHA+adminForRegister.getPhone()))) {
+        } else if (captcha.equals(template.opsForValue().get(RedisConstant.ADMIN_CAPTCHA + adminForRegister.getPhone()))) {
             adminForRegister.setEmail(null);
         } else {
             throw new CaptchaErrorException();
@@ -52,10 +53,10 @@ public class AdminController {
         // 密码加密
         adminForRegister.setPassword(SHA256Encryption.getSHA256(adminForRegister.getPassword()));
 
-        if(adminForRegister.getRole() == 0){
+        if (adminForRegister.getRole() == 0) {
             adminForRegister.setRole((short) 2);
         }
-        log.info("Admin:" + adminForRegister.getUsername()+", role：" + adminForRegister.getRole() + ",createTime:" + adminForRegister.getCreatedTime());
+        log.info("Admin: " + adminForRegister.getUsername() + ", role：" + adminForRegister.getRole() + ", createTime: " + adminForRegister.getCreatedTime());
         adminService.register(adminForRegister);
         return Result.success(AccountConstant.ACCOUNT_REGISTER_SUCCESS);
     }
@@ -65,8 +66,8 @@ public class AdminController {
     public Result verify(
             @RequestBody AdminForVerify adminForVerify
     ) {
-        String verificaiton = adminService.verify(adminForVerify);
-        log.info("Verification code: \""+ verificaiton +"\" has been sent.");
+        String verification = adminService.verify(adminForVerify);
+        log.info("Verification code: \"" + verification + "\" has been sent.");
         return Result.success(VerifyConstant.VERIFY_CODE_SENT);
     }
 
@@ -82,10 +83,11 @@ public class AdminController {
             HashMap<String, Object> map = new HashMap<>();
             map.put(JwtClaimsConstant.ID, admin.getId());
             String jwt = JwtUtil.createJWT(this.jwtProperties.getAdminSecretKey(), this.jwtProperties.getAdminTtl(), map);
-
+            log.info("Admin: " + admin.getUsername() + " login at " + new Date());
             return Result.success(new AdminLoginResult(admin.toEntity(), jwt));
 
         } else {
+            log.info("Admin: " + adminForLogin.getUsername() + " login failure at " + new Date());
             return Result.error(AccountConstant.ACCOUNT_LOGIN_FAILURE);
         }
     }
@@ -95,6 +97,7 @@ public class AdminController {
     public Result logout(
             @RequestBody AdminForLogout adminForLogout
     ) {
+        log.info("Admin logout at " + new Date());
         adminService.logout(adminForLogout);
         return Result.success(AccountConstant.ACCOUNT_LOGOUT_SUCCESS);
     }
@@ -105,6 +108,11 @@ public class AdminController {
             @RequestBody AdminForDelete adminForDelete
     ) {
         adminService.delete(adminForDelete);
+        if (!adminForDelete.getIds().isEmpty()) {
+            log.info("Admin:" + adminForDelete.getIds().toString() + "delete at " + new Date());
+        } else {
+            log.info("False delete");
+        }
         return Result.success("Admin删除成功");
     }
 
@@ -116,6 +124,7 @@ public class AdminController {
         // 密码加密
         adminForUpdate.setPassword(SHA256Encryption.getSHA256(adminForUpdate.getPassword()));
         adminService.update(adminForUpdate);
+        log.info("Admin:" + adminForUpdate.getUsername() + "update at " + new Date());
         return Result.success(AccountConstant.ACCOUNT_CHANGE_SUCCESS);
     }
 
@@ -124,6 +133,7 @@ public class AdminController {
     public Result query(
             @RequestBody AdminForQuery adminForQuery
     ) {
-        return Result.success("Admin查询成功",adminService.query(adminForQuery));
+        log.info("Admin is queried at " + new Date());
+        return Result.success("Admin查询成功", adminService.query(adminForQuery));
     }
 }

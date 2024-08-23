@@ -11,8 +11,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class PostImpl implements PostService{
+public class PostImpl implements PostService {
     private final JSqlClient sqlClient;
+
     @Override
     public void addPost(UserPostForAdd userPostForAdd) {
         sqlClient
@@ -31,20 +32,20 @@ public class PostImpl implements PostService{
                 .deleteByIds(UserPostForDelete.class, userPostForDelete.getIds());
     }
 
-@Override
-public Page<UserPostForQueryView> queryPost(UserPostForQuery userPostForQuery) {
-    Page<UserPostForQueryView> page = sqlClient
-            .createQuery(PostTable.$)
-            .where(userPostForQuery)
-            .select(
-                    PostTable.$.fetch(UserPostForQueryView.class)
-            )
-            .fetchPage(userPostForQuery.getPageIndex(), userPostForQuery.getPageSize());
+    @Override
+    public Page<UserPostForQueryView> queryPost(UserPostForQuery userPostForQuery) {
+        Page<UserPostForQueryView> page = sqlClient
+                .createQuery(PostTable.$)
+                .where(userPostForQuery)
+                .select(
+                        PostTable.$.fetch(UserPostForQueryView.class)
+                )
+                .fetchPage(userPostForQuery.getPageIndex(), userPostForQuery.getPageSize());
 
-    if (page.getTotalRowCount() == 0) {
-        throw new BaseException("Post不存在");
+        if (page.getTotalRowCount() == 0) {
+            throw new BaseException("Post不存在");
+        }
+        return page;
     }
-    return page;
-}
 
 }

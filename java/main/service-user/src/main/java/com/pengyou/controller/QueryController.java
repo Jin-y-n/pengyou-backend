@@ -6,10 +6,12 @@ import com.pengyou.model.dto.postsection.SectionForQuery;
 import com.pengyou.model.dto.tag.TagForQuery;
 import com.pengyou.service.QueryService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.babyfish.jimmer.client.meta.Api;
 import org.springframework.web.bind.annotation.*;
 
 @Api
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user/query")
@@ -21,7 +23,8 @@ public class QueryController {
     public Result queryLabel(
             @RequestBody LabelForQuery labelForQuery
     ) {
-        return Result.success("Label查询成功",queryService.queryLabel(labelForQuery));
+        log.info("Query PostLabel");
+        return Result.success("PostLabel查询成功", queryService.queryLabel(labelForQuery));
     }
 
     @Api
@@ -29,7 +32,8 @@ public class QueryController {
     public Result querySection(
             @RequestBody SectionForQuery sectionForQuery
     ) {
-        return Result.success("Section查询成功",queryService.querySection(sectionForQuery));
+        log.info("Query PostSection");
+        return Result.success("PostSection查询成功", queryService.querySection(sectionForQuery));
     }
 
     @Api
@@ -37,7 +41,8 @@ public class QueryController {
     public Result queryTag(
             @RequestBody TagForQuery tagForQuery
     ) {
-        return Result.success("Tag查询成功",queryService.queryTag(tagForQuery));
+        log.info("Query Tag");
+        return Result.success("Tag查询成功", queryService.queryTag(tagForQuery));
     }
 
 }

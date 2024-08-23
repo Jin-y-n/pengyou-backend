@@ -42,7 +42,7 @@ AdminForDelete {
 }
 
 input AdminForUpdate {
-    id
+    id!
     username
     password
     email

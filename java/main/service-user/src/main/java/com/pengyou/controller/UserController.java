@@ -27,6 +27,7 @@ import org.babyfish.jimmer.client.meta.Api;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.HashMap;
 
 @Api
@@ -44,14 +45,14 @@ public class UserController {
     @PostMapping("/account/register")
     public Result register(
             @RequestBody UserForAdd user
-            ) {
+    ) {
 
 
         String captcha = user.getCaptcha();
 
-        if (captcha.equals(template.opsForValue().get(RedisConstant.USER_CAPTCHA+user.getEmail()))) {
+        if (captcha.equals(template.opsForValue().get(RedisConstant.USER_CAPTCHA + user.getEmail()))) {
             user.setPhone(null);
-        } else if (captcha.equals(template.opsForValue().get(RedisConstant.USER_CAPTCHA+user.getPhone()))) {
+        } else if (captcha.equals(template.opsForValue().get(RedisConstant.USER_CAPTCHA + user.getPhone()))) {
             user.setEmail(null);
         } else {
             throw new CaptchaErrorException();
@@ -80,7 +81,7 @@ public class UserController {
     public Result login(
             @RequestBody UserForLogin userForLogin
     ) {
-        log.info("userForLogin: " + userForLogin);
+        log.info("User: " + userForLogin.getUsername() + " login in " + new Date());
         // 密码加密
         userForLogin.setPassword(SHA256Encryption.getSHA256(userForLogin.getPassword()));
         UserForLoginView user = this.userService.login(userForLogin);
@@ -101,7 +102,6 @@ public class UserController {
     public Result update(
             @RequestBody UserForUpdate user
     ) {
-//        user.
         userService.update(user);
         return Result.success("Profile update successful");
     }

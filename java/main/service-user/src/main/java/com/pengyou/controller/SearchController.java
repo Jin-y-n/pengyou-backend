@@ -8,6 +8,7 @@ import com.pengyou.model.dto.tag.SearchForTags;
 import com.pengyou.model.dto.user.SearchForUsers;
 import com.pengyou.service.SearchService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.babyfish.jimmer.client.meta.Api;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Api
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user/search")
@@ -26,8 +28,8 @@ public class SearchController {
     public Result users(
             @RequestBody SearchForUsers searchForUsers
     ) {
-
-        return Result.success("Users查询成功",searchService.searchUsers(searchForUsers));
+        log.info("Search Users");
+        return Result.success("Users查询成功", searchService.searchUsers(searchForUsers));
     }
 
     @Api
@@ -35,7 +37,8 @@ public class SearchController {
     public Result posts(
             @RequestBody SearchForPosts searchForPosts
     ) {
-        return Result.success("Posts查询成功",searchService.searchPosts(searchForPosts));
+        log.info("Search Posts");
+        return Result.success("Posts查询成功", searchService.searchPosts(searchForPosts));
     }
 
     @Api
@@ -43,7 +46,8 @@ public class SearchController {
     public Result tags(
             @RequestBody SearchForTags searchFortags
     ) {
-        return Result.success("Tags查询成功",searchService.searchTags(searchFortags));
+        log.info("Search Tags");
+        return Result.success("Tags查询成功", searchService.searchTags(searchFortags));
     }
 
     @Api
@@ -51,7 +55,8 @@ public class SearchController {
     public Result labels(
             @RequestBody SearchForLabels searchForlabels
     ) {
-        return Result.success("Labels查询成功",searchService.searchLabels(searchForlabels));
+        log.info("Search Labels");
+        return Result.success("Labels查询成功", searchService.searchLabels(searchForlabels));
     }
 
     @Api
@@ -59,6 +64,7 @@ public class SearchController {
     public Result sections(
             @RequestBody SearchForSections searchForSections
     ) {
-        return Result.success("Sections查询成功",searchService.searchSections(searchForSections));
+        log.info("Search Sections");
+        return Result.success("Sections查询成功", searchService.searchSections(searchForSections));
     }
 }

@@ -32,3 +32,14 @@ specification LabelForQuery {
 LabelForQueryView {
     #allScalars(this)
 }
+
+specification PostLabelForQuery {
+    pageIndex: Int
+    pageSize: Int
+    id
+    like/i(label)
+}
+
+PostLabelForQueryView {
+    #allScalars(this)
+}

@@ -22,6 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class QueryImpl implements QueryService {
     private final JSqlClient sqlClient;
+
     @Override
     public Page<TagForQueryView> queryTag(TagForQuery tagForQuery) {
         Page<TagForQueryView> page = sqlClient
@@ -30,7 +31,7 @@ public class QueryImpl implements QueryService {
                 .select(
                         TagTable.$.fetch(TagForQueryView.class)
                 )
-                .fetchPage(tagForQuery.getPageIndex(),tagForQuery.getPageSize());
+                .fetchPage(tagForQuery.getPageIndex(), tagForQuery.getPageSize());
 
 
         if (page.getTotalRowCount() == 0) {
@@ -47,7 +48,7 @@ public class QueryImpl implements QueryService {
                 .select(
                         PostLabelTable.$.fetch(LabelForQueryView.class)
                 )
-                .fetchPage(labelForQuery.getPageIndex(),labelForQuery.getPageSize());
+                .fetchPage(labelForQuery.getPageIndex(), labelForQuery.getPageSize());
 
         if (page.getTotalRowCount() == 0) {
             throw new BaseException("Post不存在");
@@ -63,7 +64,7 @@ public class QueryImpl implements QueryService {
                 .select(
                         PostSectionTable.$.fetch(SectionForQueryView.class)
                 )
-                .fetchPage(sectionForQuery.getPageIndex(),sectionForQuery.getPageSize());
+                .fetchPage(sectionForQuery.getPageIndex(), sectionForQuery.getPageSize());
 
 
         if (page.getTotalRowCount() == 0) {

@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
         if (AccountUtil.checkEmail(user.getEmail())) {
             String captcha = CaptchaGenerator.generateCaptcha(6);
 
-            template.opsForValue().set(RedisConstant.USER_CAPTCHA+user.getEmail(), captcha);
+            template.opsForValue().set(RedisConstant.USER_CAPTCHA + user.getEmail(), captcha);
             mailUtil.sendCaptcha(captcha, user.getEmail());
             return;
         }
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
         if (AccountUtil.checkPhone(user.getPhone())) {
             String captcha = CaptchaGenerator.generateCaptcha(6);
 
-            template.opsForValue().set(RedisConstant.USER_CAPTCHA+user.getEmail(), captcha);
+            template.opsForValue().set(RedisConstant.USER_CAPTCHA + user.getEmail(), captcha);
             // TODO: SEND SMS
 
             return;

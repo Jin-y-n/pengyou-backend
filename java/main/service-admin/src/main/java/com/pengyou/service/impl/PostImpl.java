@@ -33,7 +33,7 @@ public class PostImpl implements PostService {
                         postTable.fetch(PostForView.class)
                 )
                 .fetchPage(postForQuery.getPageIndex(), postForQuery.getPageSize());
-            if (page.getTotalRowCount() == 0){
+        if (page.getTotalRowCount() == 0) {
             throw new BaseException("Post查询失败");
         }
         return page;
