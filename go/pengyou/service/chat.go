@@ -3,15 +3,22 @@ package service
 import (
 	"bufio"
 	"context"
+	"encoding/json"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"math"
 	"pengyou/constant"
 	"pengyou/global/config"
 	"pengyou/model"
 	"pengyou/model/common/request"
+	"pengyou/model/common/response"
+	"pengyou/model/entity"
 	"pengyou/storage"
+	db "pengyou/storage/database"
 	rds "pengyou/storage/redis"
 	chatutil "pengyou/utils/chat"
+	"pengyou/utils/common"
+	fileutil "pengyou/utils/file"
 	"pengyou/utils/log"
 	strutil "pengyou/utils/string"
 	wsutil "pengyou/utils/ws"
@@ -20,19 +27,18 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/redis/go-redis/v9"
 )
 
 var mesDispatchRule = make(map[string]func(message string))
 
-// this file implements the chat function
+// MsgHandler this file implements the chat function
 func MsgHandler(userNode *model.UserNode) {
 
-	// check the connect
+	// check connect
 	ws := userNode.Conn
 	if config.Cfg == nil || config.Cfg.App.PublishKey == "" {
-		ws.WriteMessage(websocket.TextMessage, []byte(constant.SERVER_ERROR))
-		log.Error("PublishKey is not configured")
+		wsutil.SendTextMessage(ws, constant.SystemId, userNode.User.ID, constant.ServerError)
+		log.Logger.Error("PublishKey is not configured")
 		return
 	}
 
@@ -47,164 +53,149 @@ func MsgPublish(ws *websocket.Conn, userNode *model.UserNode) {
 	for userNode.Established {
 		func() {
 
-			// read message
-			message := &request.MessageIn{}
-			err := ws.ReadJSON(message)
+			message := MsgReceive(ws, userNode)
 
-			if err != nil {
-				log.Warn("read ws message error:" + err.Error())
-				if strings.Contains(err.Error(), "websocket: close") {
-					userNode.Established = false
-					return
-				}
-			}
-			// check the send time of the message is valid or not
-			if math.Abs(float64(message.CreateAt.UnixMilli()-time.Now().UnixMilli())) > 1000 {
-				log.Warn("message time error")
-				ws.WriteMessage(websocket.TextMessage, []byte("message time error, please check your network and try again"))
+			if message == nil {
+				log.Logger.Error("read message from websocket failed")
 				return
 			}
-			log.Info("read ws message:" + string(message.Content))
+			log.Logger.Info("read ws message:" + string(message.Content))
+			message.CreateAt = time.Now()
 
-			switch message.RequestType {
-			case constant.MESSAGE_TYPE_TEXT:
-				publishText(message)
-			case constant.MESSAGE_TYPE_FILE_REQUEST:
-				success := uploadFile(ws, message.Content)
-				if !success {
-					ws.WriteMessage(websocket.TextMessage,
-						[]byte("upload file error, please try again"))
-					return
-				}
-
-				ws.WriteMessage(websocket.TextMessage,
-					[]byte("upload file success"))
-				publishText(message)
-			}
+			MsgPublisher(ws, 0, message)
 		}()
 	}
 
 	defer func() {
-		ws.Close()
-		log.Info("close websocket")
+		wsutil.Close(ws)
+		log.Logger.Info("close websocket")
 	}()
 }
 
+// MsgReceive receive the message from websocket
+func MsgReceive(ws *websocket.Conn, userNode *model.UserNode) *request.MessageTransfer {
+	// read message
+	message := &request.MessageTransfer{}
+	err := ws.ReadJSON(message)
+
+	if err != nil {
+		log.Logger.Warn("read ws message error:" + err.Error())
+		if strings.Contains(err.Error(), "websocket: close") {
+			userNode.Established = false
+			return nil
+		}
+	}
+	// check the send time of the message is valid or not
+	if math.Abs(float64(message.CreateAt.UnixMilli()-time.Now().UnixMilli())) > 1000 {
+		log.Logger.Warn("message time error")
+		wsutil.SendTextMessage(ws, constant.SystemId, userNode.User.ID, "message time error, please check your network and try again")
+		return nil
+	}
+
+	return message
+}
+
+// MsgPublisher publish the message to redis
+func MsgPublisher(ws *websocket.Conn, user uint, message *request.MessageTransfer) {
+
+	msgRds := model.MessageRedis{
+		ID:          uint(common.NextSnowflakeID()),
+		SenderId:    message.SenderId,
+		RecipientId: message.RecipientId,
+		Type:        message.Type,
+		SentAt:      message.CreateAt,
+		ReceiveAt:   time.Time{},
+		Content:     message.Content,
+	}
+
+	switch message.Type {
+	case constant.MessageTypeText:
+		publishText(msgRds)
+	case constant.MessageTypeFileRequest:
+		success := uploadFile(ws, message.Content)
+		if !success {
+			wsutil.SendTextMessage(
+				ws,
+				constant.SystemId,
+				user,
+				"upload file error, please try again",
+			)
+			return
+		}
+
+		wsutil.SendTextMessage(
+			ws,
+			constant.SystemId,
+			user,
+			"upload file success",
+		)
+		publishText(msgRds)
+	}
+
+	// return to the frontend that msg has sent
+	wsutil.SendTextMessage(
+		ws,
+		constant.SystemId,
+		user,
+		fmt.Sprint(msgRds),
+	)
+}
+
+// MsgSubscribe subscribe the message from redis
 func MsgSubscribe(ws *websocket.Conn, userNode *model.UserNode) {
 	for userNode.Established {
 		func() {
 
 			// get unhandled messages
-			now := time.Now().UnixMilli()
-			result, err := rds.ZRangeByScore(
+			// now := time.Now().UnixMilli()
+
+			err := rds.RedisSubscribe(
 				context.Background(),
 				rds.GenerateName(userNode.User.ID),
-				fmt.Sprint(float64(userNode.LastHandlerTime)),
-				fmt.Sprint(float64(now)))
+				func(message string) {
 
+					MessageDispatcher(
+						ws,
+						message,
+						userNode)
+				})
 			if err != nil {
-				log.Warn("subscribing message error:" + err.Error())
-
-				if strings.Contains(err.Error(), "websocket: close") {
-					userNode.Established = false
-					return
-				}
-			} else {
-				// send unhandled messages
-				for _, message := range result {
-
-					// TODO: more message types
-					// MessageDispatcher(message, map[string]func(message string))
-					if strings.HasPrefix(message, constant.REDIS_DISCONNECT_MESSAGE_PREFIX) {
-
-						from := strings.TrimPrefix(message, constant.REDIS_DISCONNECT_MESSAGE_PREFIX)
-						userNode.Chatters = strutil.RemoveElementByValue(userNode.Chatters, from)
-						wsutil.SendTextMessage(ws, constant.RESP_DISCONNECT_MESSAGE_PREFIX+from)
-
-					} else if strings.HasPrefix(message, constant.REDIS_ESTABLISH_CHAT_MESSAGE_FROM_PREFIX) {
-
-						go func() {
-							from := strings.TrimPrefix(message, constant.REDIS_ESTABLISH_CHAT_MESSAGE_FROM_PREFIX)
-
-							wsutil.SendTextMessage(ws, constant.RESP_ESTABLISH_CHAT_MESSAGE_FROM_PREFIX+from)
-
-							chatutil.AddEstablishRequestNode(from, strconv.Itoa(int(userNode.User.ID)))
-							count := 1
-							for {
-								time.Sleep(1 * time.Second)
-
-								if count < 6 && chatutil.GetEstablishRequestNode(from, strconv.Itoa(int(userNode.User.ID))) {
-									chatutil.RemoveEstablishRequestNode(from, strconv.Itoa(int(userNode.User.ID)))
-									userNode.Chatters = append(userNode.Chatters, from)
-									wsutil.SendTextMessage(ws, constant.CHAT_ESTABLISH_SUCCESS_FROM+from)
-
-									return
-								}
-
-								if count >= 6 {
-									wsutil.SendTextMessage(ws, constant.CHAT_ESTABLISH_FAIL_FROM+from)
-									return
-								}
-								count++
-							}
-						}()
-					} else if strings.HasPrefix(message, constant.REDIS_CUT_CHAT_MESSAGE_FROM_PREFIX) {
-						from := strings.TrimPrefix(message, constant.REDIS_CUT_CHAT_MESSAGE_FROM_PREFIX)
-
-						userNode.Chatters = strutil.RemoveElementByValue(userNode.Chatters, from)
-						wsutil.SendTextMessage(ws, constant.RESP_CHAT_CUTTED_FROM+from)
-					} else if (strings.HasPrefix(message, constant.REDIS_USER_DISCONNECT)) {
-
-						from := strings.TrimPrefix(message, constant.REDIS_USER_DISCONNECT)
-
-						userNode.Chatters = strutil.RemoveElementByValue(userNode.Chatters, from)
-						wsutil.SendTextMessage(ws, constant.RESP_CHATTRT_DISCONNECTED+from)
-					} else {
-						wsutil.SendTextMessage(ws, message)
-					}
-
-					userNode.LastHandlerTime = now
-				}
+				return
 			}
-
 		}()
 	}
-
 	defer func() {
-		ws.Close()
-		log.Info("close websocket")
+		wsutil.Close(ws)
+		log.Logger.Info("close websocket")
 	}()
 }
 
-func publishText(message *request.MessageIn) {
-	messageRedis := model.MessageRedis{
-		Content:     message.Content,
-		RecipientId: message.RecipientId,
-		SenderId:    message.SenderId,
-		SentAt:      time.Now(),
-		Type:        constant.MESSAGE_TYPE_TEXT,
-	}
+// publishText publish the message to redis
+func publishText(msg model.MessageRedis) {
 
 	// send message
-	rds.RedisClient.ZAdd(context.Background(),
-		rds.GenerateName(message.RecipientId),
-		redis.Z{
-			Score:  float64(time.Now().UnixMilli()),
-			Member: messageRedis})
+	err := rds.RedisPublishObj(
+		context.Background(),
+		rds.GenerateName(msg.RecipientId),
+		msg)
+	if err != nil {
+		return
+	}
 
-	log.Info("publish message:" + string(message.Content))
+	log.Logger.Info("publish message:" + string(msg.Content))
 }
 
+// uploadFile upload the file to local file system
 func uploadFile(ws *websocket.Conn, fileName string) bool {
-	log.Info("uploading file (" + fileName + ") ...")
+	log.Logger.Info("uploading file (" + fileName + ") ...")
 
 	file, success := storage.CreateFile(fileName)
 	if !success {
-		log.Warn("create file error: " + fileName)
+		log.Logger.Warn("create file error: " + fileName)
 	}
 	// w := bufio.NewWriter(file)
 
-	defer file.Close()
+	defer fileutil.Close(file)
 
 	// loop read
 	loop := true
@@ -216,12 +207,12 @@ func uploadFile(ws *websocket.Conn, fileName string) bool {
 		}
 
 		if !success {
-			log.Warn("read file error: " + fileName)
+			log.Logger.Warn("read file error: " + fileName)
 			return false
 		}
 
 		// if !storage.SaveToFile(w, buf) {
-		// 	log.Warn("save file error: " + fileName)
+		// 	log.Logger.Warn("save file error: " + fileName)
 		// 	return false
 		// }
 	}
@@ -229,9 +220,10 @@ func uploadFile(ws *websocket.Conn, fileName string) bool {
 	return true
 }
 
-func downloadFile(ws *websocket.Conn, fileName string) {
+// downloadFile download the file from local file system
+func downloadFile(ws *websocket.Conn, user uint, fileName string) {
 	if file, success := storage.ReadFile(fileName); success {
-		defer file.Close()
+		defer fileutil.Close(file)
 
 		r := bufio.NewReader(file)
 		buf := make([]byte, config.Cfg.Files.ReadBufSize)
@@ -239,23 +231,167 @@ func downloadFile(ws *websocket.Conn, fileName string) {
 		n, err := r.Read(buf)
 		for n != 0 {
 			if err != nil {
-				log.Warn("read file error: " + fileName)
+				log.Logger.Warn("read file error: " + fileName)
 			}
 
 			// if !storage.WriteWsFile(ws, buf) {
-			// 	log.Warn("write file error: " + fileName)
+			// 	log.Logger.Warn("write file error: " + fileName)
 			// }
 		}
 	} else {
-		wsutil.SendTextMessage(ws, "file not found")
+		wsutil.SendTextMessage(ws, constant.SystemId, user, "file not found")
 	}
 }
 
-// this function is designed to dispatch the messages subscribed from redis
-func MessageDispatcher(message string, rule map[string]func(message string)) {
-	for k, v := range rule {
-		if strings.HasPrefix(message, k) {
-			v(message)
-		}
+// MessageDispatcher this function is designed to dispatch the messages subscribed from redis
+func MessageDispatcher(ws *websocket.Conn, message string, userNode *model.UserNode) bool {
+
+	// unmarshal message to object
+	msg := &model.MessageRedis{}
+	err := json.Unmarshal([]byte(message), msg)
+	if err != nil {
+		log.Logger.Error("unmarshal message error: " + err.Error())
+		return false
 	}
+
+	// store the message to database
+	go func() {
+		err := db.StoreRdsMessage(userNode, msg)
+		if err != nil {
+			wsutil.SendTextMessage(
+				userNode.Conn,
+				constant.SystemId,
+				userNode.User.ID,
+				constant.MessageStorageFailed)
+			return
+		}
+	}()
+
+	// receive message from user1 who cut chat
+	if msg.Type == constant.MessageTypeCutChat {
+
+		// get user1 id and remove user1 from user2's chatting list
+		from := msg.SenderId
+		userNode.Chatters = strutil.RemoveElementByValue(
+			userNode.Chatters,
+			strconv.Itoa(int(from)),
+		)
+
+		// send message to user2 to cut chat
+		wsutil.SendTextMessage(
+			ws,
+			constant.SystemId,
+			userNode.User.ID,
+			constant.RespDisconnectMessagePrefix+strconv.Itoa(int(from)),
+		)
+		// receive message from user1 who wants to establish chat
+	} else if msg.Type == constant.MessageTypeEstablishChat {
+		// run a routine to establish chat
+		go func() {
+
+			// send to user2 the request from user1
+			from := msg.SenderId
+			wsutil.SendTextMessage(
+				ws,
+				constant.SystemId,
+				userNode.User.ID,
+				constant.RespEstablishChatMessageFromPrefix+strconv.Itoa(int(from)),
+			)
+
+			// add request in requestNodes
+			chatutil.AddEstablishRequestNode(
+				strconv.Itoa(int(from)),
+				strconv.Itoa(int(userNode.User.ID)),
+			)
+
+			// if more than 15 seconds, cancel and send failed message to sender
+			count := 1
+			for {
+				time.Sleep(1 * time.Second)
+
+				// if request is still in requestNodes and is set to true, send success message to sender
+				if count < 16 && chatutil.GetEstablishRequestNode(
+					strconv.Itoa(int(from)),
+					strconv.Itoa(int(userNode.User.ID)),
+				) {
+					// add chatter to userNode and send the message to user
+					userNode.Chatters = append(userNode.Chatters, strconv.Itoa(int(from)))
+					wsutil.SendTextMessage(
+						ws,
+						constant.SystemId,
+						userNode.User.ID,
+						constant.ChatEstablishSuccessFrom+strconv.Itoa(int(from)),
+					)
+
+					// confirmed -> remove the requestNode
+					chatutil.RemoveEstablishRequestNode(
+						strconv.Itoa(int(from)),
+						strconv.Itoa(int(userNode.User.ID)),
+					)
+					return
+				}
+
+				// time out send failed message to two users
+				if count > 15 {
+					wsutil.SendTextMessage(
+						ws,
+						constant.SystemId,
+						userNode.User.ID,
+						constant.ChatEstablishFailFrom+strconv.Itoa(int(from)),
+					)
+
+					wsutil.SendTextMessage(
+						ws,
+						constant.SystemId,
+						from,
+						constant.ChatEstablishFailTo+strconv.Itoa(int(from)),
+					)
+
+					return
+				}
+				count++
+			}
+		}()
+		// receive the cut chat message
+	} else if msg.Type == constant.MessageTypeDisconnect {
+
+		from := msg.SenderId
+
+		userNode.Chatters = strutil.RemoveElementByValue(userNode.Chatters, strconv.Itoa(int(from)))
+		wsutil.SendTextMessage(
+			ws,
+			constant.SystemId,
+			userNode.User.ID,
+			constant.RespChatterDisconnected+strconv.Itoa(int(from)),
+		)
+	} else {
+		wsutil.SendTextMessage(ws, constant.SystemId, userNode.User.ID, message)
+	}
+
+	return true
+}
+
+func LeaveMsg(msg *entity.MessageSend, c *gin.Context) {
+	msg.ID = uint(common.NextSnowflakeID())
+
+	err := db.StoreMsgSend(msg)
+
+	if err != nil {
+		response.FailWithMessage(constant.ServerError, c)
+		return
+	}
+
+	response.OkWithMessage(constant.SendMsgSuccess, c)
+}
+
+func GetMsgUnRead(id uint, c *gin.Context) {
+
+	msg, err := db.QueryUnReadMsgById(id)
+
+	if err != nil {
+		response.FailWithMessage(constant.ServerError, c)
+		return
+	}
+
+	response.OkWithData(msg, c)
 }

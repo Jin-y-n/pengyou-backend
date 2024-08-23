@@ -1,6 +1,297 @@
+definitions:
+  entity.MessageSend:
+    properties:
+      content:
+        type: string
+      deleteAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      isRead:
+        type: integer
+      recipientId:
+        type: integer
+      senderId:
+        type: integer
+      sentAt:
+        type: string
+      type:
+        type: integer
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  model.MessageConfirmRec:
+    properties:
+      confirm_time:
+        type: string
+      message_id:
+        items:
+          type: integer
+        type: array
+      user_id:
+        type: integer
+    type: object
+  response.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
+  /chat/confirm-receive:
+    post:
+      consumes:
+      - application/json
+      description: Confirms that a message has been received.
+      parameters:
+      - description: Confirmation details
+        in: body
+        name: confirmation
+        required: true
+        schema:
+          $ref: '#/definitions/model.MessageConfirmRec'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Confirm receipt of a message
+      tags:
+      - messages
+  /chat/get-unread-msg:
+    post:
+      consumes:
+      - application/json
+      description: Retrieves unread messages for a user.
+      parameters:
+      - description: User ID
+        in: formData
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get unread messages
+      tags:
+      - messages
+  /chat/leave-msg:
+    post:
+      consumes:
+      - application/json
+      description: Sends a new message between users.
+      parameters:
+      - description: The message details
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/entity.MessageSend'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Send a new message
+      tags:
+      - messages
+  /connect/cut-chat-from:
+    post:
+      consumes:
+      - application/json
+      description: Cuts off a chat session with another user.
+      parameters:
+      - description: User ID
+        in: header
+        name: userId
+        required: true
+        type: string
+      - description: Chatter ID
+        in: formData
+        name: chatterId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Cut off a chat session
+      tags:
+      - chat
+  /connect/establish:
+    post:
+      consumes:
+      - application/json
+      description: Establishes a new WebSocket connection for a user.
+      parameters:
+      - description: User ID
+        in: header
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Establish a new connection
+      tags:
+      - connections
+  /connect/establish-chat-to:
+    post:
+      consumes:
+      - application/json
+      description: Establishes a chat session with another user.
+      parameters:
+      - description: User ID
+        in: header
+        name: userId
+        required: true
+        type: string
+      - description: Chatter ID
+        in: formData
+        name: chatterId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Establish a chat session
+      tags:
+      - chat
+  /connect/heart-beat:
+    post:
+      consumes:
+      - application/json
+      description: Checks the heartbeat of a user to maintain the connection.
+      parameters:
+      - description: User ID
+        in: header
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Heartbeat for user connection
+      tags:
+      - connections
+  /connect/shutdown:
+    post:
+      consumes:
+      - application/json
+      description: Shuts down an existing WebSocket connection for a user.
+      parameters:
+      - description: User ID
+        in: header
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Shutdown an existing connection
+      tags:
+      - connections
   /test:
     get:
       consumes:

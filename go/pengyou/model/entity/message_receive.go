@@ -9,11 +9,13 @@ import (
 type MessageReceive struct {
 	ID uint `gorm:"primaryKey;autoIncrement" json:"id"`
 
-	MessageSendId uint
-	RecipientId   uint
+	MessageSenderId uint
+	RecipientId     uint
 
 	ReadAt   time.Time
 	DeleteAt gorm.DeletedAt
+
+	Type int
 }
 
 func (table *MessageReceive) TableName() string {

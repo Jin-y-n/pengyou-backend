@@ -3,6 +3,7 @@ package storage
 import (
 	"pengyou/global/config"
 	db "pengyou/storage/database"
+	"pengyou/storage/elasticsearch"
 	rds "pengyou/storage/redis"
 )
 
@@ -15,5 +16,5 @@ func Init(cfg *config.Config) {
 
 	// InitFile(cfg)
 
-	InitElasticSearch(cfg)
+	elasticsearch.InitElasticSearch(cfg)
 }

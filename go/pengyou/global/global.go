@@ -4,15 +4,14 @@ import (
 	"context"
 	"fmt"
 	"pengyou/router"
-
-	"pengyou/global/config"
-	// "pengyou/router"
-	// "pengyou/service"
-	"pengyou/storage"
+	"pengyou/service"
 	"pengyou/utils/log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+	"pengyou/global/config"
+	"pengyou/storage"
+	"pengyou/utils"
 )
 
 var (
@@ -30,13 +29,15 @@ func Init() {
 		panic(fmt.Errorf("unable to decode into struct, %w", err))
 	}
 
-	// init Logger
+	// init logger
 	log.NewZapLogger(&globalConfig.Zap)
 
-	// service.Init(globalConfig)
+	utils.Init(globalConfig)
 	storage.Init(globalConfig)
-	GinEngine = router.Init(globalConfig)
+
 	Context = context.Background()
+	service.Init(globalConfig)
+	GinEngine = router.Init(globalConfig)
 
 	config.Cfg = globalConfig
 }

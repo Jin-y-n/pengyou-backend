@@ -7,8 +7,7 @@ import (
 )
 
 type MessageSend struct {
-	ID uint `gorm:"primaryKey;autoIncrement" json:"id"`
-
+	ID          uint `gorm:"primaryKey;autoIncrement" json:"id"`
 	SenderId    uint
 	RecipientId uint
 	Type        int
@@ -21,4 +20,16 @@ type MessageSend struct {
 
 func (table *MessageSend) TableName() string {
 	return "message_send"
+}
+
+// NewMessageSend creates a new instance of MessageSend and fills it with data.
+func NewMessageSend(senderId, recipientId uint, messageType int, content string) *MessageSend {
+	return &MessageSend{
+		SenderId:    senderId,
+		RecipientId: recipientId,
+		Type:        messageType,
+		Content:     content,
+		SentAt:      time.Now(),
+		IsRead:      0, // Assuming 0 means unread and 1 means read
+	}
 }

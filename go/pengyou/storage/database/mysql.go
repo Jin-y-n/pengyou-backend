@@ -1,32 +1,33 @@
 package db
 
 import (
+	"log"
 	"pengyou/global/config"
 	plog "pengyou/utils/log"
 
-	"log"
 	"os"
 	"strconv"
 	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
+	glogger "gorm.io/gorm/logger"
 )
+
+var logger = plog.Logger
 
 var GormDB *gorm.DB
 
 func InitMySQL(cfg *config.Config) *gorm.DB {
 
-	logger.New(
+	glogger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
-		logger.Config{
+		glogger.Config{
 			SlowThreshold:             time.Millisecond,
-			LogLevel:                  logger.Info,
+			LogLevel:                  glogger.Info,
 			IgnoreRecordNotFoundError: false,
 			Colorful:                  true,
-		},
-	)
+		})
 
 	mysqlConfig := cfg.MySQL
 
@@ -53,9 +54,13 @@ func InitMySQL(cfg *config.Config) *gorm.DB {
 	if err != nil {
 		panic("failed to connect database")
 	}
-	sqlDB.Ping()
+	err = sqlDB.Ping()
+	if err != nil {
+		panic("failed to connect database")
+		return nil
+	}
 
-	plog.Info("mysql connect success -> " +
+	plog.Logger.Info("mysql connect success -> " +
 		mysqlConfig.Host + ":" +
 		strconv.Itoa(mysqlConfig.Port))
 

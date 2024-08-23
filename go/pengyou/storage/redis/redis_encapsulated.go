@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/redis/go-redis/v9"
+	"go.uber.org/zap"
 	"pengyou/global/config"
 	"pengyou/utils/log"
 	"strconv"
@@ -46,15 +47,39 @@ func RedisPublish(context context.Context, channel string, message string) error
 	var err error
 	if RedisClient != nil {
 		err = RedisClient.Publish(context, channel, message).Err()
-		log.Debug("publish message to redis: " + message)
+		log.Logger.Info("publish message to redis: " + message)
 		return err
 	} else if RedisClusterClient != nil {
 		err = RedisClusterClient.Publish(context, channel, message).Err()
-		log.Debug("publish message to redis cluster: " + message)
+		log.Logger.Info("publish message to redis cluster: " + message)
 		return err
 	}
 
-	log.Error("redis not init")
+	log.Logger.Error("redis not init")
+
+	return err
+}
+
+func RedisPublishObj(context context.Context, channel string, obj interface{}) error {
+	var err error
+
+	marshalMessage, err := json.Marshal(obj)
+	if err != nil {
+		log.Logger.Error("marshal object failed", zap.Error(err))
+		return err
+	}
+
+	if RedisClient != nil {
+		err = RedisClient.Publish(context, channel, marshalMessage).Err()
+		log.Logger.Info("publish marshalMessage to redis: " + string(marshalMessage))
+		return err
+	} else if RedisClusterClient != nil {
+		err = RedisClusterClient.Publish(context, channel, marshalMessage).Err()
+		log.Logger.Info("publish marshalMessage to redis cluster: " + string(marshalMessage))
+		return err
+	}
+
+	log.Logger.Error("redis not init")
 
 	return err
 }
@@ -84,11 +109,11 @@ func RedisSubscribe(context context.Context, channel string, callback func(messa
 		// RedisClient.LPop(context, channel)
 
 		// if cmd.Err() != nil {
-		// 	log.Error("receive message from redis error: " + err.Error())
+		// 	log.Logger.Error("receive message from redis error: " + err.Error())
 		// }
 
 		if err != nil {
-			log.Error("receive message from redis error: " + err.Error())
+			log.Logger.Error("receive message from redis error: " + err.Error())
 			return err
 		}
 
@@ -107,7 +132,7 @@ func RedisSubscribe(context context.Context, channel string, callback func(messa
 		// RedisClient.LPop(context, channel)
 
 		// if cmd.Err() != nil {
-		// 	log.Error("receive message from redis error: " + err.Error())
+		// 	log.Logger.Error("receive message from redis error: " + err.Error())
 		// }
 
 		if err != nil {
@@ -157,6 +182,8 @@ func Get(context context.Context, key string) *redis.StringCmd {
 	} else if RedisClusterClient != nil {
 		return RedisClusterClient.Get(context, key)
 	}
+
+	log.Logger.Error("redis not init")
 
 	return nil
 }

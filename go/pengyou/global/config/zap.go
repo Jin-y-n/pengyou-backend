@@ -14,8 +14,8 @@ type Zap struct {
 	EncodeLevel   string `mapstructure:"encode-level" json:"encode-level" yaml:"encode-level"`       // Level encoding
 	StacktraceKey string `mapstructure:"stacktrace-key" json:"stacktrace-key" yaml:"stacktrace-key"` // Stacktrace key
 	ShowLine      bool   `mapstructure:"show-line" json:"show-line" yaml:"show-line"`                // Show line number
-	LogInConsole  bool   `mapstructure:"log-in-console" json:"log-in-console" yaml:"log-in-console"` // Log to console
-	RetentionDay  int    `mapstructure:"retention-day" json:"retention-day" yaml:"retention-day"`    // Log retention days
+	LogInConsole  bool   `mapstructure:"log-in-console" json:"log-in-console" yaml:"log-in-console"` // log to console
+	RetentionDay  int    `mapstructure:"retention-day" json:"retention-day" yaml:"retention-day"`    // log retention days
 }
 
 // Levels converts the string level to a slice of zapcore.Level.

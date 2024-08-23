@@ -14,7 +14,7 @@ import (
 // TestGorm demonstrates basic GORM operations.
 func TestGorm(t *testing.T) {
 	db, err := gorm.Open(mysql.Open(getDBConnectionString()), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		logger: logger.Default.logMode(log.Logger.Info),
 	})
 	if err != nil {
 		panic("failed to connect database")
@@ -33,10 +33,10 @@ func TestGorm(t *testing.T) {
 		Email:         "123456789@qq.com",
 		ClientIP:      "127.0.0.1",
 		DeviceInfo:    "123456789",
-		LoginTime:     time.Now(),
+		loginTime:     time.Now(),
 		HeartBeatTime: time.Now(),
-		IsLogout:      0,
-		LogOutTime:    time.Now(),
+		Logout:        0,
+		logOutTime:    time.Now(),
 
 		Model: gorm.Model{
 			CreatedAt: time.Now(),

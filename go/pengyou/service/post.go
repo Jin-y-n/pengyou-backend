@@ -1,37 +1,50 @@
 package service
 
-// import (
-// 	"pengyou/constant"
-// 	"pengyou/model/common/response"
-// 	"pengyou/utils/log"
+import (
+	"pengyou/constant"
+	"pengyou/model/common/response"
+	"pengyou/model/entity"
+	"pengyou/utils/log"
+	"strconv"
 
-// 	"github.com/gin-gonic/gin"
-// )
+	es "pengyou/storage/elasticsearch"
 
-// func PostUpload(c *gin.Context) {
-// 	post, success := c.GetPostForm(constant.POSTED_CONTENT)
+	"github.com/gin-gonic/gin"
+)
 
-// 	if !success {
-// 		response.FailWithMessage(constant.CANNOT_FOUND_CONTENT, c)
-// 		return
-// 	}
+func AddPost(post *entity.Post, c *gin.Context) {
 
-// 	title, success := c.GetPostForm(constant.POSTED_TITLE)
+	log.Logger.Info("post: " + post.Content)
+	log.Logger.Info("title: " + post.Title)
+	log.Logger.Info("author: " + strconv.Itoa(int(post.Author)))
 
-// 	if !success {
-// 		response.FailWithMessage(constant.CANNOT_FOUND_TITLE, c)
-// 		return
-// 	}
+	err := es.IndexPostAdd(post)
+	if err != nil {
+		response.FailWithMessage(constant.AddedFailed, c)
+		return
+	}
 
-// 	user, success := c.GetPostForm(constant.POSTED_USER)
-// 	if !success {
-// 		response.FailWithMessage(constant.CANNOT_FOUND_USER, c)
-// 		return
-// 	}
+	response.OkWithMessage(constant.AddedSuccess, c)
+}
 
-// 	log.Info("post: " + post)
-// 	log.Info("title: " + title)
-// 	log.Info("user: " + user)
+func UpdatePost(post *entity.Post, c *gin.Context) {
 
-// 	response.OkWithMessage("upload success", c)
-// }
+	err := es.IndexPostUpdate(post)
+	if err != nil {
+		response.FailWithMessage(constant.UpdatedFailed, c)
+		return
+	}
+
+	response.OkWithMessage(constant.UpdatedSuccess, c)
+}
+
+func DeletePost(post int, c *gin.Context) {
+
+	err := es.IndexPostDelete(post)
+	if err != nil {
+		response.FailWithMessage(constant.DeletedFailed, c)
+		return
+	}
+
+	response.OkWithMessage(constant.DeletedSuccess, c)
+}

@@ -3,8 +3,6 @@ package test
 import (
 	"context"
 	"testing"
-
-	"github.com/redis/go-redis/v9"
 )
 
 func TestRedis(t *testing.T) {
@@ -17,7 +15,7 @@ func TestRedis(t *testing.T) {
 	// info := rdb.Info(context.Background())
 
 	// fmt.Println(info)
-	// t.Log(info)
+	// t.log(info)
 
-	t.Log(rdb.Info(context.Background(), "used", "_", "memory"))
+	t.log(rdb.Info(context.Background(), "used", "_", "memory"))
 }

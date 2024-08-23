@@ -2,11 +2,9 @@ package rds
 
 import (
 	"context"
-
+	"github.com/redis/go-redis/v9"
 	"pengyou/global/config"
 	"pengyou/utils/log"
-
-	"github.com/redis/go-redis/v9"
 )
 
 var (
@@ -38,7 +36,7 @@ func InitRedis(cfg *config.Redis) {
 		redisType = "standalone"
 	}
 
-	log.Info("redis init success with " +
+	log.Logger.Info("redis init success with " +
 		redisType +
 		" -> " +
 		cfg.Addr)

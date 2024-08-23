@@ -10,6 +10,7 @@ type Config struct {
 	MySQL         MySQL         `yaml:"mysql"`
 	Files         Files         `yaml:"files"`
 	Elasticsearch Elasticsearch `yaml:"elasticsearch"`
+	Snowflake     Snowflake     `yaml:"snowflake"`
 }
 
 var Cfg *Config

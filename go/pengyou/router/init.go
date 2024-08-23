@@ -17,6 +17,7 @@ func Init(cfg *config.Config) *gin.Engine {
 		})
 
 	eng.Use(corsCfg)
+	eng.Use(jwtMiddleware())
 
 	return eng
 }
