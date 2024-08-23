@@ -1,5 +1,7 @@
 package com.pengyou.model.entity;
 
+import com.pengyou.cnoverter.PasswordConverter;
+import org.babyfish.jimmer.jackson.JsonConverter;
 import org.babyfish.jimmer.sql.*;
 
 
@@ -21,6 +23,7 @@ public interface Admin {
     @Key
     String username();
 
+    @JsonConverter(PasswordConverter.class)
     String password();
 
     @Nullable

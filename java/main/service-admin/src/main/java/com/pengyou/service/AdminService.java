@@ -14,5 +14,4 @@ public interface AdminService {
     Page<AdminForView> query(AdminForQuery adminForQuery);
     AdminForLoginView login(AdminForLogin adminForLogin);
     void logout(AdminForLogout adminForLogout);
-
 }

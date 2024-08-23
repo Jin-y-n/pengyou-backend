@@ -11,6 +11,7 @@ import com.pengyou.model.dto.admin.*;
 import com.pengyou.model.response.AdminLoginResult;
 import com.pengyou.service.AdminService;
 import com.pengyou.util.security.JwtUtil;
+import com.pengyou.util.security.SHA256Encryption;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.client.meta.Api;
 import org.babyfish.jimmer.sql.ast.tuple.Tuple2;
@@ -46,6 +47,8 @@ public class AdminController {
         } else {
             throw new CaptchaErrorException();
         }
+        // 密码加密
+        adminForRegister.setPassword(SHA256Encryption.getSHA256(adminForRegister.getPassword()));
 
         if(adminForRegister.getRole() == 0){
             adminForRegister.setRole((short) 2);
@@ -73,7 +76,7 @@ public class AdminController {
         if (admin != null) {
             HashMap<String, Object> map = new HashMap<>();
             map.put(JwtClaimsConstant.ID, admin.getId());
-            String jwt = JwtUtil.createJWT(this.jwtProperties.getSecretKey(), this.jwtProperties.getTtl(), map);
+            String jwt = JwtUtil.createJWT(this.jwtProperties.getAdminSecretKey(), this.jwtProperties.getAdminTtl(), map);
 
             return Result.success(new AdminLoginResult(admin.toEntity(), jwt));
 
@@ -105,6 +108,8 @@ public class AdminController {
     public Result update(
             @RequestBody AdminForUpdate adminForUpdate
     ) {
+        // 密码加密
+        adminForUpdate.setPassword(SHA256Encryption.getSHA256(adminForUpdate.getPassword()));
         adminService.update(adminForUpdate);
         return Result.success(AccountConstant.ACCOUNT_CHANGE_SUCCESS);
     }

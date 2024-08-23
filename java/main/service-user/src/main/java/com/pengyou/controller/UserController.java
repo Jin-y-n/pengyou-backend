@@ -20,6 +20,7 @@ import com.pengyou.model.response.AdminLoginResult;
 import com.pengyou.model.response.UserLoginResult;
 import com.pengyou.service.UserService;
 import com.pengyou.util.security.JwtUtil;
+import com.pengyou.util.security.SHA256Encryption;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.client.meta.Api;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -92,6 +93,7 @@ public class UserController {
     public Result update(
             @RequestBody UserForUpdate user
     ) {
+
         userService.update(user);
         return Result.success("Profile update successful");
     }
