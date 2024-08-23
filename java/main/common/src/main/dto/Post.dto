@@ -120,11 +120,11 @@ input UserPostForUpdate {
     title
     content
     status
-    labels {
+    labels? {
         id
         label
     }
-    sections {
+    sections? {
         id
         section
     }

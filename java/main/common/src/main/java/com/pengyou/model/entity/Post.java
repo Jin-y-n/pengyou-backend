@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.util.Null;
 import org.babyfish.jimmer.sql.*;
 
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
