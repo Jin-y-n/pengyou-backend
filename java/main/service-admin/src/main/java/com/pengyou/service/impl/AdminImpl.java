@@ -82,13 +82,13 @@ public class AdminImpl implements AdminService {
     }
 
     @Override
-    public void verify(AdminForVerify adminForVerify) {
+    public String verify(AdminForVerify adminForVerify) {
         if (AccountUtil.checkEmail(adminForVerify.getEmail())) {
             String captcha = CaptchaGenerator.generateCaptcha(6);
 
             template.opsForValue().set(RedisConstant.ADMIN_CAPTCHA + adminForVerify.getEmail(), captcha);
             mailUtil.sendCaptcha(captcha, adminForVerify.getEmail());
-            return;
+            return captcha;
         }
 
         if (AccountUtil.checkPhone(adminForVerify.getPhone())) {
@@ -97,7 +97,7 @@ public class AdminImpl implements AdminService {
             template.opsForValue().set(RedisConstant.ADMIN_CAPTCHA + adminForVerify.getEmail(), captcha);
             // TODO: SEND SMS
 
-            return;
+            return captcha;
         }
 
         throw new InputInvalidException();

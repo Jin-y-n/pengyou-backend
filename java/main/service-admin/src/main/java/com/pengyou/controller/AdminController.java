@@ -13,6 +13,7 @@ import com.pengyou.service.AdminService;
 import com.pengyou.util.security.JwtUtil;
 import com.pengyou.util.security.SHA256Encryption;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.babyfish.jimmer.client.meta.Api;
 import org.babyfish.jimmer.sql.ast.tuple.Tuple2;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 
 @Api
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/account")
@@ -53,7 +55,7 @@ public class AdminController {
         if(adminForRegister.getRole() == 0){
             adminForRegister.setRole((short) 2);
         }
-
+        log.info("Admin:" + adminForRegister.getUsername()+", role：" + adminForRegister.getRole() + ",createTime:" + adminForRegister.getCreatedTime());
         adminService.register(adminForRegister);
         return Result.success(AccountConstant.ACCOUNT_REGISTER_SUCCESS);
     }
@@ -63,7 +65,8 @@ public class AdminController {
     public Result verify(
             @RequestBody AdminForVerify adminForVerify
     ) {
-        adminService.verify(adminForVerify);
+        String verificaiton = adminService.verify(adminForVerify);
+        log.info("Verification code: \""+ verificaiton +"\" has been sent.");
         return Result.success(VerifyConstant.VERIFY_CODE_SENT);
     }
 

@@ -8,7 +8,7 @@ import org.babyfish.jimmer.Page;
 
 public interface AdminService {
     void register(AdminForRegister adminForRegister);
-    void verify(AdminForVerify adminForVerify);
+    String verify(AdminForVerify adminForVerify);
     void delete(AdminForDelete adminForDelete);
     void update(AdminForUpdate adminForUpdate);
     Page<AdminForView> query(AdminForQuery adminForQuery);
