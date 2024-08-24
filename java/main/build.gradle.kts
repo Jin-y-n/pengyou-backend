@@ -41,6 +41,8 @@ allprojects {
     dependencies {
 
         implementation("org.springframework.boot:spring-boot-starter-web")
+        implementation ("org.springframework.boot:spring-boot-starter-mail")
+
 
         // Data
         implementation("org.springframework.boot:spring-boot-starter-data-redis")
@@ -48,13 +50,14 @@ allprojects {
         implementation("org.babyfish.jimmer:jimmer-spring-boot-starter:$jimmerVersion")
         implementation("org.babyfish.jimmer:jimmer-sql:$jimmerVersion")
         implementation("com.alibaba:druid:$druidVersion")
-//        implementation("com.aliyun.oss:aliyun-sdk-oss:$aliOOSVersion")
+        implementation("com.aliyun.oss:aliyun-sdk-oss:$aliOOSVersion")
         implementation("org.apache.commons:commons-pool2:$commonsPool2Version")
 
         runtimeOnly("com.mysql:mysql-connector-j")
 
 
         // Utils
+//        implementation("io.github.openfeign:feign-core:$feignCoreVersion")
         implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jsrVersion")
         implementation("io.jsonwebtoken:jjwt:$jwtVersion")
         implementation("org.springframework.boot:spring-boot-starter-mail")

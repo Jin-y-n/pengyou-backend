@@ -1,6 +1,7 @@
 package elasticsearch
 
 import (
+	"fmt"
 	"github.com/elastic/go-elasticsearch/v8"
 	"go.uber.org/zap"
 	"pengyou/global/config"
@@ -19,7 +20,8 @@ func InitElasticSearch(cfg *config.Config) {
 			//Password:  cfg.Elasticsearch.Password,
 		})
 	if err != nil {
-		log.Logger.Error("elasticsearch init failed")
+		log.Logger.Error("elasticsearch init failed: nodes:" +
+			fmt.Sprintf("%v", cfg.Elasticsearch.Nodes))
 		panic(err)
 	}
 	ping, err := EsClient.Ping()

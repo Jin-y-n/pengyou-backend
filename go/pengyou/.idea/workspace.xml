@@ -5,8 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6c26971f-3581-4b02-9e89-a32b646cb202" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../../.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tmp/es.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tmp/es/data/node1/config/elasticsearch.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tmp/es/data/node2/config/elasticsearch.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tmp/es/data/node3/config/elasticsearch.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tmp/es2.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tmp/rm.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/post.go" beforeDir="false" afterPath="$PROJECT_DIR$/controller/post.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs.go" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/docs/swagger.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docs/swagger.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pengyou" beforeDir="false" afterPath="$PROJECT_DIR$/pengyou" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/elasticsearch/elasticsearch.go" beforeDir="false" afterPath="$PROJECT_DIR$/storage/elasticsearch/elasticsearch.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/elasticsearch/es_encapsulated.go" beforeDir="false" afterPath="$PROJECT_DIR$/storage/elasticsearch/es_encapsulated.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../install/dev/linux/init.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../../install/dev/linux/init.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../install/dev/linux/remove.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../../install/dev/linux/remove.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../install/dev/windows/remove-pw.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../../install/dev/windows/remove-pw.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../sql/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../../sql/init.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,6 +33,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Go Application" />
         <option value="Go File" />
       </list>
     </option>
@@ -42,28 +60,48 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "DefaultGoTemplateProperty": "Go File",
-    "Go Build.go build main.go.executor": "Run",
+    "Go Build.go build main.go.executor": "Debug",
     "Go Build.go build pengyou.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "git-widget-placeholder": "dev-temp",
+    "git-widget-placeholder": "dev",
     "go.import.settings.migrated": "true",
-    "last_opened_file_path": "/home/napbad/Project/Muti/pengyou/backend/go/pengyou",
+    "last_opened_file_path": "/home/napbad/Project/Muti/pengyou/backend/go/pengyou/tmp/es/es_cluster",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "go.vgo"
+    "settings.editor.selected.configurable": "preferences.pluginManager"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
+    ]
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/tmp/es/es_cluster" />
+      <recent name="$PROJECT_DIR$/tmp/es/data/node3/config" />
+      <recent name="$PROJECT_DIR$/tmp/es/data/node2/config" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/storage/elasticsearch" />
+      <recent name="$PROJECT_DIR$/storage" />
       <recent name="$PROJECT_DIR$/utils/check/account" />
       <recent name="$PROJECT_DIR$/utils/check/string" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build main.go">
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="GoApplicationRunConfiguration" />
+        <option value="GoRemoteDebugConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager">
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="pengyou" />
       <working_directory value="$PROJECT_DIR$" />
@@ -72,19 +110,9 @@
       <filePath value="$PROJECT_DIR$/main.go" />
       <method v="2" />
     </configuration>
-    <configuration name="go build pengyou" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
-      <module name="pengyou" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="pengyou" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/main.go" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build main.go" />
-        <item itemvalue="Go Build.go build pengyou" />
       </list>
     </recent_temporary>
   </component>

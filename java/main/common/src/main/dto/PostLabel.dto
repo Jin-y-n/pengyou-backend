@@ -1,0 +1,45 @@
+export com.pengyou.model.entity.PostLabel
+    -> package com.pengyou.model.dto.postlabel
+
+input PostLabelForAdd {
+    #allScalars(this)!
+    -id
+}
+
+PostLabelForDelete {
+    ids: MutableList<Long?>
+}
+
+specification SearchForLabels {
+    pageIndex: Int
+    pageSize: Int
+    id
+    like/i(label)
+    like/i(description)
+}
+
+SearchForLabelsView {
+    #allScalars(this)
+}
+
+specification LabelForQuery {
+    pageIndex: Int
+    pageSize: Int
+    id
+    label
+}
+
+LabelForQueryView {
+    #allScalars(this)
+}
+
+specification PostLabelForQuery {
+    pageIndex: Int
+    pageSize: Int
+    id
+    like/i(label)
+}
+
+PostLabelForQueryView {
+    #allScalars(this)
+}

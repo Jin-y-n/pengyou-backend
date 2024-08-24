@@ -1,0 +1,180 @@
+export com.pengyou.model.entity.Post
+    -> package com.pengyou.model.dto.post
+
+input PostForUpdate {
+    id
+    authorId
+    title
+    content
+    status
+    modifiedAt
+    labels {
+        id
+        label
+    }
+    sections {
+        id
+        section
+    }
+    author {
+        id
+    }
+}
+
+specification PostForQuery{
+    pageIndex: Int
+    pageSize: Int
+    id
+    authorId
+    like/i(title)
+    like/i(content)
+    ge(createdAt)
+    le(createdAt)
+    ge(modifiedAt)
+    le(modifiedAt)
+    status
+    createdPerson
+    modifiedPerson
+    flat(labels) {
+        valueIn(id) as labelIds
+        valueIn(label) as labelNames
+    }
+    flat(sections) {
+        valueIn(id) as sectionIds
+        valueIn(section) as sectionNames
+    }
+}
+
+PostForView{
+    id
+    authorId
+    title
+    content
+    createdAt
+    modifiedAt
+    status
+    createdPerson
+    modifiedPerson
+    labels{
+        #allScalars(this)
+        -description
+    }
+    sections{
+        #allScalars(this)
+        -description
+    }
+    deleteAt
+}
+
+PostForDelete{
+    ids: MutableList<Long?>
+}
+
+specification SearchForPosts {
+    pageIndex: Int
+    pageSize: Int
+    id
+    authorId
+    like/i(title)
+    like/i(content)
+    flat(labels) {
+        valueIn(id) as labelIds
+        valueIn(label) as labelNames
+    }
+    flat(sections) {
+        valueIn(id) as sectionIds
+        valueIn(section) as sectionNames
+    }
+}
+
+SearchForPostsView {
+    id
+    authorId
+    title
+    content
+    createdAt
+    modifiedAt
+    labels {
+        id
+        label
+    }
+    sections {
+        id
+        section
+    }
+}
+
+input UserPostForAdd {
+    authorId
+    title
+    content
+    status
+    labels {
+        id
+        label
+    }
+    sections {
+        id
+        section
+    }
+}
+
+
+input UserPostForUpdate {
+    id
+    authorId
+    title
+    content
+    status
+    labels? {
+        id
+        label
+    }
+    sections? {
+        id
+        section
+    }
+}
+
+input UserPostForDelete {
+    ids: MutableList<Long?>
+}
+
+specification UserPostForQuery {
+    pageIndex: Int
+    pageSize: Int
+    id
+    authorId
+    like/i(title)
+    like/i(content)
+    ge(createdAt)
+    le(createdAt)
+    ge(modifiedAt)
+    le(modifiedAt)
+    status
+    flat(labels) {
+        valueIn(id) as labelIds
+        valueIn(label) as labelNames
+
+    }
+    flat(sections) {
+        valueIn(id) as sectionIds
+        valueIn(section) as sectionNames
+    }
+}
+
+UserPostForQueryView {
+    id
+    authorId
+    title
+    content
+    status
+    labels {
+        id
+        label
+    }
+    sections {
+        id
+        section
+    }
+}

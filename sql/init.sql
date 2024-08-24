@@ -5,359 +5,533 @@ create database pengyou_test;
 
 use pengyou_test;
 
-CREATE TABLE user
+create table admin
 (
-    id                INT UNSIGNED AUTO_INCREMENT,
-    username          VARCHAR(50) NOT NULL,
-    password          VARCHAR(64) NOT NULL,
-    email             VARCHAR(50),
-    phone             VARCHAR(20),
-    login_time        TIMESTAMP   NULL     DEFAULT NULL,
-    created_at        TIMESTAMP            DEFAULT CURRENT_TIMESTAMP,
-    modified_at       TIMESTAMP            DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    delete_at         TIMESTAMP   NULL     DEFAULT NULL,
-    status            SMALLINT             DEFAULT 1,
-    heart_beat_time   TIMESTAMP   NULL     DEFAULT NULL,
-    client_ip         VARCHAR(50),
-    is_logout         TINYINT              DEFAULT 0,
-    log_out_time      TIMESTAMP   NULL     DEFAULT NULL,
-    device_info       VARCHAR(255),
-    created_person    INT UNSIGNED,
-    modified_person   INT UNSIGNED,
-    modified_by_admin TINYINT     NOT NULL DEFAULT 0,
-    PRIMARY KEY (id),
-    UNIQUE INDEX idx_username (username),
-    INDEX idx_email (email),
-    INDEX idx_phone (phone)
+    id               int unsigned auto_increment
+        primary key,
+    username         varchar(100)                           not null,
+    password         varchar(255)                           not null,
+    email            varchar(100)                           null,
+    phone            varchar(100)                           null,
+    created_time     timestamp    default CURRENT_TIMESTAMP null,
+    modified_time    timestamp    default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
+    created_person   int unsigned                           null,
+    modified_person  int unsigned default '0'               null,
+    delete_at        timestamp                              null,
+    role             tinyint      default 0                 null,
+    modified_by_root tinyint      default 0                 null,
+    constraint idx_username
+        unique (username)
 );
 
-CREATE TABLE user_profile
+create table post_label
 (
-    user_id         INT UNSIGNED NOT NULL,
-    display_name    VARCHAR(50),
-    avatar_id       VARCHAR(255),
-    bio             VARCHAR(255),
-    gender          TINYINT,
-    birthday        DATE,
-    location        VARCHAR(100),
-    occupation      VARCHAR(100),
-    education       VARCHAR(100),
-    school          VARCHAR(100),
-    major           VARCHAR(100),
-    company         VARCHAR(100),
-    position        VARCHAR(100),
-    website         VARCHAR(255),
-    created_at      TIMESTAMP         DEFAULT CURRENT_TIMESTAMP,
-    modified_at     TIMESTAMP         DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    delete_at       TIMESTAMP    NULL DEFAULT NULL,
-    created_person  INT UNSIGNED,
-    modified_person INT UNSIGNED,
-    modified_by_admin TINYINT     NOT NULL DEFAULT 0,
-    PRIMARY KEY (user_id),
-    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE
+    id          int unsigned auto_increment
+        primary key,
+    label       varchar(100) null,
+    description varchar(255) null,
+    constraint idx_label
+        unique (label)
 );
 
-
-CREATE TABLE tag
+create table post_section
 (
-    id          INT UNSIGNED AUTO_INCREMENT,
-    name        VARCHAR(63) NOT NULL,
-    description VARCHAR(255),
-    PRIMARY KEY (id),
-    UNIQUE INDEX idx_name (name)
+    id          int unsigned auto_increment
+        primary key,
+    section     varchar(100) null,
+    description varchar(255) null,
+    constraint idx_section
+        unique (section)
 );
 
-CREATE TABLE user_tag_mapping
+create table sensitive_word
 (
-    id      INT UNSIGNED AUTO_INCREMENT,
-    user_id INT UNSIGNED NOT NULL,
-    tag_id  INT UNSIGNED NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
-    FOREIGN KEY (tag_id) REFERENCES tag (id) ON DELETE CASCADE
+    id   int unsigned auto_increment
+        primary key,
+    word varchar(100) not null,
+    constraint idx_word
+        unique (word)
 );
 
-
-CREATE TABLE user_friend
+create table tag
 (
-    id             INT UNSIGNED AUTO_INCREMENT,
-    user_id        INT UNSIGNED NOT NULL,
-    friend_id      INT UNSIGNED NOT NULL,
-    status         TINYINT           DEFAULT 0,
-    request_date   TIMESTAMP    NULL DEFAULT NULL,
-    accepted_date  TIMESTAMP    NULL DEFAULT NULL,
-    require_person INT UNSIGNED,
-    relationship   SMALLINT          DEFAULT 1,
-    delete_at      TIMESTAMP    NULL DEFAULT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
-    FOREIGN KEY (friend_id) REFERENCES user (id) ON DELETE CASCADE,
-    FOREIGN KEY (require_person) REFERENCES user (id) ON DELETE SET NULL
+    id          int unsigned auto_increment
+        primary key,
+    name        varchar(63)  not null,
+    description varchar(255) null,
+    constraint idx_name
+        unique (name)
 );
 
-
-CREATE TABLE social_account
+create table user
 (
-    id       INT UNSIGNED AUTO_INCREMENT,
-    user_id  INT UNSIGNED NOT NULL,
-    platform VARCHAR(63)  NOT NULL,
-    link     VARCHAR(255),
-    PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
-    UNIQUE INDEX idx_user_platform (user_id, platform)
+    id                int unsigned auto_increment
+        primary key,
+    username          varchar(50)                         not null,
+    password          varchar(64)                         not null,
+    email             varchar(50)                         null,
+    phone             varchar(20)                         null,
+    login_time        timestamp                           null,
+    created_at        timestamp default CURRENT_TIMESTAMP null,
+    modified_at       timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
+    delete_at         timestamp                           null,
+    status            smallint  default 1                 null,
+    heart_beat_time   timestamp                           null,
+    client_ip         varchar(50)                         null,
+    is_logout         tinyint   default 0                 null,
+    log_out_time      timestamp                           null,
+    device_info       varchar(255)                        null,
+    created_person    int unsigned                        null,
+    modified_person   int unsigned                        null,
+    modified_by_admin tinyint   default 0                 not null,
+    constraint idx_username
+        unique (username)
 );
 
-
-
-CREATE TABLE post_section
+create table message_send
 (
-    id          INT UNSIGNED AUTO_INCREMENT,
-    section     VARCHAR(100),
-    description VARCHAR(255),
-    PRIMARY KEY (id),
-    UNIQUE INDEX idx_section (section)
+    id           int unsigned auto_increment
+        primary key,
+    sender_id    int unsigned                        not null,
+    recipient_id int unsigned                        not null,
+    content      varchar(511)                        not null,
+    sent_at      timestamp default CURRENT_TIMESTAMP null,
+    is_read      tinyint   default 0                 null,
+    delete_at    timestamp                           null,
+    type         tinyint   default 0                 null,
+    constraint message_send_ibfk_1
+        foreign key (sender_id) references user (id)
+            on delete cascade,
+    constraint message_send_ibfk_2
+        foreign key (recipient_id) references user (id)
+            on delete cascade
 );
 
-
-CREATE TABLE post_label
+create table message_receive
 (
-    id          INT UNSIGNED AUTO_INCREMENT,
-    label       VARCHAR(100),
-    description VARCHAR(255),
-    PRIMARY KEY (id),
-    UNIQUE INDEX idx_label (label)
+    id              int unsigned auto_increment
+        primary key,
+    message_send_id int unsigned not null,
+    recipient_id    int unsigned not null,
+    read_at         timestamp    null,
+    delete_at       timestamp    null,
+    constraint message_receive_ibfk_1
+        foreign key (message_send_id) references message_send (id)
+            on delete cascade,
+    constraint message_receive_ibfk_2
+        foreign key (recipient_id) references user (id)
+            on delete cascade
 );
 
+create index message_send_id
+    on message_receive (message_send_id);
 
-CREATE TABLE post
+create index recipient_id
+    on message_receive (recipient_id);
+
+create index recipient_id
+    on message_send (recipient_id);
+
+create index sender_id
+    on message_send (sender_id);
+
+create table post
 (
-    id              INT UNSIGNED AUTO_INCREMENT,
-    author          INT UNSIGNED NOT NULL,
-    title           VARCHAR(255),
-    content         TEXT,
-    created_at      TIMESTAMP         DEFAULT CURRENT_TIMESTAMP,
-    modified_at     TIMESTAMP         DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    status          TINYINT           DEFAULT 1,
-    created_person  INT UNSIGNED,
-    modified_person INT UNSIGNED,
-    delete_at       TIMESTAMP    NULL DEFAULT NULL,
-    modified_by_admin TINYINT     NOT NULL DEFAULT 0,
-
-    PRIMARY KEY (id),
-    FOREIGN KEY (author) REFERENCES user (id) ON DELETE CASCADE,
-    FOREIGN KEY (created_person) REFERENCES user (id) ON DELETE SET NULL,
-    FOREIGN KEY (modified_person) REFERENCES user (id) ON DELETE SET NULL,
-    FOREIGN KEY (label) REFERENCES post_label (id) ON DELETE SET NULL
+    id                int unsigned auto_increment
+        primary key,
+    author            int unsigned                        not null,
+    title             varchar(255)                        null,
+    content           text                                null,
+    created_at        timestamp default CURRENT_TIMESTAMP null,
+    modified_at       timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
+    status            tinyint   default 1                 null,
+    created_person    int unsigned                        null,
+    modified_person   int unsigned                        null,
+    delete_at         timestamp                           null,
+    modified_by_admin tinyint   default 0                 not null,
+    constraint post_ibfk_1
+        foreign key (author) references user (id)
+            on delete cascade,
+    constraint post_ibfk_2
+        foreign key (created_person) references user (id)
+            on delete set null,
+    constraint post_ibfk_3
+        foreign key (modified_person) references user (id)
+            on delete set null
 );
 
-
-
-CREATE TABLE post_history
+create table comment
 (
-    id              INT UNSIGNED AUTO_INCREMENT,
-    author          INT UNSIGNED NOT NULL,
-    title           VARCHAR(255),
-    content         TEXT,
-    modified_at     TIMESTAMP         DEFAULT CURRENT_TIMESTAMP,
-    modified_person INT UNSIGNED,
-    modified_by_admin TINYINT     NOT NULL DEFAULT 0,
-
-    delete_at       TIMESTAMP    NULL DEFAULT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (author) REFERENCES user (id) ON DELETE CASCADE,
-    FOREIGN KEY (modified_person) REFERENCES user (id) ON DELETE SET NULL,
-    FOREIGN KEY (label) REFERENCES post_label (id) ON DELETE SET NULL
+    id                int unsigned auto_increment
+        primary key,
+    post_id           int unsigned                        not null,
+    user_id           int unsigned                        not null,
+    content           varchar(255)                        null,
+    created_time      timestamp default CURRENT_TIMESTAMP null,
+    modified_time     timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
+    created_person    int unsigned                        null,
+    modified_person   int unsigned                        null,
+    modified_by_admin tinyint   default 0                 not null,
+    constraint comment_ibfk_1
+        foreign key (post_id) references post (id)
+            on delete cascade,
+    constraint comment_ibfk_2
+        foreign key (user_id) references user (id)
+            on delete cascade,
+    constraint comment_ibfk_3
+        foreign key (created_person) references user (id)
+            on delete set null,
+    constraint comment_ibfk_4
+        foreign key (modified_person) references user (id)
+            on delete set null
 );
 
+create index created_person
+    on comment (created_person);
 
-CREATE TABLE post_label_mapping
+create index modified_person
+    on comment (modified_person);
+
+create index post_id
+    on comment (post_id);
+
+create index user_id
+    on comment (user_id);
+
+create table comment_history
 (
-    id       INT UNSIGNED AUTO_INCREMENT,
-    post_id  INT UNSIGNED NOT NULL,
-    label_id INT UNSIGNED NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE,
-    FOREIGN KEY (label_id) REFERENCES post_label (id) ON DELETE CASCADE
+    id                int unsigned auto_increment
+        primary key,
+    post_id           int unsigned                        not null,
+    user_id           int unsigned                        not null,
+    content           varchar(255)                        null,
+    modified_time     timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
+    modified_person   int unsigned                        null,
+    modified_by_admin tinyint   default 0                 not null,
+    delete_at         timestamp                           null,
+    constraint comment_history_ibfk_1
+        foreign key (post_id) references post (id)
+            on delete cascade,
+    constraint comment_history_ibfk_2
+        foreign key (user_id) references user (id)
+            on delete cascade,
+    constraint comment_history_ibfk_3
+        foreign key (modified_person) references user (id)
+            on delete set null
 );
 
+create index modified_person
+    on comment_history (modified_person);
 
-CREATE TABLE post_section_mapping
+create index post_id
+    on comment_history (post_id);
+
+create index user_id
+    on comment_history (user_id);
+
+create table comment_like
 (
-    id         INT UNSIGNED AUTO_INCREMENT,
-    section_id INT UNSIGNED NOT NULL,
-    post_id    INT UNSIGNED NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (section_id) REFERENCES post_section (id) ON DELETE CASCADE,
-    FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE
+    id         int unsigned auto_increment
+        primary key,
+    comment_id int unsigned                        not null,
+    user_id    int unsigned                        not null,
+    created_at timestamp default CURRENT_TIMESTAMP null,
+    constraint comment_like_ibfk_1
+        foreign key (comment_id) references comment (id)
+            on delete cascade,
+    constraint comment_like_ibfk_2
+        foreign key (user_id) references user (id)
+            on delete cascade
 );
 
+create index comment_id
+    on comment_like (comment_id);
 
-CREATE TABLE post_history_label_mapping
+create index user_id
+    on comment_like (user_id);
+
+create index author
+    on post (author);
+
+create index created_person
+    on post (created_person);
+
+create index modified_person
+    on post (modified_person);
+
+create table post_dislike
 (
-    id              INT UNSIGNED AUTO_INCREMENT,
-    post_history_id INT UNSIGNED NOT NULL,
-    label_id        INT UNSIGNED NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (post_history_id) REFERENCES post_history (id) ON DELETE CASCADE,
-    FOREIGN KEY (label_id) REFERENCES post_label (id) ON DELETE CASCADE
+    id         int unsigned auto_increment
+        primary key,
+    post_id    int unsigned                        not null,
+    user_id    int unsigned                        not null,
+    created_at timestamp default CURRENT_TIMESTAMP null,
+    constraint post_dislike_ibfk_1
+        foreign key (post_id) references post (id)
+            on delete cascade,
+    constraint post_dislike_ibfk_2
+        foreign key (user_id) references user (id)
+            on delete cascade
 );
 
+create index post_id
+    on post_dislike (post_id);
 
-CREATE TABLE post_history_section_mapping
+create index user_id
+    on post_dislike (user_id);
+
+create table post_history
 (
-    id              INT UNSIGNED AUTO_INCREMENT,
-    post_history_id INT UNSIGNED NOT NULL,
-    section_id      INT UNSIGNED NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (post_history_id) REFERENCES post_history (id) ON DELETE CASCADE,
-    FOREIGN KEY (section_id) REFERENCES post_section (id) ON DELETE CASCADE
+    id                int unsigned auto_increment
+        primary key,
+    author            int unsigned                        not null,
+    title             varchar(255)                        null,
+    content           text                                null,
+    modified_at       timestamp default CURRENT_TIMESTAMP null,
+    modified_person   int unsigned                        null,
+    modified_by_admin tinyint   default 0                 not null,
+    delete_at         timestamp                           null,
+    constraint post_history_ibfk_1
+        foreign key (author) references user (id)
+            on delete cascade,
+    constraint post_history_ibfk_2
+        foreign key (modified_person) references user (id)
+            on delete set null
 );
 
+create index author
+    on post_history (author);
 
-CREATE TABLE post_like
+create index modified_person
+    on post_history (modified_person);
+
+create table post_history_label_mapping
 (
-    id         INT UNSIGNED AUTO_INCREMENT,
-    post_id    INT UNSIGNED NOT NULL,
-    user_id    INT UNSIGNED NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE
+    id              int unsigned auto_increment
+        primary key,
+    post_history_id int unsigned not null,
+    label_id        int unsigned not null,
+    constraint post_history_label_mapping_ibfk_1
+        foreign key (post_history_id) references post_history (id)
+            on delete cascade,
+    constraint post_history_label_mapping_ibfk_2
+        foreign key (label_id) references post_label (id)
+            on delete cascade
 );
 
+create index label_id
+    on post_history_label_mapping (label_id);
 
-CREATE TABLE post_dislike
+create index post_history_id
+    on post_history_label_mapping (post_history_id);
+
+create table post_history_section_mapping
 (
-    id         INT UNSIGNED AUTO_INCREMENT,
-    post_id    INT UNSIGNED NOT NULL,
-    user_id    INT UNSIGNED NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE
+    id              int unsigned auto_increment
+        primary key,
+    post_history_id int unsigned not null,
+    section_id      int unsigned not null,
+    constraint post_history_section_mapping_ibfk_1
+        foreign key (post_history_id) references post_history (id)
+            on delete cascade,
+    constraint post_history_section_mapping_ibfk_2
+        foreign key (section_id) references post_section (id)
+            on delete cascade
 );
 
+create index post_history_id
+    on post_history_section_mapping (post_history_id);
 
-CREATE TABLE comment
+create index section_id
+    on post_history_section_mapping (section_id);
+
+create table post_label_mapping
 (
-    id              INT UNSIGNED AUTO_INCREMENT,
-    post_id         INT UNSIGNED NOT NULL,
-    user_id         INT UNSIGNED NOT NULL,
-    content         VARCHAR(255),
-    created_time    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    modified_time   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    created_person  INT UNSIGNED,
-    modified_person INT UNSIGNED,
-    modified_by_admin TINYINT     NOT NULL DEFAULT 0,
-    PRIMARY KEY (id),
-    FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
-    FOREIGN KEY (created_person) REFERENCES user (id) ON DELETE SET NULL,
-    FOREIGN KEY (modified_person) REFERENCES user (id) ON DELETE SET NULL
+    id       int unsigned auto_increment
+        primary key,
+    post_id  int unsigned not null,
+    label_id int unsigned not null,
+    constraint post_label_mapping_ibfk_1
+        foreign key (post_id) references post (id)
+            on delete cascade,
+    constraint post_label_mapping_ibfk_2
+        foreign key (label_id) references post_label (id)
+            on delete cascade
 );
 
+create index label_id
+    on post_label_mapping (label_id);
 
-CREATE TABLE comment_like
+create index post_id
+    on post_label_mapping (post_id);
+
+create table post_like
 (
-    id         INT UNSIGNED AUTO_INCREMENT,
-    comment_id INT UNSIGNED NOT NULL,
-    user_id    INT UNSIGNED NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    FOREIGN KEY (comment_id) REFERENCES comment (id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE
+    id         int unsigned auto_increment
+        primary key,
+    post_id    int unsigned                        not null,
+    user_id    int unsigned                        not null,
+    created_at timestamp default CURRENT_TIMESTAMP null,
+    constraint post_like_ibfk_1
+        foreign key (post_id) references post (id)
+            on delete cascade,
+    constraint post_like_ibfk_2
+        foreign key (user_id) references user (id)
+            on delete cascade
 );
 
+create index post_id
+    on post_like (post_id);
 
-CREATE TABLE comment_history
+create index user_id
+    on post_like (user_id);
+
+create table post_section_mapping
 (
-    id              INT UNSIGNED AUTO_INCREMENT,
-    post_id         INT UNSIGNED NOT NULL,
-    user_id         INT UNSIGNED NOT NULL,
-    content         VARCHAR(255),
-    modified_time   TIMESTAMP         DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-    modified_person INT UNSIGNED,
-    modified_by_admin TINYINT     NOT NULL DEFAULT 0,
-
-    delete_at       TIMESTAMP    NULL DEFAULT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
-    FOREIGN KEY (modified_person) REFERENCES user (id) ON DELETE SET NULL
+    id         int unsigned auto_increment
+        primary key,
+    section_id int unsigned not null,
+    post_id    int unsigned not null,
+    constraint post_section_mapping_ibfk_1
+        foreign key (section_id) references post_section (id)
+            on delete cascade,
+    constraint post_section_mapping_ibfk_2
+        foreign key (post_id) references post (id)
+            on delete cascade
 );
 
+create index post_id
+    on post_section_mapping (post_id);
 
-CREATE TABLE report
+create index section_id
+    on post_section_mapping (section_id);
+
+create table report
 (
-    id          INT UNSIGNED AUTO_INCREMENT,
-    reported_id INT UNSIGNED NOT NULL,
-    reporter_id INT UNSIGNED NOT NULL,
-    reason      VARCHAR(255),
-    report_time TIMESTAMP         DEFAULT CURRENT_TIMESTAMP,
-    status      TINYINT           DEFAULT 0,
-    delete_at   TIMESTAMP    NULL DEFAULT NULL,
-    type        SMALLINT,
-    PRIMARY KEY (id),
-    FOREIGN KEY (reported_id) REFERENCES user (id) ON DELETE CASCADE,
-    FOREIGN KEY (reporter_id) REFERENCES user (id) ON DELETE CASCADE
+    id          int unsigned auto_increment
+        primary key,
+    reported_id int unsigned                        not null,
+    reporter_id int unsigned                        not null,
+    reason      varchar(255)                        null,
+    report_time timestamp default CURRENT_TIMESTAMP null,
+    status      tinyint   default 0                 null,
+    delete_at   timestamp                           null,
+    type        smallint                            null,
+    constraint report_ibfk_1
+        foreign key (reported_id) references user (id)
+            on delete cascade,
+    constraint report_ibfk_2
+        foreign key (reporter_id) references user (id)
+            on delete cascade
 );
 
+create index reported_id
+    on report (reported_id);
 
-CREATE TABLE admin
+create index reporter_id
+    on report (reporter_id);
+
+create table social_account
 (
-    id                INT UNSIGNED AUTO_INCREMENT,
-    username          VARCHAR(100) NOT NULL,
-    password          VARCHAR(255) NOT NULL,
-    email             VARCHAR(100),
-    phone             VARCHAR(100),
-    created_time      TIMESTAMP         DEFAULT CURRENT_TIMESTAMP,
-    modified_time     TIMESTAMP         DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    created_person    INT UNSIGNED,
-    modified_person   INT UNSIGNED      DEFAULT 0,
-    delete_at         TIMESTAMP    NULL DEFAULT NULL,
-    role              TINYINT           DEFAULT 0,
-    modified_by_root TINYINT           DEFAULT 0,
-    PRIMARY KEY (id),
-    UNIQUE INDEX idx_username (username)
+    id       int unsigned auto_increment
+        primary key,
+    user_id  int unsigned not null,
+    platform varchar(63)  not null,
+    link     varchar(255) null,
+    constraint idx_user_platform
+        unique (user_id, platform),
+    constraint social_account_ibfk_1
+        foreign key (user_id) references user (id)
+            on delete cascade
 );
 
+create index idx_email
+    on user (email);
 
-CREATE TABLE sensitive_word
+create index idx_phone
+    on user (phone);
+
+create table user_friend
 (
-    id   INT UNSIGNED AUTO_INCREMENT,
-    word VARCHAR(100) NOT NULL,
-    PRIMARY KEY (id),
-    UNIQUE INDEX idx_word (word)
+    id             int unsigned auto_increment
+        primary key,
+    user_id        int unsigned       not null,
+    friend_id      int unsigned       not null,
+    status         tinyint  default 0 null,
+    request_date   timestamp          null,
+    accepted_date  timestamp          null,
+    require_person int unsigned       null,
+    relationship   smallint default 1 null,
+    delete_at      timestamp          null,
+    constraint user_friend_ibfk_1
+        foreign key (user_id) references user (id)
+            on delete cascade,
+    constraint user_friend_ibfk_2
+        foreign key (friend_id) references user (id)
+            on delete cascade,
+    constraint user_friend_ibfk_3
+        foreign key (require_person) references user (id)
+            on delete set null
 );
 
+create index friend_id
+    on user_friend (friend_id);
 
-CREATE TABLE message_send
+create index require_person
+    on user_friend (require_person);
+
+create index user_id
+    on user_friend (user_id);
+
+create table user_profile
 (
-    id           INT UNSIGNED AUTO_INCREMENT,
-    sender_id    INT UNSIGNED NOT NULL,
-    recipient_id INT UNSIGNED NOT NULL,
-    content      VARCHAR(511) NOT NULL,
-    sent_at      TIMESTAMP         DEFAULT CURRENT_TIMESTAMP,
-    is_read      TINYINT           DEFAULT 0,
-    delete_at    TIMESTAMP    NULL DEFAULT NULL,
-    type         TINYINT           DEFAULT 0,
-    PRIMARY KEY (id),
-    FOREIGN KEY (sender_id) REFERENCES user (id) ON DELETE CASCADE,
-    FOREIGN KEY (recipient_id) REFERENCES user (id) ON DELETE CASCADE
+    user_id           int unsigned                        not null,
+    display_name      varchar(50)                         null,
+    avatar_id         varchar(255)                        null,
+    bio               varchar(255)                        null,
+    gender            tinyint                             null,
+    birthday          date                                null,
+    location          varchar(100)                        null,
+    occupation        varchar(100)                        null,
+    education         varchar(100)                        null,
+    school            varchar(100)                        null,
+    major             varchar(100)                        null,
+    company           varchar(100)                        null,
+    position          varchar(100)                        null,
+    website           varchar(255)                        null,
+    created_at        timestamp default CURRENT_TIMESTAMP null,
+    modified_at       timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
+    delete_at         timestamp                           null,
+    created_person    int unsigned                        null,
+    modified_person   int unsigned                        null,
+    modified_by_admin tinyint   default 0                 not null,
+    id                int auto_increment
+        primary key,
+    constraint user_profile_user_id_fk
+        foreign key (user_id) references user (id)
 );
 
-
-CREATE TABLE message_receive
+create table user_tag_mapping
 (
-    id              INT UNSIGNED AUTO_INCREMENT,
-    message_send_id INT UNSIGNED NOT NULL,
-    recipient_id    INT UNSIGNED NOT NULL,
-    read_at         TIMESTAMP    NULL DEFAULT NULL,
-    delete_at       TIMESTAMP    NULL DEFAULT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (message_send_id) REFERENCES message_send (id) ON DELETE CASCADE,
-    FOREIGN KEY (recipient_id) REFERENCES user (id) ON DELETE CASCADE
+    id      int unsigned auto_increment
+        primary key,
+    user_id int unsigned not null,
+    tag_id  int unsigned not null,
+    constraint user_tag_mapping_ibfk_1
+        foreign key (user_id) references user (id)
+            on delete cascade,
+    constraint user_tag_mapping_ibfk_2
+        foreign key (tag_id) references tag (id)
+            on delete cascade
 );
+
+create index tag_id
+    on user_tag_mapping (tag_id);
+
+create index user_id
+    on user_tag_mapping (user_id);
+
+
 
 
 

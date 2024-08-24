@@ -385,6 +385,119 @@ const docTemplate = `{
                 }
             }
         },
+        "/posts": {
+            "put": {
+                "description": "更新帖子的信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子"
+                ],
+                "parameters": [
+                    {
+                        "description": "帖子信息",
+                        "name": "post",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.PostUpdateInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功响应",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "无效参数",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "添加新的帖子",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子"
+                ],
+                "parameters": [
+                    {
+                        "description": "帖子信息",
+                        "name": "post",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.PostCreateInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功响应",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "无效参数",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "删除指定 ID 的帖子",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子"
+                ],
+                "parameters": [
+                    {
+                        "description": "帖子 ID",
+                        "name": "id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.GetById"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功响应",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "无效参数",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/test": {
             "get": {
                 "description": "do ping",
@@ -411,45 +524,7 @@ const docTemplate = `{
     },
     "definitions": {
         "entity.MessageSend": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "deleteAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "isRead": {
-                    "type": "integer"
-                },
-                "recipientId": {
-                    "type": "integer"
-                },
-                "senderId": {
-                    "type": "integer"
-                },
-                "sentAt": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "integer"
-                }
-            }
-        },
-        "gorm.DeletedAt": {
-            "type": "object",
-            "properties": {
-                "time": {
-                    "type": "string"
-                },
-                "valid": {
-                    "description": "Valid is true if Time is not NULL",
-                    "type": "boolean"
-                }
-            }
+            "type": "object"
         },
         "model.MessageConfirmRec": {
             "type": "object",
@@ -465,6 +540,93 @@ const docTemplate = `{
                 },
                 "user_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "request.GetById": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "主键ID",
+                    "type": "integer"
+                }
+            }
+        },
+        "request.PostCreateInput": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "description": "Author of the post",
+                    "type": "string"
+                },
+                "content": {
+                    "description": "Content of the post",
+                    "type": "string"
+                },
+                "createdPerson": {
+                    "description": "Created person ID",
+                    "type": "integer"
+                },
+                "deleteAt": {
+                    "description": "Deletion timestamp",
+                    "type": "string"
+                },
+                "modifiedByAdmin": {
+                    "description": "Whether modified by admin",
+                    "type": "integer"
+                },
+                "modifiedPerson": {
+                    "description": "Modified person ID",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "Status of the post",
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "Title of the post",
+                    "type": "string"
+                }
+            }
+        },
+        "request.PostUpdateInput": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "description": "Author of the post",
+                    "type": "string"
+                },
+                "content": {
+                    "description": "Content of the post",
+                    "type": "string"
+                },
+                "createdPerson": {
+                    "description": "Created person ID",
+                    "type": "integer"
+                },
+                "deleteAt": {
+                    "description": "Deletion timestamp",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID of the post",
+                    "type": "integer"
+                },
+                "modifiedByAdmin": {
+                    "description": "Whether modified by admin",
+                    "type": "integer"
+                },
+                "modifiedPerson": {
+                    "description": "Modified person ID",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "Status of the post",
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "Title of the post",
+                    "type": "string"
                 }
             }
         },

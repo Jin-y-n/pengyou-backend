@@ -193,7 +193,7 @@ func timePtr(s string) *time.Time {
 	return &t
 }
 
-func IndexPostDelete(post int) error {
+func IndexPostDelete(post, author int) error {
 	resQuery, err1 := IndexPostQuery(&entity.Post{
 		Model: gorm.Model{ID: uint(post)},
 	})

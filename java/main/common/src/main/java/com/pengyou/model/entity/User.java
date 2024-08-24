@@ -1,14 +1,14 @@
 package com.pengyou.model.entity;
 
-import org.babyfish.jimmer.sql.Entity;
-import org.babyfish.jimmer.sql.Id;
-import org.babyfish.jimmer.sql.GeneratedValue;
-import org.babyfish.jimmer.sql.Key;
+import com.pengyou.cnoverter.PasswordConverter;
+import org.babyfish.jimmer.jackson.JsonConverter;
+import org.babyfish.jimmer.sql.*;
 
-import org.babyfish.jimmer.sql.GenerationType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Entity for table "user"
@@ -24,6 +24,7 @@ public interface User {
     @Key
     String username();
 
+    @NotNull
     String password();
 
     @Nullable
@@ -42,6 +43,7 @@ public interface User {
     LocalDateTime modifiedAt();
 
     @Nullable
+    @LogicalDeleted("now")
     LocalDateTime deleteAt();
 
     @Nullable
@@ -69,5 +71,20 @@ public interface User {
     Long modifiedPerson();
 
     Short modifiedByAdmin();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_tag_mapping",
+            joinColumnName = "user_id",
+            inverseJoinColumnName = "tag_id"
+    )
+    List<Tag> tags();
+
+    @OneToOne(mappedBy = "user")
+    @Nullable
+    UserProfile profile();
+
+    @OneToMany(mappedBy = "author")
+    List<Post> posts();
 }
 

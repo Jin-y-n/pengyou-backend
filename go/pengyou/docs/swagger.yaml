@@ -1,30 +1,5 @@
 definitions:
   entity.MessageSend:
-    properties:
-      content:
-        type: string
-      deleteAt:
-        $ref: '#/definitions/gorm.DeletedAt'
-      id:
-        type: integer
-      isRead:
-        type: integer
-      recipientId:
-        type: integer
-      senderId:
-        type: integer
-      sentAt:
-        type: string
-      type:
-        type: integer
-    type: object
-  gorm.DeletedAt:
-    properties:
-      time:
-        type: string
-      valid:
-        description: Valid is true if Time is not NULL
-        type: boolean
     type: object
   model.MessageConfirmRec:
     properties:
@@ -36,6 +11,69 @@ definitions:
         type: array
       user_id:
         type: integer
+    type: object
+  request.GetById:
+    properties:
+      id:
+        description: 主键ID
+        type: integer
+    type: object
+  request.PostCreateInput:
+    properties:
+      author:
+        description: Author of the post
+        type: string
+      content:
+        description: Content of the post
+        type: string
+      createdPerson:
+        description: Created person ID
+        type: integer
+      deleteAt:
+        description: Deletion timestamp
+        type: string
+      modifiedByAdmin:
+        description: Whether modified by admin
+        type: integer
+      modifiedPerson:
+        description: Modified person ID
+        type: integer
+      status:
+        description: Status of the post
+        type: integer
+      title:
+        description: Title of the post
+        type: string
+    type: object
+  request.PostUpdateInput:
+    properties:
+      author:
+        description: Author of the post
+        type: string
+      content:
+        description: Content of the post
+        type: string
+      createdPerson:
+        description: Created person ID
+        type: integer
+      deleteAt:
+        description: Deletion timestamp
+        type: string
+      id:
+        description: ID of the post
+        type: integer
+      modifiedByAdmin:
+        description: Whether modified by admin
+        type: integer
+      modifiedPerson:
+        description: Modified person ID
+        type: integer
+      status:
+        description: Status of the post
+        type: integer
+      title:
+        description: Title of the post
+        type: string
     type: object
   response.Response:
     properties:
@@ -292,6 +330,79 @@ paths:
       summary: Shutdown an existing connection
       tags:
       - connections
+  /posts:
+    delete:
+      consumes:
+      - application/json
+      description: 删除指定 ID 的帖子
+      parameters:
+      - description: 帖子 ID
+        in: body
+        name: id
+        required: true
+        schema:
+          $ref: '#/definitions/request.GetById'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功响应
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: 无效参数
+          schema:
+            $ref: '#/definitions/response.Response'
+      tags:
+      - 帖子
+    post:
+      consumes:
+      - application/json
+      description: 添加新的帖子
+      parameters:
+      - description: 帖子信息
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/request.PostCreateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功响应
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: 无效参数
+          schema:
+            $ref: '#/definitions/response.Response'
+      tags:
+      - 帖子
+    put:
+      consumes:
+      - application/json
+      description: 更新帖子的信息
+      parameters:
+      - description: 帖子信息
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/request.PostUpdateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功响应
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: 无效参数
+          schema:
+            $ref: '#/definitions/response.Response'
+      tags:
+      - 帖子
   /test:
     get:
       consumes:

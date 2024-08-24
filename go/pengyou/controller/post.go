@@ -10,6 +10,7 @@ import (
 	"pengyou/service"
 	"pengyou/utils/common"
 	"strconv"
+	"time"
 )
 
 // AddPost @Summary 添加帖子
@@ -44,7 +45,7 @@ func AddPost(c *gin.Context) {
 		Content: post.Content,
 		Title:   post.Title,
 		Model: gorm.Model{
-			CreatedAt: post.CreatedAt,
+			CreatedAt: time.Time{},
 			ID:        uint(common.NextSnowflakeID()),
 		},
 	}
@@ -84,7 +85,7 @@ func UpdatePost(c *gin.Context) {
 		Content: post.Content,
 		Title:   post.Title,
 		Model: gorm.Model{
-			UpdatedAt: post.UpdatedAt,
+			UpdatedAt: time.Time{},
 			ID:        uint(common.NextSnowflakeID()),
 		},
 	}
