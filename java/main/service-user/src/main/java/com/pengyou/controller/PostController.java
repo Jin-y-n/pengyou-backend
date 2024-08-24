@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Api
 @Slf4j
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user/post")

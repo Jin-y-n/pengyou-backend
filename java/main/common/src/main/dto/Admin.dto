@@ -48,8 +48,6 @@ input AdminForUpdate {
     email
     phone
     modifiedTime
-    createdPerson
-    modifiedPerson
 }
 
 specification AdminForQuery {

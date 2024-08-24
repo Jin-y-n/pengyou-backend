@@ -10,6 +10,7 @@ import com.pengyou.model.Result;
 import com.pengyou.model.dto.admin.*;
 import com.pengyou.model.response.AdminLoginResult;
 import com.pengyou.service.AdminService;
+import com.pengyou.util.UserContext;
 import com.pengyou.util.security.JwtUtil;
 import com.pengyou.util.security.SHA256Encryption;
 import lombok.RequiredArgsConstructor;
@@ -17,16 +18,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.babyfish.jimmer.client.meta.Api;
 import org.babyfish.jimmer.sql.ast.tuple.Tuple2;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.HashMap;
 
 @Api
 @Slf4j
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/account")
@@ -56,7 +55,7 @@ public class AdminController {
         if (adminForRegister.getRole() == 0) {
             adminForRegister.setRole((short) 2);
         }
-        log.info("Admin: " + adminForRegister.getUsername() + ", role：" + adminForRegister.getRole() + ", createTime: " + adminForRegister.getCreatedTime());
+        log.info("Admin: [" + adminForRegister.getUsername() + "], role：[" + adminForRegister.getRole() + "], createTime: [" + adminForRegister.getCreatedTime() + "]");
         adminService.register(adminForRegister);
         return Result.success(AccountConstant.ACCOUNT_REGISTER_SUCCESS);
     }
@@ -67,7 +66,7 @@ public class AdminController {
             @RequestBody AdminForVerify adminForVerify
     ) {
         String verification = adminService.verify(adminForVerify);
-        log.info("Verification code: \"" + verification + "\" has been sent.");
+        log.info("Verification code: [" + verification + "] has been sent at "+ new Date());
         return Result.success(VerifyConstant.VERIFY_CODE_SENT);
     }
 
@@ -82,12 +81,12 @@ public class AdminController {
         if (admin != null) {
             HashMap<String, Object> map = new HashMap<>();
             map.put(JwtClaimsConstant.ID, admin.getId());
-            String jwt = JwtUtil.createJWT(this.jwtProperties.getAdminSecretKey(), this.jwtProperties.getAdminTtl(), map);
-            log.info("Admin: " + admin.getUsername() + " login at " + new Date());
+            String jwt = JwtUtil.createJWT(this.jwtProperties.getSecretKey(), this.jwtProperties.getTtl(), map);
+            log.info("Admin: [" + UserContext.getUserId() + "] login at " + new Date());
             return Result.success(new AdminLoginResult(admin.toEntity(), jwt));
 
         } else {
-            log.info("Admin: " + adminForLogin.getUsername() + " login failure at " + new Date());
+            log.info("Admin: [" + UserContext.getUserId() + "] login failure at " + new Date());
             return Result.error(AccountConstant.ACCOUNT_LOGIN_FAILURE);
         }
     }
@@ -97,8 +96,8 @@ public class AdminController {
     public Result logout(
             @RequestBody AdminForLogout adminForLogout
     ) {
-        log.info("Admin logout at " + new Date());
         adminService.logout(adminForLogout);
+        log.info("Admin: [" + UserContext.getUserId() + "] logout at " + new Date());
         return Result.success(AccountConstant.ACCOUNT_LOGOUT_SUCCESS);
     }
 
@@ -109,7 +108,7 @@ public class AdminController {
     ) {
         adminService.delete(adminForDelete);
         if (!adminForDelete.getIds().isEmpty()) {
-            log.info("Admin:" + adminForDelete.getIds().toString() + "delete at " + new Date());
+            log.info("Admin: [" + UserContext.getUserId() + "] delete [" + adminForDelete.getIds() + "] at " + new Date());
         } else {
             log.info("False delete");
         }
@@ -124,7 +123,7 @@ public class AdminController {
         // 密码加密
         adminForUpdate.setPassword(SHA256Encryption.getSHA256(adminForUpdate.getPassword()));
         adminService.update(adminForUpdate);
-        log.info("Admin:" + adminForUpdate.getUsername() + "update at " + new Date());
+        log.info("Admin: [" + UserContext.getUserId() + "] update " + adminForUpdate.getId() + "] at " + new Date());
         return Result.success(AccountConstant.ACCOUNT_CHANGE_SUCCESS);
     }
 
@@ -133,7 +132,7 @@ public class AdminController {
     public Result query(
             @RequestBody AdminForQuery adminForQuery
     ) {
-        log.info("Admin is queried at " + new Date());
+        log.info("Admin: [" + UserContext.getUserId() + "] is queried [" + adminForQuery + "] at " + new Date());
         return Result.success("Admin查询成功", adminService.query(adminForQuery));
     }
 }

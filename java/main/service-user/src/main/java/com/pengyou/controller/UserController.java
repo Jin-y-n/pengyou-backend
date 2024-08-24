@@ -32,6 +32,7 @@ import java.util.HashMap;
 
 @Api
 @Slf4j
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")

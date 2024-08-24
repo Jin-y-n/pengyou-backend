@@ -43,6 +43,7 @@ public interface User {
     LocalDateTime modifiedAt();
 
     @Nullable
+    @LogicalDeleted("now")
     LocalDateTime deleteAt();
 
     @Nullable
@@ -82,5 +83,8 @@ public interface User {
     @OneToOne(mappedBy = "user")
     @Nullable
     UserProfile profile();
+
+    @OneToMany(mappedBy = "author")
+    List<Post> posts();
 }
 

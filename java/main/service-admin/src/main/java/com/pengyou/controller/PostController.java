@@ -5,17 +5,16 @@ import com.pengyou.model.dto.post.PostForDelete;
 import com.pengyou.model.dto.post.PostForQuery;
 import com.pengyou.model.dto.post.PostForUpdate;
 import com.pengyou.service.PostService;
+import com.pengyou.util.UserContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.babyfish.jimmer.client.meta.Api;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
 @Api
+@CrossOrigin
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -28,7 +27,7 @@ public class PostController {
     public Result query(
             @RequestBody PostForQuery postForQuery
     ) {
-        log.info("Post: " + postForQuery + " is queried at " + new Date());
+        log.info("Admin: [" + UserContext.getUserId() + "] query Post: [" + postForQuery + "] at " + new Date());
         return Result.success("Post查询成功", postService.query(postForQuery));
     }
 
@@ -39,7 +38,7 @@ public class PostController {
     ) {
         postService.delete(postForDelete);
         if (!postForDelete.getIds().isEmpty()) {
-            log.info("Admin:" + postForDelete.getIds().toString() + "delete at " + new Date());
+            log.info("Admin: [" + UserContext.getUserId() + "] delete Post: [" + postForDelete.getIds() + "] at " + new Date());
         } else {
             log.info("False delete");
         }
@@ -51,8 +50,8 @@ public class PostController {
     public Result update(
             @RequestBody PostForUpdate postForUpdate
     ) {
-        log.info("Post:" + postForUpdate.getId() + "update at " + new Date());
         postService.update(postForUpdate);
+        log.info("Admin: [" + UserContext.getUserId() + "] update Post: [" + postForUpdate.getId() + "] at " + new Date());
         return Result.success("Post更新成功");
     }
 }

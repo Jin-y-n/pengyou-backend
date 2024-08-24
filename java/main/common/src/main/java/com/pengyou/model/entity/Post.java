@@ -21,8 +21,8 @@ public interface Post {
     )
     long id();
 
-    @Key
-    Long author();
+    @IdView
+    long authorId();
 
     @Nullable
     String title();
@@ -64,6 +64,10 @@ public interface Post {
             inverseJoinColumnName = "section_id"
     )
     List<PostSection> sections();
+
+    @ManyToOne
+    @JoinColumn(name = "author")
+    User author();
 
 
 }

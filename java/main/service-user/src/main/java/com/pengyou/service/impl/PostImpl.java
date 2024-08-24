@@ -4,15 +4,18 @@ import com.pengyou.exception.BaseException;
 import com.pengyou.model.dto.post.*;
 import com.pengyou.model.entity.PostTable;
 import com.pengyou.service.PostService;
+import com.pengyou.util.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.Page;
 import org.babyfish.jimmer.sql.JSqlClient;
+import org.babyfish.jimmer.sql.ast.Predicate;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class PostImpl implements PostService {
     private final JSqlClient sqlClient;
+    private final PostTable postTable = PostTable.$;
 
     @Override
     public void addPost(UserPostForAdd userPostForAdd) {
@@ -29,7 +32,14 @@ public class PostImpl implements PostService {
     @Override
     public void deletePost(UserPostForDelete userPostForDelete) {
         sqlClient
-                .deleteByIds(UserPostForDelete.class, userPostForDelete.getIds());
+                .createDelete(postTable)
+                .where(
+                        Predicate.and(
+                                PostTable.$.id().in(userPostForDelete.getIds()),
+                                PostTable.$.author().id().eq(Long.valueOf(UserContext.getUserId()))
+                        )
+                )
+                .execute();
     }
 
     @Override

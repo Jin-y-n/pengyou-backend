@@ -5,6 +5,7 @@ import org.babyfish.jimmer.jackson.JsonConverter;
 import org.babyfish.jimmer.sql.*;
 
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
@@ -23,7 +24,7 @@ public interface Admin {
     @Key
     String username();
 
-    @JsonConverter(PasswordConverter.class)
+    @NotNull
     String password();
 
     @Nullable
@@ -38,16 +39,18 @@ public interface Admin {
     @Nullable
     LocalDateTime modifiedTime();
 
-    long createdPerson();
+    @Nullable
+    Long createdPerson();
 
-    long modifiedPerson();
+    @Nullable
+    Long modifiedPerson();
 
     @Nullable
     @LogicalDeleted("now")
     LocalDateTime deleteAt();
 
-    short role(); // 1：超级管理员 2：普通管理员
+    Short role(); // 1：超级管理员 2：普通管理员
 
-    short modifiedByRoot(); // 1:被超级修改 0：被普通修改
+    Short modifiedByRoot(); // 1:被超级修改 0：被普通修改
 }
 

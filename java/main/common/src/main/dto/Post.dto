@@ -3,12 +3,11 @@ export com.pengyou.model.entity.Post
 
 input PostForUpdate {
     id
-    author
+    authorId
     title
     content
     status
     modifiedAt
-    modifiedPerson
     labels {
         id
         label
@@ -17,13 +16,16 @@ input PostForUpdate {
         id
         section
     }
+    author {
+        id
+    }
 }
 
 specification PostForQuery{
     pageIndex: Int
     pageSize: Int
     id
-    author
+    authorId
     like/i(title)
     like/i(content)
     ge(createdAt)
@@ -45,7 +47,7 @@ specification PostForQuery{
 
 PostForView{
     id
-    author
+    authorId
     title
     content
     createdAt
@@ -72,7 +74,7 @@ specification SearchForPosts {
     pageIndex: Int
     pageSize: Int
     id
-    author
+    authorId
     like/i(title)
     like/i(content)
     flat(labels) {
@@ -87,7 +89,7 @@ specification SearchForPosts {
 
 SearchForPostsView {
     id
-    author
+    authorId
     title
     content
     createdAt
@@ -103,7 +105,7 @@ SearchForPostsView {
 }
 
 input UserPostForAdd {
-    author
+    authorId
     title
     content
     status
@@ -120,7 +122,7 @@ input UserPostForAdd {
 
 input UserPostForUpdate {
     id
-    author
+    authorId
     title
     content
     status
@@ -142,7 +144,7 @@ specification UserPostForQuery {
     pageIndex: Int
     pageSize: Int
     id
-    author
+    authorId
     like/i(title)
     like/i(content)
     ge(createdAt)
@@ -163,7 +165,7 @@ specification UserPostForQuery {
 
 UserPostForQueryView {
     id
-    author
+    authorId
     title
     content
     status
