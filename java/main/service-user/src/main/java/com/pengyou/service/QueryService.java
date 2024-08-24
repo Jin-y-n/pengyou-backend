@@ -6,9 +6,10 @@ import com.pengyou.model.dto.postsection.SectionForQuery;
 import com.pengyou.model.dto.postsection.SectionForQueryView;
 import com.pengyou.model.dto.tag.TagForQuery;
 import com.pengyou.model.dto.tag.TagForQueryView;
+import org.babyfish.jimmer.Page;
 
 public interface QueryService {
-    TagForQueryView queryTag(TagForQuery tagForQuery);
-    LabelForQueryView queryLabel(LabelForQuery labelForQuery);
-    SectionForQueryView querySection(SectionForQuery sectionForQuery);
+    Page<TagForQueryView> queryTag(TagForQuery tagForQuery);
+    Page<LabelForQueryView> queryLabel(LabelForQuery labelForQuery);
+    Page<SectionForQueryView> querySection(SectionForQuery sectionForQuery);
 }

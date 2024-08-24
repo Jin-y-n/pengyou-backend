@@ -13,7 +13,49 @@ input UserForVerify {
     email
 }
 
+specification UserForLogin {
+    username
+    password
+    email
+    phone
+}
+
+
+UserForLoginView {
+    id
+    username
+    password
+    email
+    phone
+    loginTime
+    tags{
+        #allScalars(this)
+        -description
+    }
+    profile{
+    #allScalars(this)
+        -modifiedAt
+        -createdPerson
+        -modifiedPerson
+        -modifiedByAdmin
+        -deleteAt
+    }
+}
+
+input UserForUpdate {
+    profile{
+    #allScalars(this)
+    -createdAt
+    -modifiedAt
+    -createdPerson
+    -modifiedPerson
+    -modifiedByAdmin
+    }
+}
+
 specification SearchForUsers {
+    pageIndex: Int
+    pageSize: Int
     id
     like/i(username)
     email
@@ -27,7 +69,7 @@ specification SearchForUsers {
 SearchForUsersView {
     id
     loginTime
-    userProfile {
+    profile {
         id
         userId
         displayName

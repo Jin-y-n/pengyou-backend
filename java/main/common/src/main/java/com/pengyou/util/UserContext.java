@@ -11,7 +11,7 @@ public class UserContext {
     });
     
     public static Integer getUserId() {
-        return UserContext.getUserId();
+        return THREAD_LOCAL_USER_ID.get();
     }
     
     public static void setUserId(Integer userId) {

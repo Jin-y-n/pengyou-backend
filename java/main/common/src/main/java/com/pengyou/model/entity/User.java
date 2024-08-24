@@ -1,7 +1,10 @@
 package com.pengyou.model.entity;
 
+import com.pengyou.cnoverter.PasswordConverter;
+import org.babyfish.jimmer.jackson.JsonConverter;
 import org.babyfish.jimmer.sql.*;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
@@ -21,6 +24,7 @@ public interface User {
     @Key
     String username();
 
+    @NotNull
     String password();
 
     @Nullable
@@ -39,6 +43,7 @@ public interface User {
     LocalDateTime modifiedAt();
 
     @Nullable
+    @LogicalDeleted("now")
     LocalDateTime deleteAt();
 
     @Nullable
@@ -77,6 +82,9 @@ public interface User {
 
     @OneToOne(mappedBy = "user")
     @Nullable
-    UserProfile userProfile();
+    UserProfile profile();
+
+    @OneToMany(mappedBy = "author")
+    List<Post> posts();
 }
 

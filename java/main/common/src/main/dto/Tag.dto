@@ -2,6 +2,8 @@ export com.pengyou.model.entity.Tag
     -> package com.pengyou.model.dto.tag
 
 specification SearchForTags {
+    pageIndex: Int
+    pageSize: Int
     id
     like/i(name)
     like/i(description)
@@ -12,6 +14,8 @@ SearchForTagsView {
 }
 
 specification TagForQuery {
+    pageIndex: Int
+    pageSize: Int
     id
     name
 }

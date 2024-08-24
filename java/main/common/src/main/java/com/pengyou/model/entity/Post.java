@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.util.Null;
 import org.babyfish.jimmer.sql.*;
 
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
@@ -20,8 +21,8 @@ public interface Post {
     )
     long id();
 
-    @Key
-    Long author();
+    @IdView
+    long authorId();
 
     @Nullable
     String title();
@@ -63,6 +64,10 @@ public interface Post {
             inverseJoinColumnName = "section_id"
     )
     List<PostSection> sections();
+
+    @ManyToOne
+    @JoinColumn(name = "author")
+    User author();
 
 
 }

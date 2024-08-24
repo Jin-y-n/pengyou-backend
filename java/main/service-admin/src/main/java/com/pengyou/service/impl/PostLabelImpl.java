@@ -7,9 +7,12 @@ import com.pengyou.exception.BaseException;
 import com.pengyou.exception.label.LabelExistsException;
 import com.pengyou.model.dto.postlabel.PostLabelForAdd;
 import com.pengyou.model.dto.postlabel.PostLabelForDelete;
+import com.pengyou.model.dto.postlabel.PostLabelForQuery;
+import com.pengyou.model.dto.postlabel.PostLabelForQueryView;
 import com.pengyou.model.entity.*;
 import com.pengyou.service.PostLabelService;
 import lombok.RequiredArgsConstructor;
+import org.babyfish.jimmer.Page;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.ast.Predicate;
 import org.springframework.stereotype.Service;
@@ -30,7 +33,7 @@ public class PostLabelImpl implements PostLabelService {
                 .where(postLabelTable.label().eq(postLabelForAdd.getLabel()))
                 .select(postLabelTable.label())
                 .execute();
-        if (!execute.isEmpty()){
+        if (!execute.isEmpty()) {
             throw new BaseException(LabelConstant.LABEL_EXISTS);
         }
 
@@ -42,6 +45,22 @@ public class PostLabelImpl implements PostLabelService {
     public void delete(PostLabelForDelete postLabelForDelete) {
         sqlClient
                 .deleteByIds(PostLabel.class, postLabelForDelete.getIds());
+    }
+
+    @Override
+    public Page<PostLabelForQueryView> query(PostLabelForQuery postLabelForQuery) {
+        Page<PostLabelForQueryView> execute = sqlClient
+                .createQuery(postLabelTable)
+                .where(postLabelForQuery)
+                .select(
+                        postLabelTable.fetch(PostLabelForQueryView.class)
+                )
+                .fetchPage(postLabelForQuery.getPageIndex(), postLabelForQuery.getPageSize());
+
+        if (execute.getTotalRowCount() == 0) {
+            throw new BaseException("PostLabel不存在");
+        }
+        return execute;
     }
 
 

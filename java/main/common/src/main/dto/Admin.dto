@@ -42,17 +42,17 @@ AdminForDelete {
 }
 
 input AdminForUpdate {
-    id
+    id!
     username
     password
     email
     phone
     modifiedTime
-    createdPerson
-    modifiedPerson
 }
 
 specification AdminForQuery {
+    pageIndex: Int
+    pageSize: Int
     id
     like/i(username)
     email
