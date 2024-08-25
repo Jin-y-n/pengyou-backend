@@ -19,10 +19,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@RequiredArgsConstructor
 public class RedissonConfig {
 
     private final RedisLockConfigProperties redisLockConfigProperties;
+
+    public RedissonConfig(RedisLockConfigProperties redisLockConfigProperties) {
+        this.redisLockConfigProperties = redisLockConfigProperties;
+    }
 
     @Bean
     public RedissonClient redissonClient() {

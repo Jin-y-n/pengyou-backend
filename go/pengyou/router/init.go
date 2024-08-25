@@ -1,6 +1,7 @@
 package router
 
 import (
+	"pengyou/constant"
 	"pengyou/global/config"
 
 	"github.com/gin-contrib/cors"
@@ -14,7 +15,7 @@ func Init(cfg *config.Config) *gin.Engine {
 		cors.Config{
 			AllowAllOrigins: true, // 允许所有来源
 			AllowMethods:    []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
-			AllowHeaders:    []string{"user_id", "Origin", "Content-Length", "Content-Type"}, // 只需添加 user_id
+			AllowHeaders:    []string{"user_id", "Origin", "Content-Length", "Content-Type", constant.Authorization, "Upgrade", "upgrade"}, // 只需添加 user_id
 		})
 
 	eng.Use(corsCfg)

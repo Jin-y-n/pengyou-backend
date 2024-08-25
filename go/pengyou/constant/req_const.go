@@ -5,6 +5,7 @@ const (
 	ChatterId            = "chatter_id"
 	RequestArgumentError = "request argument error"
 	TokenName            = "token"
+	Authorization        = "authorization"
 )
 
 const (
