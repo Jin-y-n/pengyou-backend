@@ -86,5 +86,13 @@ public interface User {
 
     @OneToMany(mappedBy = "author")
     List<Post> posts();
+
+    @OneToOne(mappedBy = "user")
+    @Nullable
+    UserFriend friend();
+
+    @OneToOne(mappedBy = "user")
+    @Nullable
+    SocialAccount socialAccount();
 }
 

@@ -57,10 +57,12 @@ func HeartBeat(c *gin.Context) {
 //	@Success		200		{object}	response.Response
 //	@Failure		400		{object}	response.Response	"Invalid input"
 //	@Failure		500		{object}	response.Response	"Internal server error"
-//	@Router			/connect/establish [post]
+//	@Router			/connect/establish [get]
 func Establish(c *gin.Context) {
 
-	userIdStr := c.GetHeader(constant.UserId)
+	//userIdStr := c.GetHeader(constant.UserId)
+
+	userIdStr := "1"
 
 	if !string.IsNumberString(&userIdStr) {
 		response.FailWithMessage(constant.RequestArgumentError, c)

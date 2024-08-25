@@ -7,6 +7,7 @@ require (
 	github.com/elastic/go-elasticsearch/v8 v8.14.0
 	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
+	github.com/go-playground/assert/v2 v2.2.0
 	github.com/gorilla/websocket v1.5.3
 	github.com/redis/go-redis/v9 v9.6.1
 	github.com/spf13/viper v1.19.0

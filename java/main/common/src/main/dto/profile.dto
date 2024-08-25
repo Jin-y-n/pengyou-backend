@@ -1,0 +1,12 @@
+export com.pengyou.model.entity.UserProfile
+    -> package com.pengyou.model.dto.profile
+
+input UserForUpdate {
+    #allScalars
+    -createdAt
+    -modifiedAt
+    -createdPerson
+    -modifiedPerson
+    -modifiedByAdmin
+    -deleteAt
+    }

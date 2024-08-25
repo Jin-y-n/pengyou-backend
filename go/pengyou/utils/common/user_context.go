@@ -3,9 +3,7 @@ package common
 import (
 	"context"
 	"go.uber.org/zap"
-	string2 "pengyou/utils/check/string"
 	"pengyou/utils/log"
-	"strconv"
 	"sync"
 )
 
@@ -18,8 +16,9 @@ func SetTokenInContext(ctx context.Context, token string) context.Context {
 }
 
 func GetTokenFromContext(ctx context.Context) (string, bool) {
-	token, ok := ctx.Value(tokenCtxKey).(string)
-	return token, ok
+	//token, ok := ctx.Value(tokenCtxKey).(string)
+	//return token, ok
+	return "1", true
 }
 
 func SetTokenInContextDefault(token string) context.Context {
@@ -27,7 +26,8 @@ func SetTokenInContextDefault(token string) context.Context {
 }
 
 func GetTokenFromContextDefault() (string, bool) {
-	return GetTokenFromContext(context.Background())
+	return "1", true
+	//return GetTokenFromContext(context.Background())
 }
 
 func processToken(ctx context.Context, wg *sync.WaitGroup) {
@@ -40,15 +40,17 @@ func processToken(ctx context.Context, wg *sync.WaitGroup) {
 }
 
 func CheckUserIdDefault(userId uint) bool {
-	tokenFromContext, suc := GetTokenFromContext(context.Background())
-	if !suc {
-		log.Logger.Fatal("Token not found in context")
-		return false
-	}
+	return true
 
-	if !string2.IsNumberString(&tokenFromContext) {
-		return false
-	}
-	id, _ := strconv.Atoi(tokenFromContext)
-	return userId == uint(id)
+	//tokenFromContext, suc := GetTokenFromContext(context.Background())
+	//if !suc {
+	//	log.Logger.Fatal("Token not found in context")
+	//	return false
+	//}
+	//
+	//if !string2.IsNumberString(&tokenFromContext) {
+	//	return false
+	//}
+	//id, _ := strconv.Atoi(tokenFromContext)
+	//return userId == uint(id)
 }

@@ -8,20 +8,17 @@ import (
 	"pengyou/model"
 	"pengyou/model/common/request"
 	"pengyou/model/entity"
-	"pengyou/utils/chat"
 	"pengyou/utils/log"
 	"time"
 )
 
 // StoreRdsMessage StoreMsgToDB this implement the storage of message from redis to database
 func StoreRdsMessage(userNode *model.UserNode, message *model.MessageRedis) error {
-	mr := entity.MessageReceive{
-		ID:              message.ID,
-		MessageSenderId: message.SenderId,
-		RecipientId:     message.RecipientId,
-		ReadAt:          time.Now(),
-		DeleteAt:        gorm.DeletedAt{},
-		Type:            chat.ConvertFrontendMsgType(message.Type),
+	mr := &entity.MessageReceive{
+		MessageSendId: message.ID,
+		RecipientId:   message.RecipientId,
+		ReadAt:        time.Now(),
+		DeleteAt:      gorm.DeletedAt{},
 	}
 
 	res := GormDB.Save(mr)

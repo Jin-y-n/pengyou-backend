@@ -33,6 +33,18 @@ func SendTextMessage(wsCon *websocket.Conn, sender, recipient uint, message stri
 	)
 }
 
+func SendJsonMsg(wsCon *websocket.Conn, message *string) bool {
+	log.Logger.Info("send message")
+
+	err := wsCon.WriteMessage(websocket.TextMessage, []byte(*message))
+	if err != nil {
+		log.Logger.Error("send message error", zap.Error(err))
+		return false
+	}
+
+	return true
+}
+
 func SendMessage(wsCon *websocket.Conn, sender, recipient uint, message string, messageType int) bool {
 	log.Logger.Info("send message")
 
@@ -47,12 +59,6 @@ func SendMessage(wsCon *websocket.Conn, sender, recipient uint, message string, 
 	res, err := json.Marshal(msg)
 	if err != nil {
 		log.Logger.Error("marshal message error", zap.Error(err))
-		return false
-	}
-
-	err = wsCon.WriteMessage(websocket.TextMessage, res)
-	if err != nil {
-		log.Logger.Error("send message error", zap.Error(err))
 		return false
 	}
 

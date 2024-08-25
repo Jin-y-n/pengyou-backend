@@ -1,0 +1,43 @@
+package com.pengyou.model.entity;
+
+import org.babyfish.jimmer.sql.*;
+import org.jetbrains.annotations.Nullable;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Entity
+public interface UserFriend {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY
+    )
+    long id();
+
+    @IdView
+    long userId();
+
+    long friendId();
+
+    @Nullable
+    Short status();
+
+    @Nullable
+    LocalDate requestDate();
+
+    @Nullable
+    LocalDate acceptedDate();
+
+    @Nullable
+    String requirePerson();
+
+    @Nullable
+    Short relationship();
+
+    @Nullable
+    LocalDateTime deleteAt();
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    User user();
+}
+

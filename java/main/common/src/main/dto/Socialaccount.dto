@@ -1,0 +1,13 @@
+export com.pengyou.model.entity.SocialAccount
+    -> package com.pengyou.model.dto.Socialaccount
+
+input AccountForAdd{
+    userId
+    platform
+    link
+}
+
+AccountForDelete{
+    id
+    userId
+}

@@ -7,7 +7,6 @@ import (
 )
 
 type Post struct {
-	gorm.Model
 	Author          uint       `gorm:"not null" json:"author"`
 	Title           string     `gorm:"type:varchar(255)" json:"title"`
 	Content         string     `gorm:"type:text" json:"content"`
@@ -16,6 +15,10 @@ type Post struct {
 	ModifiedPerson  *uint      `gorm:"index;references:User(id);on_delete:set_null" json:"modified_person"`
 	DeleteAt        *time.Time `gorm:"index" json:"delete_at"`
 	ModifiedByAdmin uint8      `gorm:"default:0" json:"modified_by_admin"`
+	ID              uint       `gorm:"primarykey"`
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+	DeletedAt       gorm.DeletedAt `gorm:"index"`
 }
 
 func (table *Post) TableName() string {

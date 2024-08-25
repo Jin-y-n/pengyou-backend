@@ -4,9 +4,7 @@ import (
 	"bufio"
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"math"
 	"pengyou/constant"
 	"pengyou/global/config"
 	"pengyou/model"
@@ -86,11 +84,11 @@ func MsgReceive(ws *websocket.Conn, userNode *model.UserNode) *request.MessageTr
 		}
 	}
 	// check the send time of the message is valid or not
-	if math.Abs(float64(message.CreateAt.UnixMilli()-time.Now().UnixMilli())) > 1000 {
-		log.Logger.Warn("message time error")
-		wsutil.SendTextMessage(ws, constant.SystemId, userNode.User.ID, "message time error, please check your network and try again")
-		return nil
-	}
+	//if math.Abs(float64(message.CreateAt.UnixMilli()-time.Now().UnixMilli())) > 1000 {
+	//	log.Logger.Warn("message time error")
+	//	wsutil.SendTextMessage(ws, constant.SystemId, userNode.User.ID, "message time error, please check your network and try again")
+	//	return nil
+	//}
 
 	return message
 }
@@ -137,7 +135,7 @@ func MsgPublisher(ws *websocket.Conn, user uint, message *request.MessageTransfe
 		ws,
 		constant.SystemId,
 		user,
-		fmt.Sprint(msgRds),
+		message.Content,
 	)
 }
 
@@ -365,7 +363,7 @@ func MessageDispatcher(ws *websocket.Conn, message string, userNode *model.UserN
 			constant.RespChatterDisconnected+strconv.Itoa(int(from)),
 		)
 	} else {
-		wsutil.SendTextMessage(ws, constant.SystemId, userNode.User.ID, message)
+		wsutil.SendJsonMsg(ws, &message)
 	}
 
 	return true

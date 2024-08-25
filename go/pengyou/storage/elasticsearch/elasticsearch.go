@@ -16,8 +16,8 @@ func InitElasticSearch(cfg *config.Config) {
 	EsClient, err = elasticsearch.NewClient(
 		elasticsearch.Config{
 			Addresses: cfg.Elasticsearch.Nodes,
-			//Username:  cfg.Elasticsearch.Username,
-			//Password:  cfg.Elasticsearch.Password,
+			Username:  cfg.Elasticsearch.Username,
+			Password:  cfg.Elasticsearch.Password,
 		})
 	if err != nil {
 		log.Logger.Error("elasticsearch init failed: nodes:" +

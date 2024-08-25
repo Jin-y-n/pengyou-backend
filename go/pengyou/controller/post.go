@@ -2,7 +2,6 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"pengyou/constant"
 	"pengyou/model/common/request"
 	"pengyou/model/common/response"
@@ -41,13 +40,11 @@ func AddPost(c *gin.Context) {
 	}
 
 	postEntity := &entity.Post{
-		Author:  uint(authorId),
-		Content: post.Content,
-		Title:   post.Title,
-		Model: gorm.Model{
-			CreatedAt: time.Time{},
-			ID:        uint(common.NextSnowflakeID()),
-		},
+		Author:    uint(authorId),
+		Content:   post.Content,
+		Title:     post.Title,
+		ID:        uint(common.NextSnowflakeID()),
+		CreatedAt: time.Time{},
 	}
 
 	service.AddPost(postEntity, c)
@@ -81,13 +78,11 @@ func UpdatePost(c *gin.Context) {
 	}
 
 	postEntity := &entity.Post{
-		Author:  uint(authorId),
-		Content: post.Content,
-		Title:   post.Title,
-		Model: gorm.Model{
-			UpdatedAt: time.Time{},
-			ID:        uint(common.NextSnowflakeID()),
-		},
+		Author:    uint(authorId),
+		Content:   post.Content,
+		Title:     post.Title,
+		ID:        uint(common.NextSnowflakeID()),
+		CreatedAt: time.Time{},
 	}
 
 	service.UpdatePost(postEntity, c)

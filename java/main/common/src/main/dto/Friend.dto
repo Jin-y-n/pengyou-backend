@@ -1,0 +1,28 @@
+export com.pengyou.model.entity.UserFriend
+    -> package com.pengyou.model.dto.Friend
+
+input FriendForAdd{
+    userId
+    friendId
+    requestDate
+}
+
+FriendForDelete{
+    id
+    userId
+    friendId
+}
+
+input FriendForAccept{
+    id
+    userId
+    friendId
+    status
+}
+
+input FriendForUpgrade{
+    id
+    userId
+    friendId
+    relationship
+}

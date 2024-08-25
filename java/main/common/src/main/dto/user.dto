@@ -42,15 +42,13 @@ UserForLoginView {
     }
 }
 
-input UserForUpdate {
-    profile{
-    #allScalars(this)
-    -createdAt
-    -modifiedAt
-    -createdPerson
-    -modifiedPerson
-    -modifiedByAdmin
-    }
+input UserForUpdateSensitive {
+    id
+    username
+    password
+    email
+    phone
+    captcha:String
 }
 
 specification SearchForUsers {

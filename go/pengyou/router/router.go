@@ -8,9 +8,7 @@ import (
 	"pengyou/docs"
 )
 
-func GinRouter() *gin.Engine {
-	r := gin.Default()
-
+func GinRouter(r *gin.Engine) {
 	// swagger
 	docs.SwaggerInfo.BasePath = ""
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -18,7 +16,7 @@ func GinRouter() *gin.Engine {
 	// websocket connect
 	conn := r.Group("/connect")
 	{
-		conn.POST("/establish", controller.Establish)
+		conn.GET("/establish", controller.Establish)
 		conn.POST("/establish-chat-to", controller.EstablishChatTo)
 		conn.POST("/shutdown", controller.Shutdown)
 		conn.POST("/cut-chat-from", controller.CutChat)
@@ -43,6 +41,4 @@ func GinRouter() *gin.Engine {
 		post.POST("/update", controller.UpdatePost)
 		post.POST("/delete", controller.DeletePost)
 	}
-
-	return r
 }

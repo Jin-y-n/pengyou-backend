@@ -5,24 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6c26971f-3581-4b02-9e89-a32b646cb202" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/tmp/es.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/es/data/node1/config/elasticsearch.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/es/data/node2/config/elasticsearch.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/es/data/node3/config/elasticsearch.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/es2.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/rm.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/es_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/connect.go" beforeDir="false" afterPath="$PROJECT_DIR$/controller/connect.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/post.go" beforeDir="false" afterPath="$PROJECT_DIR$/controller/post.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/docs.go" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/docs/swagger.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docs/swagger.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pengyou" beforeDir="false" afterPath="$PROJECT_DIR$/pengyou" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/entity/message_receive.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/entity/message_receive.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/entity/post.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/entity/post.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pengyou" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/router/init.go" beforeDir="false" afterPath="$PROJECT_DIR$/router/init.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/router/jwt_check.go" beforeDir="false" afterPath="$PROJECT_DIR$/router/jwt_check.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/router/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/router/router.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/chat.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/chat.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/post.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/post.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/database/db_encapsulated.go" beforeDir="false" afterPath="$PROJECT_DIR$/storage/database/db_encapsulated.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/database/mysql.go" beforeDir="false" afterPath="$PROJECT_DIR$/storage/database/mysql.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/storage/elasticsearch/elasticsearch.go" beforeDir="false" afterPath="$PROJECT_DIR$/storage/elasticsearch/elasticsearch.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/storage/elasticsearch/es_encapsulated.go" beforeDir="false" afterPath="$PROJECT_DIR$/storage/elasticsearch/es_encapsulated.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../install/dev/linux/init.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../../install/dev/linux/init.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../install/dev/linux/remove.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../../install/dev/linux/remove.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../install/dev/windows/remove-pw.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../../install/dev/windows/remove-pw.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/gorm_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/test/gorm_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/redis_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/test/redis_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/common/snow_flake.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/common/snow_flake.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/common/user_context.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/common/user_context.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/ws/ws_encapsulated.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/ws/ws_encapsulated.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../sql/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../../sql/init.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -57,29 +62,30 @@
     <option name="showLibraryContents" value="true" />
     <option name="showVisibilityIcons" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultGoTemplateProperty": "Go File",
-    "Go Build.go build main.go.executor": "Debug",
-    "Go Build.go build pengyou.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "git-widget-placeholder": "dev",
-    "go.import.settings.migrated": "true",
-    "last_opened_file_path": "/home/napbad/Project/Muti/pengyou/backend/go/pengyou/tmp/es/es_cluster",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;Go Build.go build main.go.executor&quot;: &quot;Debug&quot;,
+    &quot;Go Build.go build pengyou.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestElasticSearch in pengyou/test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/napbad/Project/Muti/pengyou/backend/go/pengyou/tmp/es/es_cluster&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/tmp/es/es_cluster" />
@@ -101,7 +107,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Go Test.TestElasticSearch in pengyou/test">
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="pengyou" />
       <working_directory value="$PROJECT_DIR$" />
@@ -110,9 +116,22 @@
       <filePath value="$PROJECT_DIR$/main.go" />
       <method v="2" />
     </configuration>
+    <configuration name="TestElasticSearch in pengyou/test" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="pengyou" />
+      <working_directory value="$PROJECT_DIR$/test" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="pengyou/test" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestElasticSearch\E$" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build main.go" />
+        <item itemvalue="Go Test.TestElasticSearch in pengyou/test" />
       </list>
     </recent_temporary>
   </component>
@@ -130,5 +149,12 @@
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="GoApplicationRunConfiguration">
+        <watch expression="GormDB" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

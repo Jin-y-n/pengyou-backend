@@ -43,13 +43,13 @@ func InitMySQL(cfg *config.Config) *gorm.DB {
 		"?" +
 		mysqlConfig.Conf
 
-	GormDB, err := gorm.Open(mysql.Open(mysqlConfigString), &gorm.Config{})
+	GormDBInside, err := gorm.Open(mysql.Open(mysqlConfigString), &gorm.Config{})
 
 	if err != nil {
 		panic("failed to connect database")
 	}
 
-	sqlDB, err := GormDB.DB()
+	sqlDB, err := GormDBInside.DB()
 
 	if err != nil {
 		panic("failed to connect database")
@@ -64,5 +64,7 @@ func InitMySQL(cfg *config.Config) *gorm.DB {
 		mysqlConfig.Host + ":" +
 		strconv.Itoa(mysqlConfig.Port))
 
-	return GormDB
+	GormDB = GormDBInside
+
+	return GormDBInside
 }

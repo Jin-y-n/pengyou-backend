@@ -25,11 +25,11 @@ type SnowflakeIDGenerator struct {
 }
 
 func NextSnowflakeID() uint64 {
-	return snowflakeIdGenerator.nextID()
+	return snowflakeIdGenerator.NextID()
 }
 
-// newSnowflakeIDGenerator creates a new SnowflakeIDGenerator.
-func newSnowflakeIDGenerator(workerID uint16) (*SnowflakeIDGenerator, error) {
+// NewSnowflakeIDGenerator creates a new SnowflakeIDGenerator.
+func NewSnowflakeIDGenerator(workerID uint16) (*SnowflakeIDGenerator, error) {
 	if workerID > 1023 || workerID < 0 {
 		return nil, fmt.Errorf("workerID must be between 0 and 1023")
 	}
@@ -39,7 +39,7 @@ func newSnowflakeIDGenerator(workerID uint16) (*SnowflakeIDGenerator, error) {
 }
 
 // NextSnowflakeID generates the next unique ID.
-func (s *SnowflakeIDGenerator) nextID() uint64 {
+func (s *SnowflakeIDGenerator) NextID() uint64 {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -83,7 +83,7 @@ func waitForNextMillis(lastTime int64) int64 {
 
 func InitSnowflakeIdGenerator(snowflake config.Snowflake) {
 	var err error
-	snowflakeIdGenerator, err = newSnowflakeIDGenerator(snowflake.WorkerID)
+	snowflakeIdGenerator, err = NewSnowflakeIDGenerator(snowflake.WorkerID)
 	if err != nil {
 		panic(err)
 	}

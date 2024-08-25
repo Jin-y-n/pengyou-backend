@@ -1,12 +1,13 @@
 package test
 
 import (
-	"context"
+	"pengyou/global/config"
+	rds "pengyou/storage/redis"
 	"testing"
 )
 
 func TestRedis(t *testing.T) {
-	rdb := redis.NewClient(&redis.Options{
+	rds.InitRedis(&config.Redis{
 		Addr:     "127.0.0.1:6379",
 		Password: "", // no password set
 		DB:       0,  // use default DB
@@ -17,5 +18,5 @@ func TestRedis(t *testing.T) {
 	// fmt.Println(info)
 	// t.log(info)
 
-	t.log(rdb.Info(context.Background(), "used", "_", "memory"))
+	//t.log(rds.Info(context.Background(), "used", "_", "memory"))
 }

@@ -15,10 +15,12 @@ import com.pengyou.constant.RedisConstant;
 import com.pengyou.exception.common.CaptchaErrorException;
 import com.pengyou.model.Result;
 import com.pengyou.model.dto.admin.AdminForUpdate;
+import com.pengyou.model.dto.profile.UserForUpdate;
 import com.pengyou.model.dto.user.*;
 import com.pengyou.model.response.AdminLoginResult;
 import com.pengyou.model.response.UserLoginResult;
 import com.pengyou.service.UserService;
+import com.pengyou.util.UserContext;
 import com.pengyou.util.security.JwtUtil;
 import com.pengyou.util.security.SHA256Encryption;
 import lombok.RequiredArgsConstructor;
@@ -47,8 +49,6 @@ public class UserController {
     public Result register(
             @RequestBody UserForAdd user
     ) {
-
-
         String captcha = user.getCaptcha();
 
         if (captcha.equals(template.opsForValue().get(RedisConstant.USER_CAPTCHA + user.getEmail()))) {
@@ -82,7 +82,6 @@ public class UserController {
     public Result login(
             @RequestBody UserForLogin userForLogin
     ) {
-        log.info("User: " + userForLogin.getUsername() + " login in " + new Date());
         // 密码加密
         userForLogin.setPassword(SHA256Encryption.getSHA256(userForLogin.getPassword()));
         UserForLoginView user = this.userService.login(userForLogin);
@@ -90,10 +89,11 @@ public class UserController {
             HashMap<String, Object> map = new HashMap<>();
             map.put(JwtClaimsConstant.ID, user.getId());
             String jwt = JwtUtil.createJWT(this.jwtProperties.getSecretKey(), this.jwtProperties.getTtl(), map);
-
+            log.info("User: [" + UserContext.getUserId() + "] login at " + new Date());
             return Result.success(new UserLoginResult(user.toEntity(), jwt));
 
         } else {
+            log.info("User: [" + UserContext.getUserId() + "] login failure at " + new Date());
             return Result.error(AccountConstant.ACCOUNT_LOGIN_FAILURE);
         }
     }
@@ -105,6 +105,25 @@ public class UserController {
     ) {
         userService.update(user);
         return Result.success("Profile update successful");
+    }
+
+    @Api
+    @PostMapping("/update-sensitive")
+    public Result updateSensitive(
+            @RequestBody UserForUpdateSensitive user
+    ) {
+        String captcha = user.getCaptcha();
+
+        if (captcha.equals(template.opsForValue().get(RedisConstant.USER_CAPTCHA+user.getEmail()))) {
+            user.setPhone(null);
+        } else if (captcha.equals(template.opsForValue().get(RedisConstant.USER_CAPTCHA+user.getPhone()))) {
+            user.setEmail(null);
+        } else {
+            throw new CaptchaErrorException();
+        }
+
+        userService.updateSensitive(user);
+        return Result.success();
     }
 
 

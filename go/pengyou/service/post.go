@@ -4,6 +4,8 @@ import (
 	"pengyou/constant"
 	"pengyou/model/common/response"
 	"pengyou/model/entity"
+	string2 "pengyou/utils/check/string"
+	"pengyou/utils/common"
 	"pengyou/utils/log"
 	"strconv"
 
@@ -40,7 +42,14 @@ func UpdatePost(post *entity.Post, c *gin.Context) {
 
 func DeletePost(post int, c *gin.Context) {
 
-	err := es.IndexPostDelete(post)
+	contextDefault, b := common.GetTokenFromContextDefault()
+	if !b || !string2.IsNumberString(&contextDefault) {
+		response.FailWithMessage(constant.DeletedFailed, c)
+		return
+	}
+	id, _ := strconv.Atoi(contextDefault)
+
+	err := es.IndexPostDelete(post, id)
 	if err != nil {
 		response.FailWithMessage(constant.DeletedFailed, c)
 		return

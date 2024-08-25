@@ -8,21 +8,20 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 // TestGorm demonstrates basic GORM operations.
 func TestGorm(t *testing.T) {
 	db, err := gorm.Open(mysql.Open(getDBConnectionString()), &gorm.Config{
-		logger: logger.Default.logMode(log.Logger.Info),
+		// Add any specific GORM configuration here
 	})
 	if err != nil {
-		panic("failed to connect database")
+		t.Errorf("failed to connect database: %v", err)
 	}
 
 	// Migrate the schema
 	if err := db.AutoMigrate(&entity.User{}); err != nil {
-		panic("failed to auto migrate")
+		t.Errorf("failed to auto migrate: %v", err)
 	}
 
 	// Create a new user
@@ -33,33 +32,31 @@ func TestGorm(t *testing.T) {
 		Email:         "123456789@qq.com",
 		ClientIP:      "127.0.0.1",
 		DeviceInfo:    "123456789",
-		loginTime:     time.Now(),
 		HeartBeatTime: time.Now(),
-		Logout:        0,
-		logOutTime:    time.Now(),
 
 		Model: gorm.Model{
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 			ID:        1,
-			DeletedAt: gorm.DeletedAt{},
+			DeletedAt: gorm.DeletedAt{}, // Ensure the DeletedAt field is initialized
 		},
 	}
 
 	if err := db.Create(user).Error; err != nil {
-		panic("failed to create user")
+		t.Errorf("failed to create user: %v", err)
 	}
 
 	// Read a user record
 	var userForUse entity.User
 	if err := db.Where("id = ?", 1).First(&userForUse).Error; err != nil {
-		panic("failed to read user")
+		t.Errorf("failed to read user: %v", err)
 	}
 	fmt.Println(userForUse)
 
 	// Delete a user record
+	// Note: This deletes the user with ID 1, ensure that the user exists before running this test
 	if err := db.Delete(&entity.User{}, "ID = ?", 1).Error; err != nil {
-		panic("failed to delete user")
+		t.Errorf("failed to delete user: %v", err)
 	}
 }
 

@@ -7,7 +7,7 @@ use pengyou_test;
 
 create table admin
 (
-    id               int unsigned auto_increment
+    id               bigint unsigned auto_increment
         primary key,
     username         varchar(100)                           not null,
     password         varchar(255)                           not null,
@@ -15,8 +15,8 @@ create table admin
     phone            varchar(100)                           null,
     created_time     timestamp    default CURRENT_TIMESTAMP null,
     modified_time    timestamp    default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
-    created_person   int unsigned                           null,
-    modified_person  int unsigned default '0'               null,
+    created_person   bigint unsigned                           null,
+    modified_person  bigint unsigned default '0'               null,
     delete_at        timestamp                              null,
     role             tinyint      default 0                 null,
     modified_by_root tinyint      default 0                 null,
@@ -26,7 +26,7 @@ create table admin
 
 create table post_label
 (
-    id          int unsigned auto_increment
+    id          bigint unsigned auto_increment
         primary key,
     label       varchar(100) null,
     description varchar(255) null,
@@ -36,7 +36,7 @@ create table post_label
 
 create table post_section
 (
-    id          int unsigned auto_increment
+    id          bigint unsigned auto_increment
         primary key,
     section     varchar(100) null,
     description varchar(255) null,
@@ -46,7 +46,7 @@ create table post_section
 
 create table sensitive_word
 (
-    id   int unsigned auto_increment
+    id   bigint unsigned auto_increment
         primary key,
     word varchar(100) not null,
     constraint idx_word
@@ -55,7 +55,7 @@ create table sensitive_word
 
 create table tag
 (
-    id          int unsigned auto_increment
+    id          bigint unsigned auto_increment
         primary key,
     name        varchar(63)  not null,
     description varchar(255) null,
@@ -65,7 +65,7 @@ create table tag
 
 create table user
 (
-    id                int unsigned auto_increment
+    id                bigint unsigned auto_increment
         primary key,
     username          varchar(50)                         not null,
     password          varchar(64)                         not null,
@@ -81,8 +81,8 @@ create table user
     is_logout         tinyint   default 0                 null,
     log_out_time      timestamp                           null,
     device_info       varchar(255)                        null,
-    created_person    int unsigned                        null,
-    modified_person   int unsigned                        null,
+    created_person    bigint unsigned                        null,
+    modified_person   bigint unsigned                        null,
     modified_by_admin tinyint   default 0                 not null,
     constraint idx_username
         unique (username)
@@ -90,10 +90,10 @@ create table user
 
 create table message_send
 (
-    id           int unsigned auto_increment
+    id           bigint unsigned auto_increment
         primary key,
-    sender_id    int unsigned                        not null,
-    recipient_id int unsigned                        not null,
+    sender_id    bigint unsigned                        not null,
+    recipient_id bigint unsigned                        not null,
     content      varchar(511)                        not null,
     sent_at      timestamp default CURRENT_TIMESTAMP null,
     is_read      tinyint   default 0                 null,
@@ -109,10 +109,10 @@ create table message_send
 
 create table message_receive
 (
-    id              int unsigned auto_increment
+    id              bigint unsigned auto_increment
         primary key,
-    message_send_id int unsigned not null,
-    recipient_id    int unsigned not null,
+    message_send_id bigint unsigned not null,
+    recipient_id    bigint unsigned not null,
     read_at         timestamp    null,
     delete_at       timestamp    null,
     constraint message_receive_ibfk_1
@@ -137,16 +137,16 @@ create index sender_id
 
 create table post
 (
-    id                int unsigned auto_increment
+    id                bigint unsigned auto_increment
         primary key,
-    author            int unsigned                        not null,
+    author            bigint unsigned                        not null,
     title             varchar(255)                        null,
     content           text                                null,
     created_at        timestamp default CURRENT_TIMESTAMP null,
     modified_at       timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
     status            tinyint   default 1                 null,
-    created_person    int unsigned                        null,
-    modified_person   int unsigned                        null,
+    created_person    bigint unsigned                        null,
+    modified_person   bigint unsigned                        null,
     delete_at         timestamp                           null,
     modified_by_admin tinyint   default 0                 not null,
     constraint post_ibfk_1
@@ -162,15 +162,15 @@ create table post
 
 create table comment
 (
-    id                int unsigned auto_increment
+    id                bigint unsigned auto_increment
         primary key,
-    post_id           int unsigned                        not null,
-    user_id           int unsigned                        not null,
+    post_id           bigint unsigned                        not null,
+    user_id           bigint unsigned                        not null,
     content           varchar(255)                        null,
     created_time      timestamp default CURRENT_TIMESTAMP null,
     modified_time     timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
-    created_person    int unsigned                        null,
-    modified_person   int unsigned                        null,
+    created_person    bigint unsigned                        null,
+    modified_person   bigint unsigned                        null,
     modified_by_admin tinyint   default 0                 not null,
     constraint comment_ibfk_1
         foreign key (post_id) references post (id)
@@ -200,13 +200,13 @@ create index user_id
 
 create table comment_history
 (
-    id                int unsigned auto_increment
+    id                bigint unsigned auto_increment
         primary key,
-    post_id           int unsigned                        not null,
-    user_id           int unsigned                        not null,
+    post_id           bigint unsigned                        not null,
+    user_id           bigint unsigned                        not null,
     content           varchar(255)                        null,
     modified_time     timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
-    modified_person   int unsigned                        null,
+    modified_person   bigint unsigned                        null,
     modified_by_admin tinyint   default 0                 not null,
     delete_at         timestamp                           null,
     constraint comment_history_ibfk_1
@@ -231,10 +231,10 @@ create index user_id
 
 create table comment_like
 (
-    id         int unsigned auto_increment
+    id         bigint unsigned auto_increment
         primary key,
-    comment_id int unsigned                        not null,
-    user_id    int unsigned                        not null,
+    comment_id bigint unsigned                        not null,
+    user_id    bigint unsigned                        not null,
     created_at timestamp default CURRENT_TIMESTAMP null,
     constraint comment_like_ibfk_1
         foreign key (comment_id) references comment (id)
@@ -261,10 +261,10 @@ create index modified_person
 
 create table post_dislike
 (
-    id         int unsigned auto_increment
+    id         bigint unsigned auto_increment
         primary key,
-    post_id    int unsigned                        not null,
-    user_id    int unsigned                        not null,
+    post_id    bigint unsigned                        not null,
+    user_id    bigint unsigned                        not null,
     created_at timestamp default CURRENT_TIMESTAMP null,
     constraint post_dislike_ibfk_1
         foreign key (post_id) references post (id)
@@ -282,13 +282,13 @@ create index user_id
 
 create table post_history
 (
-    id                int unsigned auto_increment
+    id                bigint unsigned auto_increment
         primary key,
-    author            int unsigned                        not null,
+    author            bigint unsigned                        not null,
     title             varchar(255)                        null,
     content           text                                null,
     modified_at       timestamp default CURRENT_TIMESTAMP null,
-    modified_person   int unsigned                        null,
+    modified_person   bigint unsigned                        null,
     modified_by_admin tinyint   default 0                 not null,
     delete_at         timestamp                           null,
     constraint post_history_ibfk_1
@@ -307,10 +307,10 @@ create index modified_person
 
 create table post_history_label_mapping
 (
-    id              int unsigned auto_increment
+    id              bigint unsigned auto_increment
         primary key,
-    post_history_id int unsigned not null,
-    label_id        int unsigned not null,
+    post_history_id bigint unsigned not null,
+    label_id        bigint unsigned not null,
     constraint post_history_label_mapping_ibfk_1
         foreign key (post_history_id) references post_history (id)
             on delete cascade,
@@ -327,10 +327,10 @@ create index post_history_id
 
 create table post_history_section_mapping
 (
-    id              int unsigned auto_increment
+    id              bigint unsigned auto_increment
         primary key,
-    post_history_id int unsigned not null,
-    section_id      int unsigned not null,
+    post_history_id bigint unsigned not null,
+    section_id      bigint unsigned not null,
     constraint post_history_section_mapping_ibfk_1
         foreign key (post_history_id) references post_history (id)
             on delete cascade,
@@ -347,10 +347,10 @@ create index section_id
 
 create table post_label_mapping
 (
-    id       int unsigned auto_increment
+    id       bigint unsigned auto_increment
         primary key,
-    post_id  int unsigned not null,
-    label_id int unsigned not null,
+    post_id  bigint unsigned not null,
+    label_id bigint unsigned not null,
     constraint post_label_mapping_ibfk_1
         foreign key (post_id) references post (id)
             on delete cascade,
@@ -367,10 +367,10 @@ create index post_id
 
 create table post_like
 (
-    id         int unsigned auto_increment
+    id         bigint unsigned auto_increment
         primary key,
-    post_id    int unsigned                        not null,
-    user_id    int unsigned                        not null,
+    post_id    bigint unsigned                        not null,
+    user_id    bigint unsigned                        not null,
     created_at timestamp default CURRENT_TIMESTAMP null,
     constraint post_like_ibfk_1
         foreign key (post_id) references post (id)
@@ -388,10 +388,10 @@ create index user_id
 
 create table post_section_mapping
 (
-    id         int unsigned auto_increment
+    id         bigint unsigned auto_increment
         primary key,
-    section_id int unsigned not null,
-    post_id    int unsigned not null,
+    section_id bigint unsigned not null,
+    post_id    bigint unsigned not null,
     constraint post_section_mapping_ibfk_1
         foreign key (section_id) references post_section (id)
             on delete cascade,
@@ -408,10 +408,10 @@ create index section_id
 
 create table report
 (
-    id          int unsigned auto_increment
+    id          bigint unsigned auto_increment
         primary key,
-    reported_id int unsigned                        not null,
-    reporter_id int unsigned                        not null,
+    reported_id bigint unsigned                        not null,
+    reporter_id bigint unsigned                        not null,
     reason      varchar(255)                        null,
     report_time timestamp default CURRENT_TIMESTAMP null,
     status      tinyint   default 0                 null,
@@ -433,9 +433,9 @@ create index reporter_id
 
 create table social_account
 (
-    id       int unsigned auto_increment
+    id       bigint unsigned auto_increment
         primary key,
-    user_id  int unsigned not null,
+    user_id  bigint unsigned not null,
     platform varchar(63)  not null,
     link     varchar(255) null,
     constraint idx_user_platform
@@ -453,14 +453,14 @@ create index idx_phone
 
 create table user_friend
 (
-    id             int unsigned auto_increment
+    id             bigint unsigned auto_increment
         primary key,
-    user_id        int unsigned       not null,
-    friend_id      int unsigned       not null,
+    user_id        bigint unsigned       not null,
+    friend_id      bigint unsigned       not null,
     status         tinyint  default 0 null,
     request_date   timestamp          null,
     accepted_date  timestamp          null,
-    require_person int unsigned       null,
+    require_person bigint unsigned       null,
     relationship   smallint default 1 null,
     delete_at      timestamp          null,
     constraint user_friend_ibfk_1
@@ -485,7 +485,7 @@ create index user_id
 
 create table user_profile
 (
-    user_id           int unsigned                        not null,
+    user_id           bigint unsigned                        not null,
     display_name      varchar(50)                         null,
     avatar_id         varchar(255)                        null,
     bio               varchar(255)                        null,
@@ -502,8 +502,8 @@ create table user_profile
     created_at        timestamp default CURRENT_TIMESTAMP null,
     modified_at       timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
     delete_at         timestamp                           null,
-    created_person    int unsigned                        null,
-    modified_person   int unsigned                        null,
+    created_person    bigint unsigned                        null,
+    modified_person   bigint unsigned                        null,
     modified_by_admin tinyint   default 0                 not null,
     id                int auto_increment
         primary key,
@@ -513,10 +513,10 @@ create table user_profile
 
 create table user_tag_mapping
 (
-    id      int unsigned auto_increment
+    id      bigint unsigned auto_increment
         primary key,
-    user_id int unsigned not null,
-    tag_id  int unsigned not null,
+    user_id bigint unsigned not null,
+    tag_id  bigint unsigned not null,
     constraint user_tag_mapping_ibfk_1
         foreign key (user_id) references user (id)
             on delete cascade,
