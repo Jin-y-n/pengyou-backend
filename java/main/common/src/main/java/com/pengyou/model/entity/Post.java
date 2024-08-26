@@ -22,7 +22,7 @@ public interface Post {
     long id();
 
     @IdView
-    long authorId();
+    Long authorId();
 
     @Nullable
     String title();
@@ -65,10 +65,10 @@ public interface Post {
     )
     List<PostSection> sections();
 
-    @ManyToOne
+    @Nullable
+    @ManyToOne(inputNotNull = true)
     @JoinColumn(name = "author")
+    @OnDissociate(DissociateAction.SET_NULL)
     User author();
-
-
 }
 

@@ -8,16 +8,13 @@ import (
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 	"github.com/elastic/go-elasticsearch/v8/esutil"
 	"go.uber.org/zap"
-	"gorm.io/gorm"
 	"io"
-	"io/ioutil"
 	"pengyou/constant"
+	esmodel "pengyou/model/elsaticsearch"
 	"pengyou/model/entity"
-	"pengyou/utils/common"
 	"pengyou/utils/log"
 	"strconv"
 	"strings"
-	"time"
 )
 
 func Store() {
@@ -67,176 +64,157 @@ func IndexPostUpdate(post *entity.Post) error {
 		return err
 	}
 
-	// Define the update request
-	updateReq := esapi.UpdateRequest{
-		Index:      constant.PostIndex,         // Use the same index name as when you created it
-		DocumentID: strconv.Itoa(int(post.ID)), // Assuming ID is an auto-incrementing integer
-		Body:       strings.NewReader(string(doc)),
-		Refresh:    "true",
-	}
-
-	// Execute the request
-	res, err := updateReq.Do(context.Background(), EsClient)
+	update, err := EsClient.Update(
+		constant.PostIndex,
+		strconv.Itoa(int(post.ID)),
+		strings.NewReader(string(doc)))
 	if err != nil {
+		log.Logger.Error("update failed", zap.Error(err))
 		return err
 	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			log.Logger.Error("close reader failed: es, err :", zap.Error(err))
-		}
-	}(res.Body)
 
-	// Check the response status code
-	if res.IsError() {
-		return fmt.Errorf("error updating document: %s", res.Status())
+	if update.IsError() {
+		log.Logger.Error("update failed ",
+			zap.String("code: ", strconv.Itoa(update.StatusCode)))
+		return err
 	}
 
 	fmt.Println("Document updated successfully")
 	return nil
 }
 
-type Post struct {
-	gorm.Model
-	Author          uint       `gorm:"not null" json:"author"`
-	Title           string     `gorm:"type:varchar(255)" json:"title"`
-	Content         string     `gorm:"type:text" json:"content"`
-	Status          uint8      `gorm:"default:1" json:"status"`
-	CreatedPerson   *uint      `gorm:"index;references:User(id);on_delete:set_null" json:"created_person"`
-	ModifiedPerson  *uint      `gorm:"index;references:User(id);on_delete:set_null" json:"modified_person"`
-	DeleteAt        *time.Time `gorm:"index" json:"delete_at"`
-	ModifiedByAdmin uint8      `gorm:"default:0" json:"modified_by_admin"`
+func PostQueryById(id uint) (*entity.Post, error) {
+	return QueryByID(id, constant.PostIndex)
 }
 
-// IndexPostQuery searches for posts in Elasticsearch.
-func IndexPostQuery(post *entity.Post) ([]*entity.Post, error) {
-	searchSource := strings.NewReader(`
-    {
+// PostQueryByTitleContent searches for posts in Elasticsearch.
+func PostQueryByTitleContent(post *entity.Post) ([]*entity.Post, error) {
+	query := fmt.Sprintf(`
+{
         "query": {
-            "match_all": {}
+            "match_phrase": {
+				"title": %s,
+				"content": %s
+			}
         }
-    }`)
+}
+`, post.Title, post.Content)
 
-	request := esapi.SearchRequest{
-		Index: []string{constant.PostIndex},
-		Body:  searchSource,
-	}
-
-	response, err := request.Do(context.Background(), EsClient)
+	response, err := Query(constant.PostIndex, query)
 	if err != nil {
-		log.Logger.Error("get post failed: es, err :", zap.Error(err))
 		return nil, err
 	}
+	esPosts := response.Hits.Hits
 
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			log.Logger.Warn("read-closer closed failed")
-		}
-	}(response.Body)
-
-	// Check the response status code
-	if response.IsError() {
-		log.Logger.Error("error in the response:", zap.String("status", strconv.Itoa(response.StatusCode)))
-		return nil, fmt.Errorf("error in the response: %d", response.StatusCode)
-	}
-
-	// Read the response body
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		log.Logger.Error("error reading the response body:", zap.Error(err))
-		return nil, err
-	}
-
-	// Parse the JSON response
-	var result map[string]interface{}
-	if err := json.Unmarshal(body, &result); err != nil {
-		log.Logger.Error("error parsing the JSON response:", zap.Error(err))
-		return nil, err
-	}
-
-	// Extract hits
-	hits := result["hits"].(map[string]interface{})["hits"].([]interface{})
-
-	// Convert hits to Post structs
 	var posts []*entity.Post
-	for _, hit := range hits {
-		source := hit.(map[string]interface{})["_source"].(map[string]interface{})
-		post := &entity.Post{
-			Author:          uint(source["author"].(float64)),
-			Title:           source["title"].(string),
-			Content:         source["content"].(string),
-			Status:          uint8(source["status"].(float64)),
-			CreatedPerson:   uintPtr(source["created_person"].(float64)),
-			ModifiedPerson:  uintPtr(source["modified_person"].(float64)),
-			DeleteAt:        timePtr(source["delete_at"].(string)),
-			ModifiedByAdmin: uint8(source["modified_by_admin"].(float64)),
-		}
-		posts = append(posts, post)
+
+	for _, v := range esPosts {
+		posts = append(posts, &v.Source)
 	}
 
 	return posts, nil
 }
 
-// uintPtr converts a float64 to a pointer to uint.
-func uintPtr(f float64) *uint {
-	i := uint(f)
-	return &i
+func PostQueryByTitle(post *entity.Post) ([]*entity.Post, error) {
+	query := fmt.Sprintf(`
+{
+        "query": {
+            "match_phrase": {
+				"title": %s,
+			}
+        }
+}
+`, post.Title)
+
+	response, err := Query(constant.PostIndex, query)
+	if err != nil {
+		return nil, err
+	}
+	esPosts := response.Hits.Hits
+
+	var posts []*entity.Post
+
+	for _, v := range esPosts {
+		posts = append(posts, &v.Source)
+	}
+
+	return posts, nil
 }
 
-// timePtr converts a string to a pointer to time.Time.
-func timePtr(s string) *time.Time {
-	t, err := time.Parse(time.RFC3339, s)
+func PostQueryByContent(post *entity.Post) ([]*entity.Post, error) {
+	query := fmt.Sprintf(`
+{
+        "query": {
+            "match_phrase": {
+				"content": %s
+			}
+        }
+}
+`, post.Content)
+
+	response, err := Query(constant.PostIndex, query)
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	return &t
+	esPosts := response.Hits.Hits
+
+	var posts []*entity.Post
+
+	for _, v := range esPosts {
+		posts = append(posts, &v.Source)
+	}
+
+	return posts, nil
+}
+
+// QueryByID query by id
+func QueryByID(id uint, index string) (*entity.Post, error) {
+	query := fmt.Sprintf(`
+	{
+	  "query": {
+		"match": {
+		  "ID": %d
+		}
+	  }
+	}
+	`, id)
+
+	response, err := Query(constant.PostIndex, query)
+	if err != nil {
+		return nil, err
+	}
+	hits := response.Hits.Hits
+
+	if len(hits) != 1 {
+		return nil, errors.New("not found")
+	}
+
+	return &hits[0].Source, nil
 }
 
 func IndexPostDelete(post, author int) error {
-	resQuery, err1 := IndexPostQuery(&entity.Post{
-		ID: uint(author),
-	})
+	queryByID, err := QueryByID(uint(post), constant.PostIndex)
 
-	if err1 != nil {
-		return err1
-	}
-
-	postFull := resQuery[0]
-
-	if !common.CheckUserIdDefault(postFull.Author) {
-		contextDefault, b := common.GetTokenFromContextDefault()
-		if !b {
-			return errors.New("token is not exist")
-		}
-		return errors.New(contextDefault + ` are not the author`)
-	}
-
-	// Define the delete request
-	deleteReq := esapi.DeleteRequest{
-		Index:      constant.PostIndex, // Use the same index name as when you created it
-		DocumentID: strconv.Itoa(post),
-		Refresh:    "true",
-	}
-
-	// Execute the request
-	res, err := deleteReq.Do(context.Background(), EsClient)
 	if err != nil {
+		log.Logger.Error("query by id failed", zap.Error(err))
 		return err
 	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			log.Logger.Error("close reader failed: es, err :", zap.Error(err))
-		}
-	}(res.Body)
 
-	// Check the response status code
-	if res.IsError() {
-		return fmt.Errorf("error deleting document: %s", res.Status())
+	if !(queryByID.Author == uint(author)) {
+		log.Logger.Error("no Authorization to delete")
+		return errors.New("no Authorization to delete")
 	}
 
-	fmt.Println("Document deleted successfully")
+	response, err := EsClient.Delete(constant.PostIndex, strconv.Itoa(post))
+	if err != nil {
+		log.Logger.Error("delete failed: "+strconv.Itoa(post),
+			zap.Error(err))
+		return err
+	}
+	if response.IsError() {
+		return errors.New("delete failed")
+	}
+
 	return nil
 }
 
@@ -342,4 +320,30 @@ func DeleteIndex(indexName string) error {
 	}
 	fmt.Printf("delete index successed,indexName:%s", indexName)
 	return nil
+}
+
+func Query(index string, body string) (*esmodel.Response, error) {
+	getRes, err := EsClient.Search(
+		EsClient.Search.WithIndex(constant.PostIndex),
+		EsClient.Search.WithBody(strings.NewReader(body)),
+	)
+
+	if err != nil {
+		log.Logger.Error("get post failed: es, err :", zap.Error(err))
+		return nil, err
+	}
+
+	if getRes.IsError() {
+		log.Logger.Error("error in the response:", zap.String("status", strconv.Itoa(getRes.StatusCode)))
+		return nil, fmt.Errorf("error in the response: %d", getRes.StatusCode)
+	}
+
+	response := &esmodel.Response{}
+	err = json.Unmarshal([]byte(getRes.String()), &response)
+	if err != nil {
+		log.Logger.Error("unmarshal failed: es, err :", zap.Error(err))
+		return nil, err
+	}
+
+	return response, nil
 }

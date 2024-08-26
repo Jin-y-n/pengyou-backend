@@ -65,12 +65,13 @@ func TestElasticSearch(t *testing.T) {
 
 	// Index the document
 	//indexName := "post"
-
+	fmt.Println("-------------save----------------")
 	fmt.Println(post)
 	marshal, err := json.Marshal(post)
 	if err != nil {
 		return
 	}
+	fmt.Println("-------------save----------------")
 
 	request := esapi.IndexRequest{
 		Index:      constant.PostIndex,
@@ -89,9 +90,20 @@ func TestElasticSearch(t *testing.T) {
 	}
 
 	// Retrieve the document
-	getRes, err := esClient.Get(
-		constant.PostIndex,
-		fmt.Sprintf("%d", post.Author),
+
+	query :=
+		`
+{
+  "query": {
+    "match_phrase": {
+      "title": "test"
+    }
+  }
+}
+`
+	getRes, err := esClient.Search(
+		esClient.Search.WithIndex(constant.PostIndex),
+		esClient.Search.WithBody(strings.NewReader(query)),
 	)
 	if err != nil {
 		t.Fatalf("Error getting document: %s", err)
@@ -108,6 +120,17 @@ func TestElasticSearch(t *testing.T) {
 		t.Errorf("Received an error when getting: %s", getRes.String())
 	}
 	//
+	//
+	//var resBytes []byte
+	//read, err := getRes.Body.Read(resBytes)
+	//if err != nil {
+	//	t.Errorf("read failed!")
+	//	return
+	//}
+
+	fmt.Println("------------res-------------")
+	fmt.Println(getRes.String())
+	fmt.Println("------------res-------------")
 	//// Parse the response into a Post object
 	//var retrievedPost entity.Post
 	//err = esapi.UnmarshalGetResult(getRes, &retrievedPost)

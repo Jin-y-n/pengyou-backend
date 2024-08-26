@@ -35,7 +35,7 @@ public class SearchImpl implements SearchService {
                 .fetchPage(searchForUsers.getPageIndex(), searchForUsers.getPageSize());
 
         if (page.getTotalRowCount() == 0) {
-            throw new BaseException("Post不存在");
+            throw new BaseException("User不存在");
         }
         return page;
     }
@@ -51,7 +51,7 @@ public class SearchImpl implements SearchService {
                 .fetchPage(searchForTags.getPageIndex(), searchForTags.getPageSize());
 
         if (page.getTotalRowCount() == 0) {
-            throw new BaseException("Post不存在");
+            throw new BaseException("Tag不存在");
         }
         return page;
     }
@@ -67,7 +67,7 @@ public class SearchImpl implements SearchService {
                 .fetchPage(searchForLabels.getPageIndex(), searchForLabels.getPageSize());
 
         if (page.getTotalRowCount() == 0) {
-            throw new BaseException("Post不存在");
+            throw new BaseException("Label不存在");
         }
         return page;
     }
@@ -83,7 +83,7 @@ public class SearchImpl implements SearchService {
                 .fetchPage(searchForSections.getPageIndex(), searchForSections.getPageSize());
 
         if (page.getTotalRowCount() == 0) {
-            throw new BaseException("Post不存在");
+            throw new BaseException("Section不存在");
         }
         return page;
     }

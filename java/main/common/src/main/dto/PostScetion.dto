@@ -11,8 +11,8 @@ PostSectionForDelete{
 }
 
 specification SearchForSections {
-    pageIndex: Int
-    pageSize: Int
+    pageIndex: Int?
+    pageSize: Int?
     id
     like/i(section)
     like/i(description)
@@ -23,8 +23,8 @@ SearchForSectionsView {
 }
 
 specification SectionForQuery {
-    pageIndex: Int
-    pageSize: Int
+    pageIndex: Int?
+    pageSize: Int?
     id
     section
 }
@@ -34,8 +34,8 @@ SectionForQueryView {
 }
 
 specification PostSectionForQuery {
-    pageIndex: Int
-    pageSize: Int
+    pageIndex: Int?
+    pageSize: Int?
     id
     like/i(section)
 }

@@ -11,8 +11,8 @@ PostLabelForDelete {
 }
 
 specification SearchForLabels {
-    pageIndex: Int
-    pageSize: Int
+    pageIndex: Int?
+    pageSize: Int?
     id
     like/i(label)
     like/i(description)
@@ -23,8 +23,8 @@ SearchForLabelsView {
 }
 
 specification LabelForQuery {
-    pageIndex: Int
-    pageSize: Int
+    pageIndex: Int?
+    pageSize: Int?
     id
     label
 }
@@ -34,8 +34,8 @@ LabelForQueryView {
 }
 
 specification PostLabelForQuery {
-    pageIndex: Int
-    pageSize: Int
+    pageIndex: Int?
+    pageSize: Int?
     id
     like/i(label)
 }

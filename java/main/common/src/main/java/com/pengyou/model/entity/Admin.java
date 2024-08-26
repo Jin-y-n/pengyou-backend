@@ -24,7 +24,7 @@ public interface Admin {
     @Key
     String username();
 
-    @NotNull
+    @Nullable
     String password();
 
     @Nullable

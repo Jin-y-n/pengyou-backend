@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"github.com/elastic/go-elasticsearch/v8"
 	"gorm.io/gorm"
 	"time"
 )
@@ -26,7 +25,7 @@ func (table *Post) TableName() string {
 }
 
 // ElasticsearchMapping creates an Elasticsearch mapping for the Post struct.
-func (*Post) ElasticsearchMapping(esClient *elasticsearch.Client) (map[string]interface{}, error) {
+func (*Post) ElasticsearchMapping() (map[string]interface{}, error) {
 	mapping := map[string]interface{}{
 		"properties": map[string]interface{}{
 			"author": map[string]interface{}{

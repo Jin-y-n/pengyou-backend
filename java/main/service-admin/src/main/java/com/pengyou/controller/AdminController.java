@@ -20,6 +20,7 @@ import org.babyfish.jimmer.sql.ast.tuple.Tuple2;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -52,10 +53,10 @@ public class AdminController {
         // 密码加密
         adminForRegister.setPassword(SHA256Encryption.getSHA256(adminForRegister.getPassword()));
 
-        if (adminForRegister.getRole() == 0) {
+        if (adminForRegister.getRole() != 1) {
             adminForRegister.setRole((short) 2);
         }
-        log.info("Admin: [" + adminForRegister.getUsername() + "], role：[" + adminForRegister.getRole() + "], createTime: [" + adminForRegister.getCreatedTime() + "]");
+        log.info("Admin: [" + adminForRegister.getUsername() + "], role：[" + adminForRegister.getRole() + "], createTime: [" + LocalDateTime.now() + "]");
         adminService.register(adminForRegister);
         return Result.success(AccountConstant.ACCOUNT_REGISTER_SUCCESS);
     }
@@ -121,7 +122,12 @@ public class AdminController {
             @RequestBody AdminForUpdate adminForUpdate
     ) {
         // 密码加密
-        adminForUpdate.setPassword(SHA256Encryption.getSHA256(adminForUpdate.getPassword()));
+        boolean passwordLoaded = adminForUpdate.isPasswordLoaded();
+
+        if (passwordLoaded) {
+            adminForUpdate.setPassword(SHA256Encryption.getSHA256(adminForUpdate.getPassword()));
+        }
+
         adminService.update(adminForUpdate);
         log.info("Admin: [" + UserContext.getUserId() + "] update " + adminForUpdate.getId() + "] at " + new Date());
         return Result.success(AccountConstant.ACCOUNT_CHANGE_SUCCESS);

@@ -11,11 +11,13 @@ import com.pengyou.model.dto.postlabel.PostLabelForQuery;
 import com.pengyou.model.dto.postlabel.PostLabelForQueryView;
 import com.pengyou.model.entity.*;
 import com.pengyou.service.PostLabelService;
+import com.pengyou.util.RedisLock;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.Page;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.ast.Predicate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,9 +27,12 @@ public class PostLabelImpl implements PostLabelService {
 
     private final JSqlClient sqlClient;
     private final PostLabelTable postLabelTable = PostLabelTable.$;
+    private final RedisLock redisLock;
 
+    @Transactional
     @Override
     public void add(PostLabelForAdd postLabelForAdd) {
+        redisLock.lock();
         List<String> execute = sqlClient
                 .createQuery(postLabelTable)
                 .where(postLabelTable.label().eq(postLabelForAdd.getLabel()))
@@ -39,6 +44,7 @@ public class PostLabelImpl implements PostLabelService {
 
         sqlClient
                 .insert(postLabelForAdd);
+        redisLock.unlock();
     }
 
     @Override
@@ -55,7 +61,8 @@ public class PostLabelImpl implements PostLabelService {
                 .select(
                         postLabelTable.fetch(PostLabelForQueryView.class)
                 )
-                .fetchPage(postLabelForQuery.getPageIndex(), postLabelForQuery.getPageSize());
+                .fetchPage(postLabelForQuery.getPageIndex() == null ? 0 : postLabelForQuery.getPageIndex()
+                        , postLabelForQuery.getPageSize() == null ? 10 : postLabelForQuery.getPageSize());
 
         if (execute.getTotalRowCount() == 0) {
             throw new BaseException("PostLabel不存在");

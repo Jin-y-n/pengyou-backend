@@ -77,11 +77,11 @@ jimmer:
 
 redis:
   lock:
-    url: ${pengyou.lock.url}
-    password: ${pengyou.lock.password}
-    database: ${pengyou.lock.database}
-    connect-time-out: ${pengyou.lock.connect-time-out}
-    time-out: ${pengyou.lock.time-out}
+    url: ${redis.lock.url}
+    password: ${redis.lock.password}
+    database: ${redis.lock.database}
+    connect-time-out: ${redis.lock.connect-time-out}
+    time-out: ${redis.lock.time-out}
 pengyou:
   jwt:
     secret-key: ${pengyou.jwt.secret-key}
@@ -89,7 +89,16 @@ pengyou:
     token-name: ${pengyou.jwt.token-name}
     ttl: ${pengyou.jwt.ttl}
 
-
+  auth:
+    exclude:
+      exclude-paths:
+        - /openapi.yml
+        - /openapi.html
+        - /ts.zip
+        - /favicon.ico
+        - /admin/account/register
+        - /admin/account/login
+        - /admin/account/verify
 
 
 

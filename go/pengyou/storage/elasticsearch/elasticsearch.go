@@ -41,7 +41,7 @@ func InitElasticSearch(cfg *config.Config) {
 		log.Logger.Info("elasticsearch: index not found", zap.String("index", "post"))
 		post := entity.Post{}
 
-		res, err := post.ElasticsearchMapping(EsClient)
+		res, err := post.ElasticsearchMapping()
 		if err != nil {
 			log.Logger.Error("create index: post failed")
 			return

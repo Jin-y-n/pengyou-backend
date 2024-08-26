@@ -52,8 +52,8 @@ input UserForUpdateSensitive {
 }
 
 specification SearchForUsers {
-    pageIndex: Int
-    pageSize: Int
+    pageIndex: Int?
+    pageSize: Int?
     id
     like/i(username)
     email
@@ -82,6 +82,23 @@ SearchForUsersView {
     }
     tags {
         id
-        name
     }
+}
+
+specification AdminUserForQuery{
+    like/i(username)
+    pageIndex: Int?
+    pageSize: Int?
+}
+
+AdminUserForQueryView {
+    id
+    username
+    email
+    phone
+    createdAt
+    modifiedAt
+    deleteAt
+    status
+    modifiedByAdmin
 }

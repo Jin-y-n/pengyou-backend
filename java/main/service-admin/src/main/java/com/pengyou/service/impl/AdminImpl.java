@@ -13,6 +13,7 @@ import com.pengyou.model.entity.Admin;
 import com.pengyou.model.entity.AdminTable;
 import com.pengyou.model.entity.User;
 import com.pengyou.service.AdminService;
+import com.pengyou.util.RedisLock;
 import com.pengyou.util.UserContext;
 import com.pengyou.util.security.AccountUtil;
 import com.pengyou.util.verify.CaptchaGenerator;
@@ -28,7 +29,9 @@ import org.babyfish.jimmer.sql.ast.tuple.Tuple2;
 import org.babyfish.jimmer.sql.ast.tuple.Tuple3;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,36 +43,39 @@ public class AdminImpl implements AdminService {
     private final RedisTemplate<String, String> template;
     private final MailUtil mailUtil;
     private final AdminTable adminTable = AdminTable.$;
+    private final RedisLock redisLock;
 
+    @Transactional
     @Override
     public void register(AdminForRegister adminForRegister) {
-        List<Tuple3<String, String, String>> execute = sqlClient
+        redisLock.lock();
+        sqlClient
+                .createUpdate(adminTable)
+                .set(adminTable.createdTime(), LocalDateTime.now())
+                .set(adminTable.modifiedTime(), LocalDateTime.now())
+                .where(adminTable.username().eq(adminForRegister.getUsername()))
+                .execute();
+
+        List<Tuple2<String, String>> execute = sqlClient
                 .createQuery(adminTable)
                 .where(
                         Predicate.or(
                                 adminTable.email().eq(adminForRegister.getEmail()),
-                                adminTable.phone().eq(adminForRegister.getPhone()),
                                 adminTable.username().eq(adminForRegister.getUsername())
                         )
                 ).select(
                         adminTable.email(),
-                        adminTable.phone(),
                         adminTable.username()
                 ).execute();
-
         if (!execute.isEmpty()) {
             execute.forEach(
                     tuple -> {
                         if (tuple.get_1().equals(adminForRegister.getEmail())) {
-                            throw new InitFailedException(AccountConstant.ACCOUNT_EMAIL_EXISTS);
+                            throw new BaseException(AccountConstant.ACCOUNT_EMAIL_EXISTS);
                         }
 
-                        if (tuple.get_2().equals(adminForRegister.getPhone())) {
-                            throw new InitFailedException(AccountConstant.ACCOUNT_PHONE_EXISTS);
-                        }
-
-                        if (tuple.get_3().equals(adminForRegister.getUsername())) {
-                            throw new InitFailedException(AccountConstant.ACCOUNT_NAME_EXISTS);
+                        if (tuple.get_2().equals(adminForRegister.getUsername())) {
+                            throw new BaseException(AccountConstant.ACCOUNT_NAME_EXISTS);
                         }
                     }
             );
@@ -84,7 +90,7 @@ public class AdminImpl implements AdminService {
                 .where(adminTable.username().eq(insert.getModifiedEntity().username()))
                 .execute();
 
-
+        redisLock.unlock();
     }
 
     @Override
@@ -136,49 +142,57 @@ public class AdminImpl implements AdminService {
                 .createUpdate(adminTable)
                 .set(adminTable.modifiedPerson(), Long.valueOf(UserContext.getUserId()))
                 .set(adminTable.modifiedByRoot(), (short) 1)
+                .set(adminTable.deleteAt(), LocalDateTime.now())
                 .where(adminTable.id().in(adminForDelete.getIds()))
                 .execute();
         sqlClient
                 .deleteByIds(Admin.class, adminForDelete.getIds());
     }
 
+    @Transactional
     @Override
     public void update(AdminForUpdate adminForUpdate) {
-        if (UserContext.getUserId().longValue() == (adminForUpdate.getId())) {
-            sqlClient
-                    .update(adminForUpdate);
-            return;
-        }
+        redisLock.lock();
+
+
+//        if (UserContext.getUserId().longValue() == (adminForUpdate.getId())) {
+//            sqlClient
+//                    .update(adminForUpdate);
+//            return;
+//        }
 
         List<Tuple2<Long, Short>> select = sqlClient
                 .createQuery(adminTable)
                 .where(
-                        Predicate.or(
-                                adminTable.id().eq(Long.valueOf(UserContext.getUserId())),
+//                        Predicate.or(
+//                                adminTable.id().eq(Long.valueOf(UserContext.getUserId())),
                                 adminTable.id().eq(adminForUpdate.getId())
-                        )
+//                        )
                 )
                 .select(adminTable.id(), adminTable.role())
                 .execute();
 
         select.forEach(
                 tuple -> {
-                    if (tuple.get_1().equals(Long.valueOf(UserContext.getUserId())) && tuple.get_2() == 2) {
-                        throw new BaseException(AccountConstant.INSUFFICIENT_AUTHORITY);
-                    } else if (tuple.get_1().equals(adminForUpdate.getId()) && tuple.get_2() == 1) {
-                        throw new BaseException(AccountConstant.INSUFFICIENT_AUTHORITY);
-                    }
+//                    if (tuple.get_1().equals(Long.valueOf(UserContext.getUserId())) && tuple.get_2() == 2) {
+//                        throw new BaseException(AccountConstant.INSUFFICIENT_AUTHORITY);
+//                    } else if (tuple.get_1().equals(adminForUpdate.getId()) && tuple.get_2() == 1) {
+//                        throw new BaseException(AccountConstant.INSUFFICIENT_AUTHORITY);
+//                    }
 
                 }
         );
         sqlClient
                 .createUpdate(adminTable)
                 .set(adminTable.modifiedByRoot(), (short) 1)
+                .set(adminTable.modifiedTime(), LocalDateTime.now())
                 .where(adminTable.id().eq(adminForUpdate.getId()))
                 .execute();
+
         sqlClient
                 .update(adminForUpdate);
 
+        redisLock.unlock();
     }
 
     @Override
@@ -190,7 +204,8 @@ public class AdminImpl implements AdminService {
                 .select(
                         adminTable.fetch(AdminForView.class)
                 )
-                .fetchPage(adminForQuery.getPageIndex(), adminForQuery.getPageSize());
+                .fetchPage(adminForQuery.getPageIndex() == null ? 0 : adminForQuery.getPageIndex()
+                        , adminForQuery.getPageSize() == null ? 10 : adminForQuery.getPageSize());
 
         if (page.getTotalRowCount() == 0) {
             throw new BaseException("Admin查询失败");

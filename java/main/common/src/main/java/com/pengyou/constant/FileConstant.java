@@ -16,6 +16,6 @@ public class FileConstant {
 
     public static final String WEBP_SUFFIX = ".webp";
 
-    public static final String FILE_DIRECTORY = "/home/napbad/tmp/";
+    public static final String FILE_DIRECTORY = "./file/";
     public static final String IMAGE_FILE_DIRECTORY = "./file/image/";
 }

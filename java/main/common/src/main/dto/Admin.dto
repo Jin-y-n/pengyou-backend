@@ -6,8 +6,6 @@ input AdminForRegister {
     password
     email
     phone
-    createdTime
-    modifiedTime
     role
     captcha : String
 }
@@ -43,16 +41,15 @@ AdminForDelete {
 
 input AdminForUpdate {
     id!
-    username
-    password
-    email
-    phone
-    modifiedTime
+    dynamic username?
+    dynamic password
+    dynamic email
+    dynamic phone
 }
 
 specification AdminForQuery {
-    pageIndex: Int
-    pageSize: Int
+    pageIndex: Int?
+    pageSize: Int?
     id
     like/i(username)
     email

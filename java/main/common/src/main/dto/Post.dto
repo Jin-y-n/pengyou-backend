@@ -2,28 +2,25 @@ export com.pengyou.model.entity.Post
     -> package com.pengyou.model.dto.post
 
 input PostForUpdate {
-    id
-    authorId
-    title
-    content
-    status
-    modifiedAt
-    labels {
-        id
-        label
+    id!
+    dynamic authorId
+    dynamic title
+    dynamic content
+    dynamic status
+    dynamic labels? {
+        dynamic id
     }
-    sections {
-        id
-        section
+    dynamic sections? {
+        dynamic id
     }
-    author {
-        id
+    dynamic author {
+        dynamic id
     }
 }
 
 specification PostForQuery{
-    pageIndex: Int
-    pageSize: Int
+    pageIndex: Int?
+    pageSize: Int?
     id
     authorId
     like/i(title)
@@ -71,8 +68,8 @@ PostForDelete{
 }
 
 specification SearchForPosts {
-    pageIndex: Int
-    pageSize: Int
+    pageIndex: Int?
+    pageSize: Int?
     id
     authorId
     like/i(title)
@@ -111,11 +108,9 @@ input UserPostForAdd {
     status
     labels {
         id
-        label
     }
     sections {
         id
-        section
     }
 }
 
@@ -128,11 +123,9 @@ input UserPostForUpdate {
     status
     labels? {
         id
-        label
     }
     sections? {
         id
-        section
     }
 }
 
@@ -141,8 +134,8 @@ input UserPostForDelete {
 }
 
 specification UserPostForQuery {
-    pageIndex: Int
-    pageSize: Int
+    pageIndex: Int?
+    pageSize: Int?
     id
     authorId
     like/i(title)
@@ -171,10 +164,8 @@ UserPostForQueryView {
     status
     labels {
         id
-        label
     }
     sections {
         id
-        section
     }
 }
