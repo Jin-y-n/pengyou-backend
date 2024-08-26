@@ -51,17 +51,17 @@ public class UserContextInterceptor implements HandlerInterceptor {
             @NotNull HttpServletResponse response,
             @NotNull Object handler) {
 
-        String userId = request.getHeader("userId");
-        if (StringUtils.hasLength(userId)) {
-            return false;
-        }
-
-        if (isExcluded(request.getServletPath())) {
-            UserContext.setUserId(0);
-            return true;
-        }
-
-        UserContext.setUserId(Integer.valueOf(userId));
+//        String userId = request.getHeader("userId");
+//        if (StringUtils.hasLength(userId)) {
+//            return false;
+//        }
+//
+//        if (isExcluded(request.getServletPath())) {
+//            UserContext.setUserId(0);
+//            return true;
+//        }
+//
+//        UserContext.setUserId(Integer.valueOf(userId));
         return true;
 //        UserContext.setUserId(1);
 //        return true;

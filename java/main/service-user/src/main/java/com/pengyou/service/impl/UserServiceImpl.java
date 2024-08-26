@@ -16,7 +16,7 @@ import com.pengyou.exception.BaseException;
 import com.pengyou.exception.InitFailedException;
 import com.pengyou.exception.LoginFailedException;
 import com.pengyou.exception.common.InputInvalidException;
-import com.pengyou.model.dto.profile.UserForUpdate;
+import com.pengyou.model.dto.user.UserForUpdate;
 import com.pengyou.model.dto.user.*;
 import com.pengyou.model.entity.Admin;
 import com.pengyou.model.entity.AdminTable;
@@ -164,11 +164,11 @@ public class UserServiceImpl implements UserService {
 //
 //                }
 //        );
-//        jSqlClient
-//                .createUpdate(userTable)
-//                .set(userTable.modifiedByRoot(), (short) 1)
-//                .where(userTable.id().eq(user.getId()))
-//                .execute();
+        jSqlClient
+                .createUpdate(userTable)
+                .set(userTable.modifiedByAdmin(), (short) 0)
+                .where(userTable.id().eq(user.getId()))
+                .execute();
         jSqlClient
                 .update(user);
     }

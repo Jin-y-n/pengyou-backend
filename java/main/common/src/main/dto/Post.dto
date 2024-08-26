@@ -118,14 +118,14 @@ input UserPostForAdd {
 input UserPostForUpdate {
     id
     authorId
-    title
-    content
-    status
-    labels? {
-        id
+    dynamic title
+    dynamic content
+    dynamic status
+    dynamic labels? {
+    dynamic     id
     }
-    sections? {
-        id
+    dynamic sections? {
+    dynamic     id
     }
 }
 

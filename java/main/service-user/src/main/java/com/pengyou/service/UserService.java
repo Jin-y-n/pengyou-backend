@@ -10,7 +10,7 @@ package com.pengyou.service;
 
 */
 
-import com.pengyou.model.dto.profile.UserForUpdate;
+import com.pengyou.model.dto.user.UserForUpdate;
 import com.pengyou.model.dto.user.*;
 
 public interface UserService {

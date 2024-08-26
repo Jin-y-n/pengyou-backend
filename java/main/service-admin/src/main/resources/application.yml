@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: dev
+    include: live
   datasource:
     driver-class-name: ${pengyou.datasource.driver-class-name}
     url: ${pengyou.datasource.url}

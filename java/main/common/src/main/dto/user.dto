@@ -102,3 +102,25 @@ AdminUserForQueryView {
     status
     modifiedByAdmin
 }
+
+input UserForUpdate {
+    id
+    dynamic tags? {
+        dynamic id
+    }
+    dynamic profile {
+        dynamic displayName
+        dynamic avatarId
+        dynamic bio
+        dynamic gender
+        dynamic birthday
+        dynamic location
+        dynamic occupation
+        dynamic education
+        dynamic school
+        dynamic major
+        dynamic company
+        dynamic position
+        dynamic website
+    }
+}

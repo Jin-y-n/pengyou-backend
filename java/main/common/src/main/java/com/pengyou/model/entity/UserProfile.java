@@ -77,6 +77,7 @@ public interface UserProfile {
 
     Short modifiedByAdmin();
 
+    @Key
     @OneToOne
     @JoinColumn(name = "user_id")
     User user();
