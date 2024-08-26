@@ -8,6 +8,7 @@
 **/config.yml
 **/config.yaml
 install/**/pengyou/
+**/go/pengyou/pengyou
 
 ### IntelliJ IDEA ###
 **/.idea/modules.xml
